@@ -28,6 +28,9 @@ yarn-error.log*
 .env
 .env*.local
 
+# Claude export files
+2025*txt
+
 # vercel
 .vercel/
 
