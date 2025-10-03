@@ -1,7 +1,7 @@
 import { HOCKEY_SYSTEM_INSTRUCTIONS } from "@/components/agent/hockey-prompt";
 import { getSchahaMCPClient } from "@/lib/mcp";
 import { openai } from "@ai-sdk/openai";
-import { streamText, convertToModelMessages } from "ai";
+import { streamText, convertToModelMessages, stepCountIs } from "ai";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -12,6 +12,7 @@ export async function POST(request: NextRequest) {
       return new Response("Messages array is required", { status: 400 });
     }
 
+    // Convert UIMessages to ModelMessages
     const modelMessages = convertToModelMessages(messages);
 
     // Initialize SCAHA MCP client
@@ -44,14 +45,21 @@ export async function POST(request: NextRequest) {
     );
 
     const result = streamText({
-      model: openai("gpt-4o"), // Using gpt-4o as gpt-5 may not be available yet
+      model: openai("gpt-4o-mini"),
       system: HOCKEY_SYSTEM_INSTRUCTIONS,
       messages: modelMessages,
       tools: wrappedTools,
-      onFinish: async () => {
+      stopWhen: stepCountIs(5), // Enable multi-step execution: tool call -> text response
+      onFinish: async ({ text, toolCalls, toolResults, steps }) => {
+        console.log(`📊 Stream finished:`);
+        console.log(`   Text length: ${text?.length || 0}`);
+        console.log(`   Tool calls: ${toolCalls?.length || 0}`);
+        console.log(`   Tool results: ${toolResults?.length || 0}`);
+        console.log(`   Steps: ${steps?.length || 0}`);
+
         // Close the MCP client after streaming completes
         // This is critical to avoid "closed client" errors
-        console.log("🔌 Stream finished, disconnecting SCAHA MCP client...");
+        console.log("🔌 Disconnecting SCAHA MCP client...");
         await schahaClient.disconnect();
       },
     });

@@ -1,26 +1,29 @@
 /**
- * SCAHA MCP Client using STDIO Transport
- * Connects to local scaha.net-mcp server
+ * SCAHA MCP Client using StreamableHTTP Transport
+ * Connects to scaha-mcp Next.js server (mcp-handler)
  * AI SDK MCP Integration: https://ai-sdk.dev/cookbook/node/mcp-tools
  */
 
 import { experimental_createMCPClient } from "ai";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import type { MCPClientConfig } from "./scaha-types";
 
 export class SchahaMCPClient {
   private client: Awaited<
     ReturnType<typeof experimental_createMCPClient>
   > | null = null;
-  private serverPath: string;
+  private serverUrl: string;
   private isConnected: boolean = false;
 
   constructor(config: MCPClientConfig) {
-    this.serverPath = config.serverPath;
+    // For backwards compatibility, check if serverPath is actually a URL
+    this.serverUrl = config.serverPath.startsWith('http')
+      ? config.serverPath
+      : `http://localhost:3000/mcp`; // Default to scaha-mcp dev server
   }
 
   /**
-   * Initialize the MCP client connection via STDIO
+   * Initialize the MCP client connection via StreamableHTTP
    */
   async connect(): Promise<void> {
     if (this.isConnected && this.client) {
@@ -29,13 +32,12 @@ export class SchahaMCPClient {
     }
 
     try {
-      console.log("🚀 Connecting to SCAHA MCP server via STDIO...");
-      console.log(`   Server path: ${this.serverPath}`);
+      console.log("🚀 Connecting to SCAHA MCP server via StreamableHTTP...");
+      console.log(`   Server URL: ${this.serverUrl}`);
 
-      const transport = new StdioClientTransport({
-        command: "node",
-        args: [this.serverPath],
-      });
+      const transport = new StreamableHTTPClientTransport(
+        new URL(this.serverUrl)
+      );
 
       this.client = await experimental_createMCPClient({
         transport,
@@ -126,8 +128,8 @@ export function getSchahaMCPClient(serverPath?: string): SchahaMCPClient {
   if (!schahaClientInstance) {
     const path =
       serverPath ||
-      process.env.SCAHA_MCP_SERVER_PATH ||
-      "../scaha.net-mcp/dist/server.js";
+      process.env.SCAHA_MCP_SERVER_URL ||
+      "http://localhost:3000/mcp";
 
     schahaClientInstance = new SchahaMCPClient({ serverPath: path });
   }
