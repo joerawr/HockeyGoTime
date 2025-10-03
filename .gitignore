@@ -35,5 +35,27 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# claude
+# IDE and editor
 .claude/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# MCP
+.mcp.json
+mcp-debug.log
+
+# Cache
+.cache/
+.turbo/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
