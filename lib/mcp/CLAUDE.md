@@ -20,13 +20,29 @@ This documentation covers:
 - Integration with `generateText()` and `streamText()`
 - Best practices for MCP client management
 
+## Current Transport: STDIO
+
+HockeyGoTime uses **STDIO transport** to spawn the SCAHA MCP server as a subprocess.
+
+### How it works:
+1. `StdioClientTransport` spawns `npx @joerawr/scaha-mcp`
+2. Communicates via stdin/stdout
+3. Subprocess is automatically terminated when client disconnects
+
+### Advantages:
+- No separate server to run
+- Works on Vercel (Node.js subprocess spawning supported)
+- Self-contained deployment
+- Uses published npm package
+
 ## Usage Pattern
 
 1. Read the documentation links above before making changes
 2. Follow the existing patterns in `/lib/mcp/client/`
-3. Use SSE transport for hosted MCP servers
-4. Always handle errors and add logging
-5. Load credentials from environment variables
+3. Use STDIO transport for subprocess-based MCP servers (like SCAHA)
+4. Use SSE transport for remote HTTP MCP servers (like Firecrawl)
+5. Always handle errors and add logging
+6. Load credentials from environment variables
 
 ## Important Tips
 
