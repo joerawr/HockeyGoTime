@@ -4,7 +4,7 @@ This file provides guidance when working with code in this repository.
 
 ## Project Overview
 
-**HockeyGoTime** is a conversational AI assistant for SCAHA (Southern California Amateur Hockey Association) youth hockey schedules. Parents and players can ask natural language questions about game times, opponents, venues, and more.
+**HockeyGoTime (HGT)** is a conversational AI assistant for SCAHA (Southern California Amateur Hockey Association) youth hockey schedules. Parents and players can ask natural language questions about game times, opponents, venues, and more.
 
 ## Development Commands
 

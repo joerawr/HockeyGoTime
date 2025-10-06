@@ -257,7 +257,7 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
                 partIndex?: number;
               }> = [];
 
-              messages.forEach((message) => {
+              messages.forEach((message, messageIndex) => {
                 // Process all parts in chronological order
                 const parts = (message as any).parts || [];
 
@@ -303,19 +303,22 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
                   flowItems.push({
                     type: 'message',
                     data: messageWithTextOnly,
-                    id: `message-${message.id}`
+                    id: `message-${message.id}-${messageIndex}` // Include index for uniqueness
                   });
                 }
               });
 
-              // Check for duplicate keys and log errors only
-              const allIds = flowItems.map(item => item.id);
-              const duplicateIds = allIds.filter((id, index) => allIds.indexOf(id) !== index);
-              if (duplicateIds.length > 0) {
-                console.error(`🚨 Duplicate keys found:`, duplicateIds);
-              }
+              // Deduplicate flow items by ID (keep first occurrence)
+              const seenIds = new Set<string>();
+              const deduplicatedFlowItems = flowItems.filter(item => {
+                if (seenIds.has(item.id)) {
+                  return false;
+                }
+                seenIds.add(item.id);
+                return true;
+              });
 
-              return flowItems.map((item, itemIndex) => {
+              return deduplicatedFlowItems.map((item, itemIndex) => {
                 if (item.type === 'tool-call') {
                   // Render tool call status block
                   const toolPart = item.data as RAGToolUIPart;
@@ -368,7 +371,7 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
                         let toolSources: any[] = [];
 
                         for (let i = itemIndex - 1; i >= 0; i--) {
-                          const prevItem = flowItems[i];
+                          const prevItem = deduplicatedFlowItems[i];
                           if (prevItem.type === 'tool-call') {
                             const toolData = prevItem.data as RAGToolUIPart;
                             if (toolData.type === 'tool-retrieveKnowledgeBase' && toolData.output?.sources) {
