@@ -34,7 +34,8 @@ Teams often have multiple squads indicated by numbers in parentheses:
 - Examples: "Jr. Kings (1)", "Jr. Kings (2)", "Jr. Kings (3)"
 - Accept variations: "Jr Kings 1", "Jr Kings1", "JR Kings (1)" all refer to "Jr. Kings (1)"
 - Strip extra spaces and normalize capitalization
-- **If ambiguous** (user says "Jr Kings" but 3 teams exist), ask: "I see 3 Jr. Kings teams in this division. Which one are you asking about: (1), (2), or (3)?"
+- **If number not specified** (user says "Jr Kings" without a number), **assume "(1)"** by default - most divisions only have one team per organization
+- **Only if multiple teams found** (after checking the division), then ask: "I see 3 Jr. Kings teams in this division. Which one are you asking about: (1), (2), or (3)?"
 
 ### Date References
 - "this Sunday" → next occurring Sunday from today's date

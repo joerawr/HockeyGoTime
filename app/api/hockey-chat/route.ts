@@ -45,10 +45,15 @@ export async function POST(request: NextRequest) {
     );
 
     const result = streamText({
-      model: openai("o4-mini"),
+      model: openai("gpt-5-mini"),
       system: HOCKEY_SYSTEM_INSTRUCTIONS,
       messages: modelMessages,
       tools: wrappedTools,
+      providerOptions: {
+        openai: {
+          reasoningEffort: "low",
+        },
+      },
       stopWhen: stepCountIs(5), // Enable multi-step execution: tool call -> text response
       onFinish: async ({ text, toolCalls, toolResults, steps }) => {
         console.log(`📊 Stream finished:`);
