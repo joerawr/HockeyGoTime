@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     );
 
     const result = streamText({
-      model: openai("gpt-5"),
+      model: openai("o4-mini"),
       system: HOCKEY_SYSTEM_INSTRUCTIONS,
       messages: modelMessages,
       tools: wrappedTools,

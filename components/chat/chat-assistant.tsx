@@ -2,7 +2,7 @@
 
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type ToolUIPart } from "ai";
-import { useState, useEffect, useRef, memo } from "react";
+import { useState, useEffect, useRef, useMemo, memo } from "react";
 import {
   Conversation,
   ConversationContent,
@@ -155,9 +155,14 @@ MemoizedMessage.displayName = 'MemoizedMessage';
 
 export default function ChatAssistant({ api }: ChatAssistantProps) {
   const [input, setInput] = useState("");
-  const { messages: rawMessages, status, sendMessage } = useChat({
-    transport: api ? new DefaultChatTransport({ api }) : undefined,
-  });
+  const transport = useMemo(
+    () => (api ? new DefaultChatTransport({ api }) : undefined),
+    [api]
+  );
+
+  const { messages: rawMessages, status, sendMessage } = useChat(
+    transport ? { transport } : undefined
+  );
 
   // Debounced messages for performance - update every 30ms instead of every token
   const [debouncedMessages, setDebouncedMessages] = useState(rawMessages);
@@ -165,6 +170,8 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
   const lastRawMessagesRef = useRef(rawMessages);
 
   useEffect(() => {
+    console.log("📝 Raw messages update", rawMessages);
+    console.log("📡 Status", status);
     // Clear existing timer
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
@@ -262,7 +269,8 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
                 const parts = (message as any).parts || [];
 
                 parts.forEach((part: any, partIndex: number) => {
-                  if (part.type?.startsWith('tool-')) {
+                 if (part.type?.startsWith('tool-')) {
+                    console.log('🛠️ Tool part', part);
                     // Handle tool calls
                     const uniqueId = part.toolCallId ||
                                     part.id ||
