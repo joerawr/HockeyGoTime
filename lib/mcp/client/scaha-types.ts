@@ -32,5 +32,6 @@ export interface SchahaGetScheduleResult {
 }
 
 export interface MCPClientConfig {
-  serverPath: string;           // Path to SCAHA MCP server executable
+  serverPath: string;           // Path to SCAHA MCP server executable (legacy, not used for HTTP)
+  serverUrl?: string;           // Issue #3: HTTP endpoint URL for remote MCP server
 }

@@ -1,11 +1,14 @@
 /**
- * SCAHA MCP Client using STDIO Transport
- * Spawns @joerawr/scaha-mcp as subprocess via npx
+ * SCAHA MCP Client using HTTP Transport
+ *
+ * Issue #3: Switch from STDIO to HTTP transport for SCAHA MCP server
+ * Connects to remotely deployed SCAHA MCP server via SSE/HTTP
+ *
  * AI SDK MCP Integration: https://ai-sdk.dev/cookbook/node/mcp-tools
  */
 
 import { experimental_createMCPClient } from "ai";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import type { MCPClientConfig } from "./scaha-types";
 
 export class SchahaMCPClient {
@@ -13,12 +16,18 @@ export class SchahaMCPClient {
     ReturnType<typeof experimental_createMCPClient>
   > | null = null;
   private isConnected: boolean = false;
+  private serverUrl: string;
 
-  constructor(private config: MCPClientConfig) {}
+  constructor(private config: MCPClientConfig) {
+    // Issue #3: Use deployed HTTP endpoint instead of spawning subprocess
+    this.serverUrl = config.serverUrl ||
+      process.env.SCAHA_MCP_URL ||
+      "https://scaha-f8aah2x4h-joe-rogers-projects.vercel.app/api/mcp";
+  }
 
   /**
-   * Initialize the MCP client connection via STDIO
-   * Spawns scaha-mcp as subprocess
+   * Initialize the MCP client connection via HTTP/SSE
+   * Issue #3: Connects to deployed SCAHA MCP server instead of spawning subprocess
    */
   async connect(): Promise<void> {
     if (this.isConnected && this.client) {
@@ -27,32 +36,16 @@ export class SchahaMCPClient {
     }
 
     try {
-      console.log("🚀 Spawning SCAHA MCP server via STDIO...");
+      console.log(`🚀 Connecting to SCAHA MCP server via HTTP: ${this.serverUrl}`);
 
-      // Use npx to run the published package
-      const command = "npx";
-      const args = ["-y", "@joerawr/scaha-mcp"];
-
-      console.log(`   Command: ${command} ${args.join(" ")}`);
-
-      const transport = new StdioClientTransport({
-        command,
-        args,
-        env: {
-          ...process.env,
-          // Pass through Chrome path if set
-          ...(process.env.CHROME_EXECUTABLE_PATH && {
-            CHROME_EXECUTABLE_PATH: process.env.CHROME_EXECUTABLE_PATH,
-          }),
-        },
-      });
+      const transport = new SSEClientTransport(new URL(this.serverUrl));
 
       this.client = await experimental_createMCPClient({
         transport,
       });
 
       this.isConnected = true;
-      console.log("✅ SCAHA MCP client connected via STDIO");
+      console.log("✅ SCAHA MCP client connected via HTTP/SSE");
     } catch (error) {
       console.error("💥 Failed to connect to SCAHA MCP server:", error);
       throw new Error(
@@ -64,7 +57,8 @@ export class SchahaMCPClient {
   }
 
   /**
-   * Disconnect the MCP client and terminate subprocess
+   * Disconnect the MCP client
+   * Issue #3: Closes HTTP connection (no subprocess to terminate)
    */
   async disconnect(): Promise<void> {
     if (!this.client) {
@@ -75,7 +69,7 @@ export class SchahaMCPClient {
       await this.client.close();
       this.client = null;
       this.isConnected = false;
-      console.log("🔌 SCAHA MCP client disconnected (subprocess terminated)");
+      console.log("🔌 SCAHA MCP client disconnected (HTTP connection closed)");
     } catch (error) {
       console.error("⚠️ Error during MCP client disconnect:", error);
     }
@@ -131,11 +125,13 @@ let schahaClientInstance: SchahaMCPClient | null = null;
 
 /**
  * Get or create a SCAHA MCP client instance
+ * Issue #3: Now uses HTTP transport to deployed MCP server
  */
-export function getSchahaMCPClient(): SchahaMCPClient {
+export function getSchahaMCPClient(serverUrl?: string): SchahaMCPClient {
   if (!schahaClientInstance) {
     schahaClientInstance = new SchahaMCPClient({
-      serverPath: "", // Not used for STDIO, kept for type compatibility
+      serverPath: "", // Not used for HTTP, kept for type compatibility
+      serverUrl: serverUrl, // Optional override for HTTP endpoint
     });
   }
 
