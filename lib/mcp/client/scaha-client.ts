@@ -2,13 +2,13 @@
  * SCAHA MCP Client using HTTP Transport
  *
  * Issue #3: Switch from STDIO to HTTP transport for SCAHA MCP server
- * Connects to remotely deployed SCAHA MCP server via SSE/HTTP
+ * Connects to remotely deployed SCAHA MCP server via StreamableHTTP
  *
- * AI SDK MCP Integration: https://ai-sdk.dev/cookbook/node/mcp-tools
+ * AI SDK MCP Integration: https://ai-sdk.dev/docs/ai-sdk-core/mcp-tools
  */
 
 import { experimental_createMCPClient } from "ai";
-import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import type { MCPClientConfig } from "./scaha-types";
 
 export class SchahaMCPClient {
@@ -26,7 +26,7 @@ export class SchahaMCPClient {
   }
 
   /**
-   * Initialize the MCP client connection via HTTP/SSE
+   * Initialize the MCP client connection via StreamableHTTP
    * Issue #3: Connects to deployed SCAHA MCP server instead of spawning subprocess
    */
   async connect(): Promise<void> {
@@ -36,16 +36,16 @@ export class SchahaMCPClient {
     }
 
     try {
-      console.log(`🚀 Connecting to SCAHA MCP server via HTTP: ${this.serverUrl}`);
+      console.log(`🚀 Connecting to SCAHA MCP server via StreamableHTTP: ${this.serverUrl}`);
 
-      const transport = new SSEClientTransport(new URL(this.serverUrl));
+      const transport = new StreamableHTTPClientTransport(new URL(this.serverUrl));
 
       this.client = await experimental_createMCPClient({
         transport,
       });
 
       this.isConnected = true;
-      console.log("✅ SCAHA MCP client connected via HTTP/SSE");
+      console.log("✅ SCAHA MCP client connected via StreamableHTTP");
     } catch (error) {
       console.error("💥 Failed to connect to SCAHA MCP server:", error);
       throw new Error(
@@ -125,7 +125,7 @@ let schahaClientInstance: SchahaMCPClient | null = null;
 
 /**
  * Get or create a SCAHA MCP client instance
- * Issue #3: Now uses HTTP transport to deployed MCP server
+ * Issue #3: Now uses StreamableHTTP transport to deployed MCP server
  */
 export function getSchahaMCPClient(serverUrl?: string): SchahaMCPClient {
   if (!schahaClientInstance) {
