@@ -22,7 +22,7 @@ export class SchahaMCPClient {
     // Issue #3: Use deployed HTTP endpoint instead of spawning subprocess
     this.serverUrl = config.serverUrl ||
       process.env.SCAHA_MCP_URL ||
-      "https://scaha-f8aah2x4h-joe-rogers-projects.vercel.app/api/mcp";
+      "https://scaha-mcp.vercel.app/api/mcp";
   }
 
   /**
