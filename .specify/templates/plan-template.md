@@ -31,17 +31,7 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-Verify compliance with `.specify/memory/constitution.md` principles:
-
-- [ ] **I. User-Centric AI Experience**: Does this feature maintain conversational, hockey-parent-friendly UX?
-- [ ] **II. Type Safety & Quality Gates**: Are TypeScript strict mode checks defined? Is `pnpm tsc --noEmit` in the workflow?
-- [ ] **III. Performance First**: Are response time targets defined (<3s)? Is caching strategy documented (24hr TTL)?
-- [ ] **IV. MCP Integration Correctness**: If using MCP, does it use StreamableHTTP transport to remote Vercel server? Is lifecycle management correct (close in `onFinish`)?
-- [ ] **V. Package Manager Discipline**: All commands use `pnpm` exclusively (no npm/yarn)?
-- [ ] **VI. AI Model Selection**: Is GPT-5 or GPT-5-mini specified? (No GPT-4o models permitted)
-- [ ] **VII. Deployment Ready**: Are Vercel environment variables documented in `.env.local.template`? Is `SCAHA_MCP_URL` configured?
-
-**Violations Requiring Justification**: [List any principle violations and document in Complexity Tracking section below]
+[Gates determined based on constitution file]
 
 ## Project Structure
 
