@@ -3,6 +3,7 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type ToolUIPart } from "ai";
 import { useState, useEffect, useRef, useMemo, memo } from "react";
+import { PreferencesStore } from "@/lib/storage/preferences";
 import {
   Conversation,
   ConversationContent,
@@ -155,10 +156,31 @@ MemoizedMessage.displayName = 'MemoizedMessage';
 
 export default function ChatAssistant({ api }: ChatAssistantProps) {
   const [input, setInput] = useState("");
-  const transport = useMemo(
-    () => (api ? new DefaultChatTransport({ api }) : undefined),
-    [api]
-  );
+
+  // Custom transport that includes user preferences in the request body
+  const transport = useMemo(() => {
+    if (!api) return undefined;
+
+    return new DefaultChatTransport({
+      api,
+      fetch: async (url, options) => {
+        // Load current preferences from localStorage
+        const preferences = PreferencesStore.get();
+
+        // Parse the body to add preferences
+        const body = JSON.parse(options?.body as string || '{}');
+        const enhancedBody = {
+          ...body,
+          preferences, // Include preferences in request
+        };
+
+        return fetch(url, {
+          ...options,
+          body: JSON.stringify(enhancedBody),
+        });
+      },
+    });
+  }, [api]);
 
   const { messages: rawMessages, status, sendMessage } = useChat(
     transport ? { transport } : undefined
