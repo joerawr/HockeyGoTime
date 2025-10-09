@@ -9,10 +9,22 @@ import type { ComputeRoutesRequest, RouteResponse } from '@/types/travel';
 
 // Google Routes API endpoint (Directions API v2)
 const ROUTES_ENDPOINT = 'https://routes.googleapis.com/directions/v2:computeRoutes';
+const GEOCODE_ENDPOINT = 'https://maps.googleapis.com/maps/api/geocode/json';
 
 // Field mask limits the response payload to the data we actually need
 const FIELD_MASK =
   'routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline';
+
+const ROAD_DISTANCE_FACTOR = 1.3; // estimate road distance from straight-line distance
+const AVERAGE_SPEED_MPH = 30; // conservative assumption for SoCal traffic
+const ESTIMATE_BUFFER_MULTIPLIER = 1.2; // add 20% buffer for uncertainty
+const MILES_TO_METERS = 1609.344;
+const FALLBACK_DISCLAIMER = 'Estimated travel time (traffic data unavailable)';
+
+interface LatLng {
+  lat: number;
+  lng: number;
+}
 
 interface ComputeRouteParams {
   originAddress: string;
@@ -32,6 +44,8 @@ interface ComputeRouteResult {
   durationSeconds: number;
   distanceMeters: number;
   encodedPolyline?: string;
+  isFallback?: boolean;
+  disclaimer?: string;
 }
 
 /**
@@ -73,9 +87,23 @@ function buildRequestPayload({
  *
  * @throws Error if the request fails or returns an unexpected shape.
  */
-export async function computeRoute(
-  params: ComputeRouteParams
-): Promise<ComputeRouteResult> {
+export async function computeRoute(params: ComputeRouteParams): Promise<ComputeRouteResult> {
+  try {
+    return await requestRoutesApi(params);
+  } catch (error) {
+    console.warn('[travel] Google Routes API failed, attempting fallback estimate.', error);
+
+    try {
+      return await estimateRouteFromDistance(params);
+    } catch (fallbackError) {
+      console.error('[travel] Fallback distance-based estimate also failed.', fallbackError);
+      // Re-throw original error to preserve context for callers
+      throw error instanceof Error ? error : new Error(String(error));
+    }
+  }
+}
+
+async function requestRoutesApi(params: ComputeRouteParams): Promise<ComputeRouteResult> {
   const apiKey = process.env.GOOGLE_MAPS_API_KEY;
   if (!apiKey) {
     throw new Error('GOOGLE_MAPS_API_KEY environment variable is not set');
@@ -115,3 +143,98 @@ export async function computeRoute(
   };
 }
 
+async function estimateRouteFromDistance(params: ComputeRouteParams): Promise<ComputeRouteResult> {
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+  if (!apiKey) {
+    throw new Error('GOOGLE_MAPS_API_KEY environment variable is not set');
+  }
+
+  const [origin, destination] = await Promise.all([
+    geocodeAddress(params.originAddress, apiKey),
+    geocodeAddress(params.destinationAddress, apiKey),
+  ]);
+
+  const straightLineMiles = haversineDistanceMiles(origin, destination);
+  if (!Number.isFinite(straightLineMiles)) {
+    throw new Error('Unable to calculate straight-line distance between addresses');
+  }
+
+  const roadDistanceMiles = straightLineMiles * ROAD_DISTANCE_FACTOR;
+  const travelHours = roadDistanceMiles / AVERAGE_SPEED_MPH;
+  const bufferedTravelSeconds = Math.max(
+    Math.round(travelHours * ESTIMATE_BUFFER_MULTIPLIER * 3600),
+    5 * 60 // ensure at least five minutes to avoid zero-duration routes
+  );
+
+  return {
+    durationSeconds: bufferedTravelSeconds,
+    distanceMeters: Math.round(roadDistanceMiles * MILES_TO_METERS),
+    isFallback: true,
+    disclaimer: FALLBACK_DISCLAIMER,
+  };
+}
+
+async function geocodeAddress(address: string, apiKey: string): Promise<LatLng> {
+  const response = await fetch(
+    `${GEOCODE_ENDPOINT}?address=${encodeURIComponent(address)}&key=${apiKey}`
+  );
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(
+      `Geocoding request failed (status ${response.status}): ${text || response.statusText}`
+    );
+  }
+
+  const data = (await response.json()) as {
+    status: string;
+    results: Array<{
+      geometry: {
+        location: { lat: number; lng: number };
+      };
+    }>;
+    error_message?: string;
+  };
+
+  if (data.status !== 'OK' || !data.results.length) {
+    throw new Error(
+      `Google Geocoding API error: ${data.status}${
+        data.error_message ? ` - ${data.error_message}` : ''
+      }`
+    );
+  }
+
+  const location = data.results[0]?.geometry?.location;
+  if (
+    !location ||
+    typeof location.lat !== 'number' ||
+    Number.isNaN(location.lat) ||
+    typeof location.lng !== 'number' ||
+    Number.isNaN(location.lng)
+  ) {
+    throw new Error('Geocoding response missing valid coordinates');
+  }
+
+  return location;
+}
+
+function haversineDistanceMiles(a: LatLng, b: LatLng): number {
+  const earthRadiusMiles = 3958.7613;
+  const dLat = toRadians(b.lat - a.lat);
+  const dLng = toRadians(b.lng - a.lng);
+
+  const lat1 = toRadians(a.lat);
+  const lat2 = toRadians(b.lat);
+
+  const sinDLat = Math.sin(dLat / 2);
+  const sinDLng = Math.sin(dLng / 2);
+
+  const haversine =
+    sinDLat * sinDLat + Math.cos(lat1) * Math.cos(lat2) * sinDLng * sinDLng;
+
+  return 2 * earthRadiusMiles * Math.asin(Math.min(1, Math.sqrt(haversine)));
+}
+
+function toRadians(degrees: number): number {
+  return (degrees * Math.PI) / 180;
+}

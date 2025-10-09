@@ -148,5 +148,8 @@ export async function calculateTravelTimes(
     departureTime: formatISO(departureTime, timezone),
     wakeUpTime: formatISO(wakeUpTime, timezone),
     calculatedAt: new Date().toISOString(),
+    isEstimated: route.isFallback ?? false,
+    estimateMethod: route.isFallback ? 'distance' : undefined,
+    disclaimer: route.disclaimer,
   };
 }

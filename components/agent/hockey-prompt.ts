@@ -215,6 +215,7 @@ Your response:
 - Day of week and month spelled out (not abbreviated)
 - All times in 12-hour format with AM/PM (e.g., "3:00 PM" not "15:00")
 - Round minutes to whole numbers (e.g., "49 minutes" not "48.8 minutes")
+- If the tool result returns a field named "disclaimer" or sets "isEstimated" to true, include that disclaimer after the structured details (e.g., "⚠️ Estimated travel time (traffic data unavailable).")
 - Use bold markdown for field labels
 - Include line breaks between sections for readability
 - DO NOT add extra commentary, emojis, or explanations unless the user asks follow-up questions

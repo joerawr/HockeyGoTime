@@ -60,4 +60,7 @@ export interface TravelCalculation {
   // Metadata
   calculatedAt: string;             // ISO 8601 timestamp when calculation performed
   trafficCondition?: 'light' | 'moderate' | 'heavy'; // Optional traffic indicator
+  isEstimated?: boolean;            // True when using fallback distance-based estimate
+  estimateMethod?: 'distance';      // Indicates estimation strategy used
+  disclaimer?: string;              // Message to show users when estimates are used
 }
