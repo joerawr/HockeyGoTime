@@ -346,7 +346,7 @@ This task list organizes implementation by **user story** to enable independent 
   - "When do I need to leave for Sunday's game at Yorba Linda ICE?"
   - "What time should I wake up for the October 5th game?"
 
-**T028** [US2] Add travel time error handling
+**T028** [US2] Add travel time error handling [X]
 - **File**: `lib/travel/google-routes.ts`
 - **Action**: Add fallback logic:
   - If Routes API fails → use distance-based estimate (straight-line distance × 1.3, 30mph avg speed)
