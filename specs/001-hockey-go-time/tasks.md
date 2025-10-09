@@ -380,7 +380,7 @@ This task list organizes implementation by **user story** to enable independent 
 
 ### Tasks
 
-**T029** [US4] Verify SCAHA MCP stats tools availability
+**T029** [US4] Verify SCAHA MCP stats tools availability [X]
 - **Action**:
   - Check SCAHA MCP server repository for `get_team_stats` and `get_player_stats`
   - If missing: coordinate with user to add tools
