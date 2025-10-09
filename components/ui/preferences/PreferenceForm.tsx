@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
 /**
  * Preference Form Component
  * Form for setting and editing user preferences
  */
 
-import { useState } from 'react';
-import type { UserPreferences } from '@/types/preferences';
-import { DEFAULT_PREFERENCES } from '@/types/preferences';
-import { validatePreferences } from '@/lib/utils/validation';
+import { useState } from "react";
+import type { UserPreferences } from "@/types/preferences";
+import { DEFAULT_PREFERENCES } from "@/types/preferences";
+import { validatePreferences } from "@/lib/utils/validation";
 
 interface PreferenceFormProps {
   initialPreferences?: UserPreferences | null;
@@ -16,14 +16,25 @@ interface PreferenceFormProps {
   onCancel?: () => void;
 }
 
-export function PreferenceForm({ initialPreferences, onSave, onCancel }: PreferenceFormProps) {
+export function PreferenceForm({
+  initialPreferences,
+  onSave,
+  onCancel,
+}: PreferenceFormProps) {
   const [formData, setFormData] = useState<UserPreferences>({
-    team: initialPreferences?.team || '',
-    division: initialPreferences?.division || '',
-    season: initialPreferences?.season || DEFAULT_PREFERENCES.season || '2025/2026',
-    homeAddress: initialPreferences?.homeAddress || '',
-    prepTimeMinutes: initialPreferences?.prepTimeMinutes ?? DEFAULT_PREFERENCES.prepTimeMinutes ?? 30,
-    arrivalBufferMinutes: initialPreferences?.arrivalBufferMinutes ?? DEFAULT_PREFERENCES.arrivalBufferMinutes ?? 60,
+    team: initialPreferences?.team || "",
+    division: initialPreferences?.division || "",
+    season:
+      initialPreferences?.season || DEFAULT_PREFERENCES.season || "2025/2026",
+    homeAddress: initialPreferences?.homeAddress || "",
+    prepTimeMinutes:
+      initialPreferences?.prepTimeMinutes ??
+      DEFAULT_PREFERENCES.prepTimeMinutes ??
+      30,
+    arrivalBufferMinutes:
+      initialPreferences?.arrivalBufferMinutes ??
+      DEFAULT_PREFERENCES.arrivalBufferMinutes ??
+      60,
     minWakeUpTime: initialPreferences?.minWakeUpTime,
   });
 
@@ -45,12 +56,17 @@ export function PreferenceForm({ initialPreferences, onSave, onCancel }: Prefere
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <h2 className="text-xl font-semibold">Your Hockey Preferences</h2>
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="space-y-1">
+        <h2 className="text-2xl font-bold text-slate-900">Your Hockey Preferences</h2>
+        <p className="text-sm text-slate-500">
+          Save your team info so we can answer schedule and travel questions faster.
+        </p>
+      </div>
 
       {errors.length > 0 && (
-        <div className="rounded-md bg-red-50 p-4 text-sm text-red-800">
-          <ul className="list-disc pl-5 space-y-1">
+        <div className="rounded-xl border border-red-200 bg-red-50/70 p-4 text-sm text-red-700 shadow-inner">
+          <ul className="space-y-1 pl-5 text-left">
             {errors.map((error, i) => (
               <li key={i}>{error}</li>
             ))}
@@ -58,9 +74,9 @@ export function PreferenceForm({ initialPreferences, onSave, onCancel }: Prefere
         </div>
       )}
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         <div>
-          <label htmlFor="team" className="block text-sm font-medium mb-1">
+          <label htmlFor="team" className="mb-1 block text-sm font-semibold text-slate-700">
             Team Name *
           </label>
           <input
@@ -69,14 +85,16 @@ export function PreferenceForm({ initialPreferences, onSave, onCancel }: Prefere
             value={formData.team}
             onChange={(e) => setFormData({ ...formData, team: e.target.value })}
             placeholder="e.g., Jr. Kings (1)"
-            className="w-full px-3 py-2 border rounded-md"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm transition focus-visible:border-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200"
             required
           />
-          <p className="text-xs text-gray-500 mt-1">Enter your team name (e.g., "Jr. Kings 1" or "OC Hockey 2")</p>
+          <p className="mt-1 text-xs text-slate-500">
+            Enter your team name (e.g., "Jr. Kings 1" or "OC Hockey 2")
+          </p>
         </div>
 
         <div>
-          <label htmlFor="division" className="block text-sm font-medium mb-1">
+          <label htmlFor="division" className="mb-1 block text-sm font-semibold text-slate-700">
             Division *
           </label>
           <input
@@ -85,14 +103,14 @@ export function PreferenceForm({ initialPreferences, onSave, onCancel }: Prefere
             value={formData.division}
             onChange={(e) => setFormData({ ...formData, division: e.target.value })}
             placeholder="e.g., 14U B"
-            className="w-full px-3 py-2 border rounded-md"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm transition focus-visible:border-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200"
             required
           />
-          <p className="text-xs text-gray-500 mt-1">Enter division (e.g., "14B", "16A", "12AAA")</p>
+          <p className="mt-1 text-xs text-slate-500">Enter division (e.g., "14B", "16A", "12AAA")</p>
         </div>
 
         <div>
-          <label htmlFor="season" className="block text-sm font-medium mb-1">
+          <label htmlFor="season" className="mb-1 block text-sm font-semibold text-slate-700">
             Season *
           </label>
           <input
@@ -101,14 +119,14 @@ export function PreferenceForm({ initialPreferences, onSave, onCancel }: Prefere
             value={formData.season}
             onChange={(e) => setFormData({ ...formData, season: e.target.value })}
             placeholder="2025/2026"
-            className="w-full px-3 py-2 border rounded-md"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm transition focus-visible:border-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200"
             required
           />
-          <p className="text-xs text-gray-500 mt-1">Format: YYYY/YYYY</p>
+          <p className="mt-1 text-xs text-slate-500">Format: YYYY/YYYY</p>
         </div>
 
         <div>
-          <label htmlFor="homeAddress" className="block text-sm font-medium mb-1">
+          <label htmlFor="homeAddress" className="mb-1 block text-sm font-semibold text-slate-700">
             Home Address *
           </label>
           <input
@@ -117,51 +135,65 @@ export function PreferenceForm({ initialPreferences, onSave, onCancel }: Prefere
             value={formData.homeAddress}
             onChange={(e) => setFormData({ ...formData, homeAddress: e.target.value })}
             placeholder="123 Main St, Los Angeles, CA 90001"
-            className="w-full px-3 py-2 border rounded-md"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm transition focus-visible:border-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200"
             required
           />
-          <p className="text-xs text-gray-500 mt-1">Full address for travel time calculations</p>
+          <p className="mt-1 text-xs text-slate-500">Full address for travel time calculations</p>
         </div>
 
         <div>
-          <label htmlFor="prepTime" className="block text-sm font-medium mb-1">
+          <label htmlFor="prepTime" className="mb-1 block text-sm font-semibold text-slate-700">
             Prep Time (minutes) *
           </label>
           <input
             type="number"
             id="prepTime"
             value={formData.prepTimeMinutes}
-            onChange={(e) => setFormData({ ...formData, prepTimeMinutes: parseInt(e.target.value, 10) })}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                prepTimeMinutes: Number.parseInt(e.target.value, 10),
+              })
+            }
             min="0"
             max="240"
-            className="w-full px-3 py-2 border rounded-md"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm transition focus-visible:border-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200"
             required
           />
-          <p className="text-xs text-gray-500 mt-1">How many minutes you need to get ready before leaving</p>
+          <p className="mt-1 text-xs text-slate-500">
+            How many minutes you need to get ready before leaving
+          </p>
         </div>
 
         <div>
-          <label htmlFor="arrivalBuffer" className="block text-sm font-medium mb-1">
+          <label htmlFor="arrivalBuffer" className="mb-1 block text-sm font-semibold text-slate-700">
             Arrival Buffer (minutes) *
           </label>
           <input
             type="number"
             id="arrivalBuffer"
             value={formData.arrivalBufferMinutes}
-            onChange={(e) => setFormData({ ...formData, arrivalBufferMinutes: parseInt(e.target.value, 10) })}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                arrivalBufferMinutes: Number.parseInt(e.target.value, 10),
+              })
+            }
             min="0"
             max="120"
-            className="w-full px-3 py-2 border rounded-md"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm transition focus-visible:border-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200"
             required
           />
-          <p className="text-xs text-gray-500 mt-1">How many minutes before game time you want to arrive (coach requires 60 min)</p>
+          <p className="mt-1 text-xs text-slate-500">
+            How many minutes before game time you want to arrive (coach requires 60 min)
+          </p>
         </div>
       </div>
 
-      <div className="flex gap-2 pt-4">
+      <div className="flex flex-col gap-3 pt-2 sm:flex-row">
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          className="flex-1 rounded-xl bg-sky-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-600"
         >
           Save Preferences
         </button>
@@ -169,7 +201,7 @@ export function PreferenceForm({ initialPreferences, onSave, onCancel }: Prefere
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+            className="flex-1 rounded-xl bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-300"
           >
             Cancel
           </button>

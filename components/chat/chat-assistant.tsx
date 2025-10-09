@@ -260,9 +260,9 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
   const isLoading = status === "streaming";
 
   return (
-    <div className="flex flex-col h-full max-h-full overflow-hidden">
-      <Conversation className="flex-1 h-0 overflow-hidden">
-        <ConversationContent className="space-y-4">
+    <div className="flex h-full flex-col overflow-hidden">
+      <Conversation className="flex-1 overflow-hidden">
+        <ConversationContent className="space-y-4 px-6 py-6">
           {messages.length === 0 ? (
             <ConversationEmptyState
               title="Start a conversation"
@@ -445,16 +445,35 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
         </ConversationContent>
       </Conversation>
 
-      <div className="p-4 flex-shrink-0">
-        <PromptInput onSubmit={handleSubmit}>
-          <PromptInputBody>
-            <PromptInputTextarea placeholder="What would you like to know?" />
-            <PromptInputToolbar>
+      <div className="flex-shrink-0 border-t border-slate-200 bg-slate-50/80 px-6 py-4">
+
+        <PromptInput
+          className="divide-y-0 border-none bg-transparent p-0 shadow-none"
+          onSubmit={handleSubmit}
+        >
+          <PromptInputBody className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
+            <div className="flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-2 shadow-inner">
+              <PromptInputTextarea
+                className="h-10 min-h-0 w-full resize-none border-none bg-transparent p-0 text-sm leading-6 text-slate-900 focus-visible:outline-none"
+                placeholder="Ask about schedules, travel times, or stats..."
+              />
+            </div>
+            <PromptInputToolbar className="justify-end gap-2 p-0">
               <div />
-              <PromptInputSubmit status={isLoading ? "submitted" : undefined} />
+              <PromptInputSubmit
+                className="h-11 w-11 rounded-2xl bg-sky-500 text-white shadow-md transition hover:bg-sky-600"
+                status={isLoading ? "submitted" : undefined}
+              />
             </PromptInputToolbar>
           </PromptInputBody>
         </PromptInput>
+
+        <p className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+          <span role="img" aria-label="lock">
+            🔒
+          </span>
+          Your preferences stay in your browser • We don&apos;t track or store your data
+        </p>
       </div>
     </div>
   );

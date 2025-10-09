@@ -5,10 +5,13 @@
  * Displays current user preferences with edit capability
  */
 
-import { useState, useEffect } from 'react';
-import type { UserPreferences } from '@/types/preferences';
-import { PreferencesStore } from '@/lib/storage/preferences';
-import { PreferenceForm } from './PreferenceForm';
+import { useState, useEffect } from "react";
+import type { UserPreferences } from "@/types/preferences";
+import { PreferencesStore } from "@/lib/storage/preferences";
+import { PreferenceForm } from "./PreferenceForm";
+
+const panelContainerClasses =
+  "rounded-2xl border-2 border-slate-200 bg-white/95 p-6 shadow-md backdrop-blur-sm";
 
 export function PreferencePanel() {
   const [preferences, setPreferences] = useState<UserPreferences | null>(null);
@@ -57,16 +60,12 @@ export function PreferencePanel() {
   };
 
   if (isLoading) {
-    return (
-      <div className="p-4 border rounded-lg">
-        <p className="text-sm text-gray-500">Loading preferences...</p>
-      </div>
-    );
+    return <SkeletonPanel message="Loading preferences..." />;
   }
 
   if (isEditing) {
     return (
-      <div className="p-4 border rounded-lg">
+      <div className={panelContainerClasses}>
         <PreferenceForm
           initialPreferences={preferences}
           onSave={handleSave}
@@ -78,11 +77,13 @@ export function PreferencePanel() {
 
   if (!preferences) {
     return (
-      <div className="p-4 border rounded-lg">
-        <p className="text-sm text-gray-500">No preferences set. Click Edit to set your preferences.</p>
+      <div className={panelContainerClasses}>
+        <p className="text-sm text-slate-600">
+          No preferences set. Click Edit to set your preferences.
+        </p>
         <button
           onClick={handleEdit}
-          className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          className="mt-4 w-full rounded-xl bg-sky-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-600"
         >
           Set Preferences
         </button>
@@ -91,54 +92,76 @@ export function PreferencePanel() {
   }
 
   return (
-    <div className="p-4 border rounded-lg">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-lg font-semibold">Your Preferences</h3>
-        <div className="flex gap-2">
-          <button
-            onClick={handleEdit}
-            className="px-3 py-1 text-sm bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
-          >
-            Edit
-          </button>
-          <button
-            onClick={handleClearAll}
-            className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200"
-            title="Clear all preferences (useful for families with multiple players)"
-          >
-            Clear All
-          </button>
-        </div>
+    <div className={panelContainerClasses}>
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-slate-900">Team Preferences</h3>
+        <p className="text-xs text-slate-500">Used for schedule, travel, and stats questions.</p>
       </div>
 
-      <div className="space-y-2 text-sm">
-        <div className="flex justify-between">
-          <span className="text-gray-600">Team:</span>
-          <span className="font-medium">{preferences.team}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Division:</span>
-          <span className="font-medium">{preferences.division}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Season:</span>
-          <span className="font-medium">{preferences.season}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Home Address:</span>
-          <span className="font-medium text-right max-w-[200px] truncate" title={preferences.homeAddress}>
-            {preferences.homeAddress}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Prep Time:</span>
-          <span className="font-medium">{preferences.prepTimeMinutes} min</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Arrival Buffer:</span>
-          <span className="font-medium">{preferences.arrivalBufferMinutes} min</span>
-        </div>
+      <div className="space-y-4 text-sm">
+        <PreferenceRow label="Team:" value={preferences.team} />
+        <PreferenceRow label="Division:" value={preferences.division} />
+        <PreferenceRow label="Season:" value={preferences.season} />
+        <PreferenceRow
+          label="Home Address:"
+          value={preferences.homeAddress}
+          tooltip={preferences.homeAddress}
+        />
+        <PreferenceRow
+          label="Prep Time:"
+          value={`${preferences.prepTimeMinutes} min`}
+        />
+        <PreferenceRow
+          label="Arrival Buffer:"
+          value={`${preferences.arrivalBufferMinutes} min`}
+        />
       </div>
+
+      <div className="mt-6 flex gap-3">
+        <button
+          onClick={handleEdit}
+          className="flex-1 rounded-xl bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-300"
+        >
+          Edit
+        </button>
+        <button
+          onClick={handleClearAll}
+          className="flex-1 rounded-xl bg-red-100 px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-200"
+          title="Clear all preferences (useful for families with multiple players)"
+        >
+          Clear All
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function PreferenceRow({
+  label,
+  value,
+  tooltip,
+}: {
+  label: string;
+  value?: string | number | null;
+  tooltip?: string;
+}) {
+  return (
+    <div className="flex items-start justify-between gap-4">
+      <span className="text-sm font-medium text-slate-600">{label}</span>
+      <span
+        className="max-w-[170px] text-sm font-semibold text-slate-900 text-right"
+        title={tooltip}
+      >
+        {value && String(value).trim() !== "" ? value : "—"}
+      </span>
+    </div>
+  );
+}
+
+function SkeletonPanel({ message }: { message: string }) {
+  return (
+    <div className={panelContainerClasses}>
+      <p className="text-sm text-slate-600">{message}</p>
     </div>
   );
 }
