@@ -95,8 +95,9 @@ export function parseDSTAware(
   const dateTimeStr = `${date}T${normalizedTime}`;
   const localDate = parseISO(dateTimeStr);
 
-  // Interpret as local time in specified timezone
-  return toZonedTime(localDate, timezone);
+  // Interpret as local time in specified timezone and convert to UTC
+  // fromZonedTime treats the input as local time in the given timezone
+  return fromZonedTime(localDate, timezone);
 }
 
 /**
