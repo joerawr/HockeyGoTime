@@ -6,7 +6,7 @@ An AI-powered chat interface that enables parents and youth hockey players to as
 ## 2) Scope / Actors
 - **Actors**: Parents ("Dad") or Hockey players ("Child")
 - **System**: Chat interface powered by Next.js 15 + AI SDK 5, connected to:
-  - **SCAHA MCP Server** (self-hosted STDIO): Provides schedule, team stats, and player stats from scaha.net
+  - **SCAHA MCP Server** (self-hosted StreamableHTTP): Provides schedule, team stats, and player stats from scaha.net
   - **Google Routes API**: Travel time and departure recommendations
   - **Perplexity Search MCP**: For searching latest documentation during development
 
@@ -35,7 +35,7 @@ The chat interface connects to MCP servers configured in `.mcp.json`:
 }
 ```
 
-### SCAHA MCP Server Tools (STDIO Transport)
+### SCAHA MCP Server Tools (StreamableHTTP Transport)
 The self-hosted SCAHA MCP server provides 4 tools:
 
 1. **get_schedule**
@@ -346,11 +346,11 @@ Based on the typescript-next-starter template:
 **MCP Client Setup** (`lib/mcp-client.ts`):
 ```typescript
 import { experimental_createMCPClient as createMCPClient } from 'ai';
-import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/StreamableHTTP.js';
 
 export async function getScahaMCPClient() {
   const mcpClient = await createMCPClient({
-    transport: new StdioClientTransport({
+    transport: new StreamableHTTPClientTransport({
       command: 'node',
       args: ['/path/to/scaha-mcp-server/dist/server.js'],
     }),
@@ -518,7 +518,7 @@ GOOGLE_MAPS_API_KEY=...  # For future Routes API integration
 **Tasks**:
 - [x] SCAHA MCP Server built (completed separately)
 - [ ] Clone typescript-next-starter as base
-- [ ] Configure MCP client for STDIO transport
+- [ ] Configure MCP client for StreamableHTTP transport
 - [ ] Implement system prompt with input normalization
 - [ ] Test basic schedule queries
 - [ ] Deploy to Vercel

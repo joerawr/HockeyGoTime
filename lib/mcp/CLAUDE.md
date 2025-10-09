@@ -15,17 +15,17 @@ https://ai-sdk.dev/cookbook/node/mcp-tools
 This documentation covers:
 
 - How to create MCP clients with AI SDK
-- SSE, stdio, and HTTP transport options
+- SSE, StreamableHTTP, and HTTP transport options
 - Tool retrieval and combination patterns
 - Integration with `generateText()` and `streamText()`
 - Best practices for MCP client management
 
-## Current Transport: STDIO
+## Current Transport: StreamableHTTP
 
-HockeyGoTime uses **STDIO transport** to spawn the SCAHA MCP server as a subprocess.
+HockeyGoTime uses **StreamableHTTP transport** to spawn the SCAHA MCP server as a subprocess.
 
 ### How it works:
-1. `StdioClientTransport` spawns `npx @joerawr/scaha-mcp`
+1. `StreamableHTTPClientTransport` spawns `npx @joerawr/scaha-mcp`
 2. Communicates via stdin/stdout
 3. Subprocess is automatically terminated when client disconnects
 
@@ -39,7 +39,7 @@ HockeyGoTime uses **STDIO transport** to spawn the SCAHA MCP server as a subproc
 
 1. Read the documentation links above before making changes
 2. Follow the existing patterns in `/lib/mcp/client/`
-3. Use STDIO transport for subprocess-based MCP servers (like SCAHA)
+3. Use StreamableHTTP transport for subprocess-based MCP servers (like SCAHA)
 4. Use SSE transport for remote HTTP MCP servers (like Firecrawl)
 5. Always handle errors and add logging
 6. Load credentials from environment variables

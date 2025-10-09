@@ -63,3 +63,6 @@ mcp-debug.log
 Thumbs.db
 ehthumbs.db
 .vercel
+
+# Codex
+.codex

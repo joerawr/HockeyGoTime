@@ -104,7 +104,7 @@ Next.js Chat UI (React)
     ↓
 OpenAI GPT-4o + SCAHA MCP Tools
     ↓
-SCAHA MCP Server (STDIO)
+SCAHA MCP Server (StreamableHTTP)
     ↓
 scaha.net (scraping)
     ↓
@@ -115,7 +115,7 @@ Returns: Games, times, venues
 
 - `/app/hockey/page.tsx` - Chat UI
 - `/app/api/hockey-chat/route.ts` - API endpoint with MCP integration
-- `/lib/mcp/client/scaha-client.ts` - SCAHA MCP client (STDIO transport)
+- `/lib/mcp/client/scaha-client.ts` - SCAHA MCP client (StreamableHTTP transport)
 - `/components/agent/hockey-prompt.ts` - System prompt with normalization rules
 
 ## Development
@@ -154,7 +154,7 @@ The AI automatically normalizes user input:
 
 ### MCP Integration
 
-The app uses **STDIO transport** to connect to the local SCAHA MCP server:
+The app uses **StreamableHTTP transport** to connect to the local SCAHA MCP server:
 
 1. User asks question
 2. AI calls `get_schedule` MCP tool with normalized params
