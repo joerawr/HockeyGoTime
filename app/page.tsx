@@ -22,8 +22,8 @@ export default function HockeyGoTimePage() {
             priority
             className="h-12 w-auto"
           />
-          <h1 className="text-xl font-black uppercase tracking-[0.4em] text-slate-800 sm:text-2xl md:text-3xl">
-            Your AI-Powered Hockey Schedule Sidekick
+          <h1 className="text-2xl font-black uppercase tracking-widest text-slate-800 sm:text-3xl md:text-4xl">
+            Your AI Hockey Schedule Sidekick
           </h1>
         </div>
       </header>
