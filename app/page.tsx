@@ -5,7 +5,7 @@ import { PreferencePanel } from "@/components/ui/preferences/PreferencePanel";
 const suggestions = [
   '"When do we play next?"',
   '"What time should I leave?"',
-  '"Who are we playing Saturday?"',
+  '"Who are we playing Sunday?"',
   '"Show our team stats"',
 ];
 
