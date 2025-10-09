@@ -40,10 +40,10 @@ This project strictly uses **pnpm**. Do not use npm or yarn.
 
 ### SCAHA MCP Integration
 
-The app connects to a local SCAHA MCP server via **STDIO transport**:
+The app connects to a local SCAHA MCP server via **StreamableHTTP transport**:
 
 **MCP Client**: `lib/mcp/client/scaha-client.ts`
-- Uses `StdioClientTransport` to spawn SCAHA server process
+- Uses `StreamableHTTPClientTransport` to spawn SCAHA server process
 - Singleton pattern for connection reuse
 - Exposes `get_schedule` tool (MVP - more tools coming)
 
@@ -70,7 +70,7 @@ AI SDK streamText + MCP tools
   ↓
 get_schedule({ season: "2025/2026", division: "14U B", team: "jr-kings-1", date: "2025-10-05" })
   ↓
-SCAHA MCP Server (STDIO) → scrapes scaha.net
+SCAHA MCP Server (StreamableHTTP) → scrapes scaha.net
   ↓
 Returns: { games: [{ home, away, time, venue, rink, ... }] }
   ↓
@@ -144,9 +144,9 @@ The AI automatically handles:
 
 See `components/agent/hockey-prompt.ts` for complete rules.
 
-### STDIO vs SSE Transport
+### StreamableHTTP vs SSE Transport
 
-- **SCAHA**: Uses `StdioClientTransport` (local server, spawns process)
+- **SCAHA**: Uses `StreamableHTTPClientTransport` (local server, spawns process)
 - **Firecrawl**: Uses `SSEClientTransport` (remote server, HTTP SSE)
 
 Different transports for different use cases.

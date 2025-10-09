@@ -4,7 +4,7 @@
 
 ✅ **Completed:**
 - SCAHA MCP published to npm as `@joerawr/scaha-mcp@1.0.0`
-- HockeyGoTime updated to use STDIO transport with published package
+- HockeyGoTime updated to use StreamableHTTP transport with published package
 - Fixed duplicate message rendering bug in chat UI
 - All changes committed and pushed to `main` branch
 - Local testing successful
@@ -82,8 +82,8 @@ Once deployed, test with these queries:
 3. **Check Vercel Logs:**
    - Go to Vercel Dashboard → Project → Deployments → [Latest] → Functions
    - Look for console logs:
-     - "🚀 Spawning SCAHA MCP server via STDIO..."
-     - "✅ SCAHA MCP client connected via STDIO"
+     - "🚀 Spawning SCAHA MCP server via StreamableHTTP..."
+     - "✅ SCAHA MCP client connected via StreamableHTTP"
      - "🏒 Tool called: get_schedule"
      - "🔌 Disconnecting SCAHA MCP client..."
 
@@ -139,7 +139,7 @@ Vercel (HockeyGoTime Next.js)
   ↓
 /api/hockey-chat (API Route)
   ↓
-SCAHA MCP Client (STDIO)
+SCAHA MCP Client (StreamableHTTP)
   ↓
 npx @joerawr/scaha-mcp (spawned subprocess)
   ↓

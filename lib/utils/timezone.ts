@@ -84,7 +84,15 @@ export function parseDSTAware(
   timezone: string = CALIFORNIA_TZ
 ): Date {
   // Combine date and time
-  const dateTimeStr = `${date}T${time}:00`;
+  const sanitizedTime = time.trim();
+  const normalizedTime =
+    sanitizedTime.length === 5
+      ? `${sanitizedTime}:00`
+      : sanitizedTime.length === 8
+        ? sanitizedTime
+        : `${sanitizedTime}:00`;
+
+  const dateTimeStr = `${date}T${normalizedTime}`;
   const localDate = parseISO(dateTimeStr);
 
   // Interpret as local time in specified timezone
