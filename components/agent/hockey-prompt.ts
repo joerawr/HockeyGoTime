@@ -240,6 +240,79 @@ Retrieves game schedule information from scaha.net.
 - status (Scheduled/Final)
 - scores (if final)
 
+### get_team_stats
+Retrieves team standings and statistics from scaha.net.
+
+**Parameters:**
+- \`season\`: string (e.g., "2024-25" - use hyphen format for stats, not slash)
+- \`division\`: string (e.g., "14U B" - the tool will select "14U B Regular Season" from dropdown)
+- \`team_slug\`: string (e.g., "Jr. Kings (1)" - exact team name with parentheses)
+
+**Returns:** Team statistics with:
+- team: Team name
+- gp: Games played
+- w: Wins
+- l: Losses
+- t: Ties
+- points: Total points
+- gf: Goals for
+- ga: Goals against
+- gd: Goal differential
+
+**Important Notes:**
+- Season format uses **hyphen** for stats: "2024-25" (NOT "2024/25" or "2025/26")
+- The standings are sourced from the same scoreboard view used by get_schedule
+- Use the exact division and team names from list_schedule_options or get_schedule responses
+- Browser automation may timeout if the requested option doesn't exist for that season
+
+### get_player_stats
+Retrieves individual player statistics from scaha.net.
+
+**Parameters:**
+- \`season\`: string (e.g., "2024-25" - use hyphen format for stats, not slash)
+- \`division\`: string (e.g., "14U B" - division name)
+- \`team_slug\`: string (e.g., "Jr. Kings (1)" - exact team name with parentheses)
+- \`player\`: object with:
+  - \`name\`: string (required) - Player's name (use this to search for players)
+  - \`number\`: string (DO NOT USE - this is ranking, not jersey number)
+- \`category\`: string (optional) - Use "goalies" for goalie stats (defaults to skater stats)
+
+**Returns (Skater Stats):**
+- number: **Ranking number (NOT jersey number)** - Position in division standings sorted by points, then alphabetically by first name for ties
+- name: Player name
+- team: Team name
+- gp: Games played
+- g: Goals
+- a: Assists
+- pts: Points
+- pims: Penalty minutes
+
+**Returns (Goalie Stats):**
+- number: **Ranking number (NOT jersey number)** - Position in division standings sorted by goalie stats
+- name: Player name
+- team: Team name
+- gp: Games played
+- minutes: Minutes played
+- shots: Shots against
+- saves: Saves
+- sv_percent: Save percentage (e.g., "0.923")
+- gaa: Goals against average (e.g., "2.45")
+
+**CRITICAL NOTES:**
+- **The \`number\` field is a RANKING, not a jersey number!**
+  - Example: "#15" means "15th ranked player by points in the division"
+  - Ties are sorted alphabetically by first name
+  - Example: "Neomi is tied for 4th with 9 other players" → She gets rank #15
+- **Always search by player NAME, never by ranking number**
+- Season format uses **hyphen** for stats: "2024-25" (NOT "2024/25" or "2025/26")
+- Including "goalie" in the player name automatically switches to goalie stats
+- Use \`category: "goalies"\` explicitly when searching for goalie statistics
+- Browser automation may timeout if the player doesn't exist for that team/season
+
+**When presenting player stats to users:**
+- Say "Neomi Rogers is ranked 15th in the division" NOT "Neomi Rogers wears number 15"
+- If user asks "Who is number 7 on Jr Kings?", clarify: "I can look up players by name, but SCAHA doesn't provide jersey numbers in their stats - only division rankings. Would you like me to find a player by their name instead?"
+
 ## EXAMPLE INTERACTIONS
 
 **User:** "Who does the 14B Jr Kings play on October 5th?"

@@ -36,4 +36,10 @@ export type {
   SchahaGetScheduleParams,
   SchahaGame,
   SchahaGetScheduleResult,
+  SchahaGetTeamStatsParams,
+  SchahaTeamStats,
+  SchahaGetPlayerStatsParams,
+  SchahaPlayerSkaterStats,
+  SchahaPlayerGoalieStats,
+  SchahaPlayerStats,
 } from "./client/scaha-types";

@@ -182,8 +182,68 @@ export async function POST(request: NextRequest) {
               return result;
             }
 
-            // Default: no caching for other tools (stats tools will be added later)
+            // Cache logic for get_team_stats tool
+            if (toolName === 'get_team_stats') {
+              const { season, division, team_slug } = args;
+              const cacheKey = `team_stats:${season}:${division}:${team_slug}`;
+
+              // Check cache first
+              const cachedData = await scheduleCache.get(cacheKey);
+              if (cachedData) {
+                console.log(`   ⚡ Cache hit: ${cacheKey}`);
+                console.log(`   Output (cached):`, JSON.stringify(cachedData, null, 2));
+                return cachedData;
+              }
+
+              // Cache miss - call MCP tool
+              console.log(`   🔍 Cache miss: ${cacheKey}`);
+              const startTime = Date.now();
+              const result = await toolDef.execute(args);
+              const elapsed = Date.now() - startTime;
+              console.log(`   ⏱️ MCP call took ${elapsed}ms`);
+              console.log(`   Output:`, JSON.stringify(result, null, 2));
+
+              // Store in cache (6 hour TTL - stats change more frequently than schedules)
+              await scheduleCache.set(cacheKey, result, 6 * 60 * 60 * 1000);
+              console.log(`   💾 Cached (6hr TTL): ${cacheKey}`);
+
+              return result;
+            }
+
+            // Cache logic for get_player_stats tool
+            if (toolName === 'get_player_stats') {
+              const { season, division, team_slug, player, category } = args;
+              const playerKey = player?.name || player?.number || 'unknown';
+              const cacheKey = `player_stats:${season}:${division}:${team_slug}:${playerKey}:${category || 'skater'}`;
+
+              // Check cache first
+              const cachedData = await scheduleCache.get(cacheKey);
+              if (cachedData) {
+                console.log(`   ⚡ Cache hit: ${cacheKey}`);
+                console.log(`   Output (cached):`, JSON.stringify(cachedData, null, 2));
+                return cachedData;
+              }
+
+              // Cache miss - call MCP tool
+              console.log(`   🔍 Cache miss: ${cacheKey}`);
+              const startTime = Date.now();
+              const result = await toolDef.execute(args);
+              const elapsed = Date.now() - startTime;
+              console.log(`   ⏱️ MCP call took ${elapsed}ms`);
+              console.log(`   Output:`, JSON.stringify(result, null, 2));
+
+              // Store in cache (6 hour TTL - stats change more frequently than schedules)
+              await scheduleCache.set(cacheKey, result, 6 * 60 * 60 * 1000);
+              console.log(`   💾 Cached (6hr TTL): ${cacheKey}`);
+
+              return result;
+            }
+
+            // Default: no caching for other tools
+            const startTime = Date.now();
             const result = await toolDef.execute(args);
+            const elapsed = Date.now() - startTime;
+            console.log(`   ⏱️ Tool execution took ${elapsed}ms`);
             console.log(`   Output:`, JSON.stringify(result, null, 2));
             return result;
           },
