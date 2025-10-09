@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Hockey Go Time",
-  description: "Your AI hockey schedule sidekick for SCAHA families.",
+  description: "Your AI hockey schedule sidekick for Socal families.",
 };
 
 export default function RootLayout({
