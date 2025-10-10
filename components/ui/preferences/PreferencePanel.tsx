@@ -165,7 +165,6 @@ export function PreferencePanel() {
         </div>
 
         <div className="space-y-4 text-sm">
-          <PreferenceRow label="League Data Source:" value={formatMcpLabel(preferences.mcpServer)} />
           <PreferenceRow label="Team:" value={preferences.team} />
           <PreferenceRow label="Division:" value={preferences.division} />
           <PreferenceRow label="Season:" value={preferences.season} />
@@ -237,10 +236,6 @@ function PreferenceRow({
   );
 }
 
-function formatMcpLabel(server: MCPServerId): string {
-  return server === "pghl" ? "PGHL MCP" : "SCAHA MCP";
-}
-
 function LeagueSelector({
   value,
   onChange,
@@ -256,9 +251,6 @@ function LeagueSelector({
         <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
           League Data Source
         </p>
-        <p className="text-sm text-slate-600">
-          Choose which MCP server powers schedule lookups.
-        </p>
       </div>
       <select
         value={value}
@@ -266,8 +258,8 @@ function LeagueSelector({
         disabled={disabled}
         className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm transition focus-visible:border-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200 sm:w-auto"
       >
-        <option value="scaha">SCAHA MCP</option>
-        <option value="pghl">PGHL MCP</option>
+        <option value="scaha">SCAHA</option>
+        <option value="pghl">PGHL</option>
       </select>
     </div>
   );
