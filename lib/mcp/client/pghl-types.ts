@@ -46,5 +46,6 @@ export interface PghlGetScheduleResult {
 }
 
 export interface PghlMCPClientConfig {
-  serverUrl?: string;
+  // No configuration needed for Stdio transport
+  // Server is spawned via npx @joerawr/pghl-mcp
 }

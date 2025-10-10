@@ -187,6 +187,7 @@ export async function POST(request: NextRequest) {
                 team,
                 team_slug,
                 date,
+                scope,
               } = args ?? {};
 
               const resolvedSeason =
@@ -199,15 +200,28 @@ export async function POST(request: NextRequest) {
                   : typeof schedule === "string" && schedule.trim() !== ""
                     ? schedule
                     : "unknown-division";
+
+              // PGHL returns all division games in one call, SCAHA returns per-team
+              // For PGHL: cache by season:division:scope (no team needed)
+              // For SCAHA: cache by season:division:team (legacy behavior)
               const resolvedTeam =
-                typeof team === "string" && team.trim() !== ""
-                  ? team
-                  : typeof team_slug === "string" && team_slug.trim() !== ""
-                    ? team_slug
-                    : "unknown-team";
+                selectedMcpServer === "pghl"
+                  ? "all-teams" // PGHL gets entire division
+                  : typeof team === "string" && team.trim() !== ""
+                    ? team
+                    : typeof team_slug === "string" && team_slug.trim() !== ""
+                      ? team_slug
+                      : "unknown-team";
+
               const resolvedDate =
                 typeof date === "string" && date.trim() !== ""
                   ? date
+                  : undefined;
+
+              // For PGHL, include scope in cache key (current vs full)
+              const resolvedScope =
+                selectedMcpServer === "pghl" && typeof scope === "string" && scope.trim() !== ""
+                  ? scope
                   : undefined;
 
               const cacheKey = getScheduleCacheKey(
@@ -216,6 +230,7 @@ export async function POST(request: NextRequest) {
                 resolvedDivision,
                 resolvedTeam,
                 resolvedDate,
+                resolvedScope,
               );
 
               // Check cache first

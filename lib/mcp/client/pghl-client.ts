@@ -1,11 +1,11 @@
 /**
- * PGHL MCP Client using HTTP Transport
+ * PGHL MCP Client using Stdio Transport
  *
- * Connects to remotely deployed PGHL MCP server via StreamableHTTP
+ * Spawns PGHL MCP server as subprocess via npx
  */
 
 import { experimental_createMCPClient } from "ai";
-import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import type { PghlMCPClientConfig } from "./pghl-types";
 
 export class PghlMCPClient {
@@ -13,17 +13,11 @@ export class PghlMCPClient {
     ReturnType<typeof experimental_createMCPClient>
   > | null = null;
   private isConnected = false;
-  private serverUrl: string;
 
-  constructor(private config: PghlMCPClientConfig) {
-    this.serverUrl =
-      config.serverUrl ||
-      process.env.PGHL_MCP_URL ||
-      "https://pghl-mcp.vercel.app/api/mcp";
-  }
+  constructor(private config: PghlMCPClientConfig) {}
 
   /**
-   * Initialize the MCP client connection via StreamableHTTP
+   * Initialize the MCP client connection via Stdio (spawns subprocess)
    */
   async connect(): Promise<void> {
     if (this.isConnected && this.client) {
@@ -32,24 +26,23 @@ export class PghlMCPClient {
     }
 
     try {
-      console.log(
-        `🚀 Connecting to PGHL MCP server via StreamableHTTP: ${this.serverUrl}`,
-      );
+      console.log("🚀 Spawning PGHL MCP server via npx @joerawr/pghl-mcp...");
 
-      const transport = new StreamableHTTPClientTransport(
-        new URL(this.serverUrl),
-      );
+      const transport = new StdioClientTransport({
+        command: "npx",
+        args: ["-y", "@joerawr/pghl-mcp"],
+      });
 
       this.client = await experimental_createMCPClient({
         transport,
       });
 
       this.isConnected = true;
-      console.log("✅ PGHL MCP client connected via StreamableHTTP");
+      console.log("✅ PGHL MCP client connected via Stdio subprocess");
     } catch (error) {
-      console.error("💥 Failed to connect to PGHL MCP server:", error);
+      console.error("💥 Failed to spawn PGHL MCP server:", error);
       throw new Error(
-        `Failed to connect to PGHL MCP server: ${
+        `Failed to spawn PGHL MCP server: ${
           error instanceof Error ? error.message : String(error)
         }`,
       );
@@ -57,7 +50,7 @@ export class PghlMCPClient {
   }
 
   /**
-   * Disconnect the MCP client
+   * Disconnect the MCP client (terminates subprocess)
    */
   async disconnect(): Promise<void> {
     if (!this.client) {
@@ -68,7 +61,7 @@ export class PghlMCPClient {
       await this.client.close();
       this.client = null;
       this.isConnected = false;
-      console.log("🔌 PGHL MCP client disconnected (HTTP connection closed)");
+      console.log("🔌 PGHL MCP client disconnected (subprocess terminated)");
     } catch (error) {
       console.error("⚠️ Error during PGHL MCP client disconnect:", error);
     }
@@ -124,11 +117,9 @@ let pghlClientInstance: PghlMCPClient | null = null;
 /**
  * Get or create a PGHL MCP client instance
  */
-export function getPghlMCPClient(serverUrl?: string): PghlMCPClient {
+export function getPghlMCPClient(): PghlMCPClient {
   if (!pghlClientInstance) {
-    pghlClientInstance = new PghlMCPClient({
-      serverUrl,
-    });
+    pghlClientInstance = new PghlMCPClient({});
   }
 
   return pghlClientInstance;

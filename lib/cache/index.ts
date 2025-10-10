@@ -35,10 +35,12 @@ export function getScheduleCacheKey(
   season: string,
   division: string,
   team: string,
-  date?: string
+  date?: string,
+  scope?: string
 ): string {
   const baseKey = `schedule:${mcpServer}:${season}:${division}:${team}`;
-  return date ? `${baseKey}:${date}` : baseKey;
+  const withDate = date ? `${baseKey}:${date}` : baseKey;
+  return scope ? `${withDate}:${scope}` : withDate;
 }
 
 /**
