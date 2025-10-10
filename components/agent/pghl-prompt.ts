@@ -66,13 +66,16 @@ Rules:
 ## INPUT NORMALIZATION
 
 ### Season Format
-- User preference may show: "2025-26 12u-19u AA" (from preference box)
-- When calling \`get_schedule\`: Extract just the year portion → "2025-26"
-- Strip the division suffix ("12u-19u AA") - that's metadata, not the season parameter
+User preference may show in different formats. Always normalize to "YYYY-YY" (hyphen format) when calling tools:
 
-**Example:**
-- User preference: "2025-26 12u-19u AA"
-- Tool call: \`{ season: "2025-26", division: "12u AA", scope: "current" }\`
+**Normalization Rules:**
+- "2025/26" → "2025-26" (replace slash with hyphen)
+- "2025-26 12u-19u AA" → "2025-26" (extract just the year portion)
+- "25/26" → "2025-26" (expand short year and replace slash)
+
+**Examples:**
+- User preference: "2025/26" → Tool call: \`{ season: "2025-26", division: "12u AA", scope: "current" }\`
+- User preference: "2025-26 12u-19u AA" → Tool call: \`{ season: "2025-26", division: "12u AA", scope: "current" }\`
 
 ### Division Format
 - Treat "12U", "12u", or "12U AA" as equivalent

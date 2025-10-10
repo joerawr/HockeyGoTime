@@ -38,15 +38,23 @@ export function validatePreferences(prefs: UserPreferences): string[] {
   if (!prefs.season || prefs.season.trim() === '') {
     errors.push('Season is required');
   } else {
+    // Accept flexible formats - we'll normalize in the API layer
     // SCAHA format: YYYY/YY or YY/YY (e.g., "2025/26" or "25/26")
     const schahaFormat = /^\d{2,4}\/\d{2,4}$/;
-    // PGHL format: YYYY-YY [division info] (e.g., "2025-26 12u-19u AA")
-    const pghlFormat = /^\d{4}-\d{2}\s+.+$/;
+    // PGHL full format: YYYY-YY [division info] (e.g., "2025-26 12u-19u AA")
+    const pghlFullFormat = /^\d{4}-\d{2}\s+.+$/;
+    // Universal short format: YYYY/YY (works for both, we'll normalize)
+    const universalFormat = /^\d{2,4}\/\d{2,4}$/;
 
-    if (prefs.mcpServer === 'scaha' && !schahaFormat.test(prefs.season)) {
-      errors.push('Season must be in format YYYY/YY (e.g., 2025/26)');
-    } else if (prefs.mcpServer === 'pghl' && !pghlFormat.test(prefs.season)) {
-      errors.push('Season must be in format YYYY-YY [division info] (e.g., 2025-26 12u-19u AA)');
+    if (prefs.mcpServer === 'scaha') {
+      if (!schahaFormat.test(prefs.season)) {
+        errors.push('Season must be in format YYYY/YY (e.g., 2025/26)');
+      }
+    } else if (prefs.mcpServer === 'pghl') {
+      // PGHL accepts either "2025/26" (will normalize) or "2025-26 12u-19u AA" (full format)
+      if (!pghlFullFormat.test(prefs.season) && !universalFormat.test(prefs.season)) {
+        errors.push('Season must be in format YYYY/YY (e.g., 2025/26) or YYYY-YY [division] (e.g., 2025-26 12u-19u AA)');
+      }
     }
   }
 
