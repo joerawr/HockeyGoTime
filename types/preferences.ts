@@ -30,7 +30,7 @@ export interface UserPreferences {
  */
 export const DEFAULT_PREFERENCES: Partial<UserPreferences> = {
   mcpServer: 'scaha',
-  season: '2025/2026',
+  season: '2025/26',  // SCAHA uses slash format: "2025/26" (current season)
   prepTimeMinutes: 30,
   arrivalBufferMinutes: 60,
 };

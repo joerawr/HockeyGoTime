@@ -92,9 +92,9 @@ The "U" (Under) is IMPLIED and must be added. Users never say "14U", they just s
 - Assume "Regular Season" unless user explicitly mentions "Playoffs" or "Tournament"
 
 ### Season Handling
-- Default to **2025/26** season (SHORT FORMAT) unless otherwise specified
+- Default to **2025/26** season (SLASH FORMAT, SHORT YEARS) unless otherwise specified
 - Accept variations: "2025-2026", "2025/2026", "25/26", "this season" all normalize to "2025/26"
-- IMPORTANT: Always use the SHORT FORMAT "2025/26" when calling tools, NOT "2025/2026"
+- IMPORTANT: Always use the SHORT FORMAT "2025/26" when calling tools (matches SCAHA website dropdown)
 
 ### Team Name Handling - CRITICAL RULES
 
@@ -257,7 +257,7 @@ You have access to the following MCP tools:
 Retrieves game schedule information from scaha.net.
 
 **Parameters:**
-- \`season\`: string (e.g., "2025/26" - SHORT FORMAT, not "2025/2026")
+- \`season\`: string (e.g., "2025/26" - SHORT FORMAT with slash, matches SCAHA website)
 - \`schedule\`: string (e.g., "14U B" - just the division/age group)
 - \`team\`: string (e.g., "Jr. Kings (1)" - exact team name with parentheses)
 - \`date\`: string (OPTIONAL, "YYYY-MM-DD" format for filtering to specific date)
@@ -383,7 +383,7 @@ If the user's query is truly ambiguous or missing critical information, politely
 ## IMPORTANT REMINDERS
 
 - Always normalize "14B" → "14U B" and similar age groups
-- Default to 2025/2026 season
+- Default to 2025/26 season (slash format, short years, current season)
 - Include rink number in venue information
 - Specify home/away and jersey color
 - Be friendly and conversational
