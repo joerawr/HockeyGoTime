@@ -1,15 +1,22 @@
 export const runtime = "nodejs";
 
 import { HOCKEY_SYSTEM_INSTRUCTIONS } from "@/components/agent/hockey-prompt";
-import { getSchahaMCPClient } from "@/lib/mcp";
+import { PGHL_SYSTEM_INSTRUCTIONS } from "@/components/agent/pghl-prompt";
+import { getSchahaMCPClient, getPghlMCPClient } from "@/lib/mcp";
 import { openai } from "@ai-sdk/openai";
 import { streamText, convertToModelMessages, stepCountIs } from "ai";
 import { NextRequest } from "next/server";
-import { scheduleCache, getScheduleCacheKey } from "@/lib/cache";
+import {
+  scheduleCache,
+  getScheduleCacheKey,
+  getTeamStatsCacheKey,
+  getPlayerStatsCacheKey,
+} from "@/lib/cache";
 import { calculateTravelTimes } from "@/lib/travel/time-calculator";
 import {
   DEFAULT_PREFERENCES,
   type UserPreferences,
+  type MCPServerId,
 } from "@/types/preferences";
 import type { TravelCalculation } from "@/types/travel";
 import { z } from "zod";
@@ -29,8 +36,12 @@ function normalizePreferences(raw: any): UserPreferences | null {
     ...raw,
   };
 
+  const resolvedMcp: MCPServerId =
+    merged.mcpServer === "pghl" ? "pghl" : "scaha";
+
   if (!merged.homeAddress || typeof merged.homeAddress !== "string") {
     return {
+      mcpServer: resolvedMcp,
       team: merged.team ?? "",
       division: merged.division ?? "",
       season: merged.season ?? DEFAULT_PREFERENCES.season ?? "",
@@ -44,6 +55,7 @@ function normalizePreferences(raw: any): UserPreferences | null {
   }
 
   return {
+    mcpServer: resolvedMcp,
     team: merged.team ?? "",
     division: merged.division ?? "",
     season: merged.season ?? DEFAULT_PREFERENCES.season ?? "",
@@ -97,6 +109,12 @@ export async function POST(request: NextRequest) {
   try {
     const { messages, preferences } = await request.json();
     const normalizedPreferences = normalizePreferences(preferences);
+    const fallbackMcp =
+      (DEFAULT_PREFERENCES.mcpServer as MCPServerId) || "scaha";
+    const selectedMcpServer: MCPServerId =
+      normalizedPreferences?.mcpServer ??
+      (preferences?.mcpServer === "pghl" ? "pghl" : fallbackMcp);
+    const selectedMcpLabel = selectedMcpServer === "pghl" ? "PGHL" : "SCAHA";
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return new Response("Messages array is required", { status: 400 });
@@ -125,23 +143,29 @@ export async function POST(request: NextRequest) {
         "not set",
     };
 
-    let systemPrompt = HOCKEY_SYSTEM_INSTRUCTIONS;
+    let systemPrompt =
+      selectedMcpServer === "pghl"
+        ? PGHL_SYSTEM_INSTRUCTIONS
+        : HOCKEY_SYSTEM_INSTRUCTIONS;
     systemPrompt = systemPrompt
       .replace("{userTeam}", promptPreference.team)
       .replace("{userDivision}", promptPreference.division)
       .replace("{userSeason}", promptPreference.season)
       .replace("{userHomeAddress}", promptPreference.homeAddress);
 
-    // Initialize SCAHA MCP client
-    console.log("🚀 Initializing SCAHA MCP client...");
-    const schahaClient = getSchahaMCPClient();
-    await schahaClient.connect();
+    // Initialize MCP client
+    console.log(`🚀 Initializing ${selectedMcpLabel} MCP client...`);
+    const activeMcpClient =
+      selectedMcpServer === "pghl"
+        ? getPghlMCPClient()
+        : getSchahaMCPClient();
+    await activeMcpClient.connect();
 
-    // Retrieve SCAHA tools (get_schedule)
-    const tools = await schahaClient.getTools();
+    // Retrieve MCP tools (get_schedule, etc.)
+    const tools = await activeMcpClient.getTools();
 
     console.log(
-      `🔧 HockeyGoTime has access to ${Object.keys(tools).length} SCAHA MCP tools`
+      `🔧 HockeyGoTime has access to ${Object.keys(tools).length} ${selectedMcpLabel} MCP tools`
     );
 
     // Wrap tools to add caching and logging
@@ -156,8 +180,43 @@ export async function POST(request: NextRequest) {
 
             // Cache logic for get_schedule tool
             if (toolName === 'get_schedule') {
-              const { season, schedule, team, date } = args;
-              const cacheKey = getScheduleCacheKey(season, schedule, team, date);
+              const {
+                season,
+                division,
+                schedule,
+                team,
+                team_slug,
+                date,
+              } = args ?? {};
+
+              const resolvedSeason =
+                typeof season === "string" && season.trim() !== ""
+                  ? season
+                  : "unknown-season";
+              const resolvedDivision =
+                typeof division === "string" && division.trim() !== ""
+                  ? division
+                  : typeof schedule === "string" && schedule.trim() !== ""
+                    ? schedule
+                    : "unknown-division";
+              const resolvedTeam =
+                typeof team === "string" && team.trim() !== ""
+                  ? team
+                  : typeof team_slug === "string" && team_slug.trim() !== ""
+                    ? team_slug
+                    : "unknown-team";
+              const resolvedDate =
+                typeof date === "string" && date.trim() !== ""
+                  ? date
+                  : undefined;
+
+              const cacheKey = getScheduleCacheKey(
+                selectedMcpServer,
+                resolvedSeason,
+                resolvedDivision,
+                resolvedTeam,
+                resolvedDate,
+              );
 
               // Check cache first
               const cachedData = await scheduleCache.get(cacheKey);
@@ -184,8 +243,13 @@ export async function POST(request: NextRequest) {
 
             // Cache logic for get_team_stats tool
             if (toolName === 'get_team_stats') {
-              const { season, division, team_slug } = args;
-              const cacheKey = `team_stats:${season}:${division}:${team_slug}`;
+              const { season, division, team_slug } = args ?? {};
+              const cacheKey = getTeamStatsCacheKey(
+                selectedMcpServer,
+                typeof season === "string" && season.trim() !== "" ? season : "unknown-season",
+                typeof division === "string" && division.trim() !== "" ? division : "unknown-division",
+                typeof team_slug === "string" && team_slug.trim() !== "" ? team_slug : "unknown-team",
+              );
 
               // Check cache first
               const cachedData = await scheduleCache.get(cacheKey);
@@ -212,9 +276,19 @@ export async function POST(request: NextRequest) {
 
             // Cache logic for get_player_stats tool
             if (toolName === 'get_player_stats') {
-              const { season, division, team_slug, player, category } = args;
-              const playerKey = player?.name || player?.number || 'unknown';
-              const cacheKey = `player_stats:${season}:${division}:${team_slug}:${playerKey}:${category || 'skater'}`;
+              const { season, division, team_slug, player, category } = args ?? {};
+              const playerKey = typeof player?.name === "string" && player.name.trim() !== ""
+                ? player.name
+                : typeof player?.number === "string" && player.number.trim() !== ""
+                  ? player.number
+                  : "unknown";
+              const cacheKey = getPlayerStatsCacheKey(
+                selectedMcpServer,
+                typeof season === "string" && season.trim() !== "" ? season : "unknown-season",
+                typeof division === "string" && division.trim() !== "" ? division : "unknown-division",
+                typeof team_slug === "string" && team_slug.trim() !== "" ? team_slug : "unknown-team",
+                playerKey,
+              );
 
               // Check cache first
               const cachedData = await scheduleCache.get(cacheKey);
@@ -358,8 +432,8 @@ export async function POST(request: NextRequest) {
 
         // Close the MCP client after streaming completes
         // This is critical to avoid "closed client" errors
-        console.log("🔌 Disconnecting SCAHA MCP client...");
-        await schahaClient.disconnect();
+        console.log(`🔌 Disconnecting ${selectedMcpLabel} MCP client...`);
+        await activeMcpClient.disconnect();
       },
     });
 

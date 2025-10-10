@@ -19,6 +19,11 @@ import type { UserPreferences } from '@/types/preferences';
 export function validatePreferences(prefs: UserPreferences): string[] {
   const errors: string[] = [];
 
+  // MCP server validation
+  if (prefs.mcpServer !== 'scaha' && prefs.mcpServer !== 'pghl') {
+    errors.push('Please choose a valid league data source');
+  }
+
   // Team validation
   if (!prefs.team || prefs.team.trim() === '') {
     errors.push('Team name is required');

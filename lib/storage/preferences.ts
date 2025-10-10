@@ -26,7 +26,11 @@ export const PreferencesStore = {
       const data = localStorage.getItem(STORAGE_KEY);
       if (!data) return null;
 
-      const preferences = JSON.parse(data) as UserPreferences;
+      const saved = JSON.parse(data) as Partial<UserPreferences>;
+      const preferences = {
+        ...DEFAULT_PREFERENCES,
+        ...saved,
+      } as UserPreferences;
       return preferences;
     } catch (error) {
       console.error('Error reading preferences from localStorage:', error);

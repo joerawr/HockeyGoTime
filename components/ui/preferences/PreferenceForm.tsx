@@ -5,23 +5,30 @@
  * Form for setting and editing user preferences
  */
 
-import { useState } from "react";
-import type { UserPreferences } from "@/types/preferences";
+import { useEffect, useState } from "react";
+import type { UserPreferences, MCPServerId } from "@/types/preferences";
 import { DEFAULT_PREFERENCES } from "@/types/preferences";
 import { validatePreferences } from "@/lib/utils/validation";
 
 interface PreferenceFormProps {
   initialPreferences?: UserPreferences | null;
+  selectedMcpServer: MCPServerId;
   onSave: (preferences: UserPreferences) => void;
   onCancel?: () => void;
 }
 
 export function PreferenceForm({
   initialPreferences,
+  selectedMcpServer,
   onSave,
   onCancel,
 }: PreferenceFormProps) {
   const [formData, setFormData] = useState<UserPreferences>({
+    mcpServer:
+      initialPreferences?.mcpServer ||
+      selectedMcpServer ||
+      (DEFAULT_PREFERENCES.mcpServer as MCPServerId) ||
+      "scaha",
     team: initialPreferences?.team || "",
     division: initialPreferences?.division || "",
     season:
@@ -40,11 +47,24 @@ export function PreferenceForm({
 
   const [errors, setErrors] = useState<string[]>([]);
 
+  // Keep internal form data in sync with external MCP selection
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      mcpServer: selectedMcpServer,
+    }));
+  }, [selectedMcpServer]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const nextPreferences: UserPreferences = {
+      ...formData,
+      mcpServer: selectedMcpServer,
+    };
+
     // Validate preferences
-    const validationErrors = validatePreferences(formData);
+    const validationErrors = validatePreferences(nextPreferences);
     if (validationErrors.length > 0) {
       setErrors(validationErrors);
       return;
@@ -52,7 +72,7 @@ export function PreferenceForm({
 
     // Clear errors and save
     setErrors([]);
-    onSave(formData);
+    onSave(nextPreferences);
   };
 
   return (
