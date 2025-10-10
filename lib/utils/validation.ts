@@ -34,11 +34,20 @@ export function validatePreferences(prefs: UserPreferences): string[] {
     errors.push('Division is required');
   }
 
-  // Season validation (format: YYYY/YYYY)
+  // Season validation (format depends on MCP server)
   if (!prefs.season || prefs.season.trim() === '') {
     errors.push('Season is required');
-  } else if (!/^\d{4}\/\d{4}$/.test(prefs.season)) {
-    errors.push('Season must be in format YYYY/YYYY (e.g., 2025/2026)');
+  } else {
+    // SCAHA format: YYYY/YY or YY/YY (e.g., "2025/26" or "25/26")
+    const schahaFormat = /^\d{2,4}\/\d{2,4}$/;
+    // PGHL format: YYYY-YY [division info] (e.g., "2025-26 12u-19u AA")
+    const pghlFormat = /^\d{4}-\d{2}\s+.+$/;
+
+    if (prefs.mcpServer === 'scaha' && !schahaFormat.test(prefs.season)) {
+      errors.push('Season must be in format YYYY/YY (e.g., 2025/26)');
+    } else if (prefs.mcpServer === 'pghl' && !pghlFormat.test(prefs.season)) {
+      errors.push('Season must be in format YYYY-YY [division info] (e.g., 2025-26 12u-19u AA)');
+    }
   }
 
   // Home address validation

@@ -48,11 +48,25 @@ export function PreferenceForm({
   const [errors, setErrors] = useState<string[]>([]);
 
   // Keep internal form data in sync with external MCP selection
+  // Also update season format when switching between leagues
   useEffect(() => {
-    setFormData((prev) => ({
-      ...prev,
-      mcpServer: selectedMcpServer,
-    }));
+    setFormData((prev) => {
+      // Only update season if switching between different MCP servers
+      if (prev.mcpServer === selectedMcpServer) {
+        return { ...prev, mcpServer: selectedMcpServer };
+      }
+
+      // Determine the default season for the new MCP server
+      const newSeason = selectedMcpServer === 'pghl'
+        ? '2025-26 12u-19u AA'
+        : '2025/26';
+
+      return {
+        ...prev,
+        mcpServer: selectedMcpServer,
+        season: newSeason,
+      };
+    });
   }, [selectedMcpServer]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -138,11 +152,15 @@ export function PreferenceForm({
             id="season"
             value={formData.season}
             onChange={(e) => setFormData({ ...formData, season: e.target.value })}
-            placeholder="2025/2026"
+            placeholder={selectedMcpServer === 'pghl' ? '2025-26 12u-19u AA' : '2025/26'}
             className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm transition focus-visible:border-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200"
             required
           />
-          <p className="mt-1 text-xs text-slate-500">Format: YYYY/YYYY</p>
+          <p className="mt-1 text-xs text-slate-500">
+            {selectedMcpServer === 'pghl'
+              ? 'Format: YYYY-YY [division]'
+              : 'Format: YYYY/YY'}
+          </p>
         </div>
 
         <div>
