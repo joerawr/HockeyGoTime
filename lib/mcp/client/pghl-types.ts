@@ -46,6 +46,5 @@ export interface PghlGetScheduleResult {
 }
 
 export interface PghlMCPClientConfig {
-  // No configuration needed for Stdio transport
-  // Server is spawned via npx @joerawr/pghl-mcp
+  serverUrl?: string;  // HTTP endpoint URL (defaults to https://pghl-mcp.vercel.app/api/mcp)
 }
