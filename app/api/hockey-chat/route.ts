@@ -124,14 +124,22 @@ export async function POST(request: NextRequest) {
     // Convert UIMessages to ModelMessages
     const modelMessages = convertToModelMessages(messages);
 
-    // Get current date for AI context
-    const currentDate = new Date().toLocaleDateString('en-US', {
+    // Get current date and time for AI context (Pacific timezone)
+    const now = new Date();
+    const currentDate = now.toLocaleDateString('en-US', {
       timeZone: 'America/Los_Angeles',
       weekday: 'long',
       year: 'numeric',
       month: 'long',
       day: 'numeric',
     });
+    const currentTime = now.toLocaleTimeString('en-US', {
+      timeZone: 'America/Los_Angeles',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+    const currentDateTime = `${currentDate} at ${currentTime}`;
 
     // Build system prompt with user preferences context
     const promptPreference = {
@@ -155,7 +163,7 @@ export async function POST(request: NextRequest) {
         normalizedPreferences?.arrivalBufferMinutes ??
         preferences?.arrivalBufferMinutes ??
         60,
-      currentDate,
+      currentDate: currentDateTime, // Use full date+time instead of just date
     };
 
     let systemPrompt =
