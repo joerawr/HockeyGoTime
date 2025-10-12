@@ -23,12 +23,37 @@ interface CalculateTravelTimesOptions {
 
 const DEFAULT_TIMEZONE = 'America/Los_Angeles';
 
+// Map common timezone abbreviations to IANA timezone identifiers
+const TIMEZONE_ABBREVIATIONS: Record<string, string> = {
+  'PT': 'America/Los_Angeles',
+  'PST': 'America/Los_Angeles',
+  'PDT': 'America/Los_Angeles',
+  'MT': 'America/Denver',
+  'MST': 'America/Denver',
+  'MDT': 'America/Denver',
+  'CT': 'America/Chicago',
+  'CST': 'America/Chicago',
+  'CDT': 'America/Chicago',
+  'ET': 'America/New_York',
+  'EST': 'America/New_York',
+  'EDT': 'America/New_York',
+  'UTC': 'UTC',
+  'GMT': 'UTC',
+};
+
 function normalizeTimezone(value?: string | null): string {
   const candidate = (value ?? '').trim();
   if (!candidate) {
     return DEFAULT_TIMEZONE;
   }
 
+  // Check if it's a known abbreviation
+  const mapped = TIMEZONE_ABBREVIATIONS[candidate.toUpperCase()];
+  if (mapped) {
+    return mapped;
+  }
+
+  // Try to use it directly as an IANA timezone
   try {
     new Intl.DateTimeFormat('en-US', { timeZone: candidate });
     return candidate;
