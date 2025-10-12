@@ -46,5 +46,7 @@ export interface PghlGetScheduleResult {
 }
 
 export interface PghlMCPClientConfig {
-  serverUrl?: string;  // HTTP endpoint URL (defaults to https://pghl-mcp.vercel.app/api/mcp)
+  serverUrl?: string;    // HTTP endpoint URL (defaults to https://pghl-mcp.vercel.app/api/mcp)
+  serverPath?: string;   // Path to local PGHL MCP server for STDIO transport
+  useStdio?: boolean;    // Force STDIO transport (auto-detected if serverPath is provided)
 }

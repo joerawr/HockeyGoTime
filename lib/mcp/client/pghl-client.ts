@@ -1,12 +1,19 @@
 /**
- * PGHL MCP Client using HTTP Transport
+ * PGHL MCP Client with HTTP and STDIO Transport Support
  *
- * Connects to remotely deployed PGHL MCP server via StreamableHTTP
- * Note: Uses HTTP instead of Stdio because Vercel serverless doesn't support npx (no write access to home dir)
+ * Supports two transport modes:
+ * 1. HTTP (Production): Connects to deployed PGHL MCP server via StreamableHTTP
+ * 2. STDIO (Local Development): Spawns local PGHL MCP server process
+ *
+ * Transport selection priority:
+ * - If PGHL_MCP_SERVER_PATH env var is set → STDIO
+ * - If config.serverPath is provided → STDIO
+ * - Otherwise → HTTP (default)
  */
 
 import { experimental_createMCPClient } from "ai";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import type { PghlMCPClientConfig } from "./pghl-types";
 
 export class PghlMCPClient {
@@ -15,8 +22,15 @@ export class PghlMCPClient {
   > | null = null;
   private isConnected = false;
   private serverUrl: string;
+  private serverPath?: string;
+  private useStdio: boolean;
 
   constructor(private config: PghlMCPClientConfig) {
+    // Determine transport mode
+    this.serverPath = config.serverPath || process.env.PGHL_MCP_SERVER_PATH;
+    this.useStdio = !!(config.useStdio || this.serverPath);
+
+    // Set HTTP URL for non-STDIO mode
     this.serverUrl =
       config.serverUrl ||
       process.env.PGHL_MCP_URL ||
@@ -24,7 +38,7 @@ export class PghlMCPClient {
   }
 
   /**
-   * Initialize the MCP client connection via StreamableHTTP
+   * Initialize the MCP client connection via STDIO or HTTP
    */
   async connect(): Promise<void> {
     if (this.isConnected && this.client) {
@@ -33,20 +47,13 @@ export class PghlMCPClient {
     }
 
     try {
-      console.log(
-        `🚀 Connecting to PGHL MCP server via HTTP: ${this.serverUrl}`,
-      );
-
-      const transport = new StreamableHTTPClientTransport(
-        new URL(this.serverUrl),
-      );
-
-      this.client = await experimental_createMCPClient({
-        transport,
-      });
+      if (this.useStdio) {
+        await this.connectViaStdio();
+      } else {
+        await this.connectViaHttp();
+      }
 
       this.isConnected = true;
-      console.log("✅ PGHL MCP client connected via StreamableHTTP");
     } catch (error) {
       console.error("💥 Failed to connect to PGHL MCP server:", error);
       throw new Error(
@@ -55,6 +62,52 @@ export class PghlMCPClient {
         }`,
       );
     }
+  }
+
+  /**
+   * Connect via STDIO transport (local development)
+   */
+  private async connectViaStdio(): Promise<void> {
+    if (!this.serverPath) {
+      throw new Error(
+        "PGHL_MCP_SERVER_PATH must be set for STDIO transport. " +
+        "Example: export PGHL_MCP_SERVER_PATH=../pghl-mcp/dist/index.js"
+      );
+    }
+
+    console.log(
+      `🚀 Connecting to local PGHL MCP server via STDIO: ${this.serverPath}`,
+    );
+
+    const transport = new StdioClientTransport({
+      command: "node",
+      args: [this.serverPath],
+    });
+
+    this.client = await experimental_createMCPClient({
+      transport,
+    });
+
+    console.log("✅ PGHL MCP client connected via STDIO");
+  }
+
+  /**
+   * Connect via HTTP transport (production)
+   */
+  private async connectViaHttp(): Promise<void> {
+    console.log(
+      `🚀 Connecting to PGHL MCP server via HTTP: ${this.serverUrl}`,
+    );
+
+    const transport = new StreamableHTTPClientTransport(
+      new URL(this.serverUrl),
+    );
+
+    this.client = await experimental_createMCPClient({
+      transport,
+    });
+
+    console.log("✅ PGHL MCP client connected via StreamableHTTP");
   }
 
   /**
@@ -69,7 +122,8 @@ export class PghlMCPClient {
       await this.client.close();
       this.client = null;
       this.isConnected = false;
-      console.log("🔌 PGHL MCP client disconnected (HTTP connection closed)");
+      const transportMode = this.useStdio ? "STDIO" : "HTTP";
+      console.log(`🔌 PGHL MCP client disconnected (${transportMode} connection closed)`);
     } catch (error) {
       console.error("⚠️ Error during PGHL MCP client disconnect:", error);
     }

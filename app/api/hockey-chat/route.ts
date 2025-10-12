@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { HOCKEY_SYSTEM_INSTRUCTIONS } from "@/components/agent/hockey-prompt";
 import { PGHL_SYSTEM_INSTRUCTIONS } from "@/components/agent/pghl-prompt";
 import { getSchahaMCPClient, getPghlMCPClient } from "@/lib/mcp";
+import { PGHL_TEAM_IDS, PGHL_SEASON_IDS } from "@/lib/pghl-mappings";
 import { openai } from "@ai-sdk/openai";
 import { streamText, convertToModelMessages, stepCountIs } from "ai";
 import { NextRequest } from "next/server";
@@ -147,11 +148,22 @@ export async function POST(request: NextRequest) {
       selectedMcpServer === "pghl"
         ? PGHL_SYSTEM_INSTRUCTIONS
         : HOCKEY_SYSTEM_INSTRUCTIONS;
+
+    // Inject user preferences
     systemPrompt = systemPrompt
       .replace("{userTeam}", promptPreference.team)
       .replace("{userDivision}", promptPreference.division)
       .replace("{userSeason}", promptPreference.season)
       .replace("{userHomeAddress}", promptPreference.homeAddress);
+
+    // Inject PGHL team ID mappings for PGHL mode
+    if (selectedMcpServer === "pghl") {
+      const teamMappingsJson = JSON.stringify(PGHL_TEAM_IDS, null, 2);
+      const seasonMappingsJson = JSON.stringify(PGHL_SEASON_IDS, null, 2);
+      systemPrompt = systemPrompt
+        .replace("{pghlTeamMappings}", teamMappingsJson)
+        .replace("{pghlSeasonMappings}", seasonMappingsJson);
+    }
 
     // Initialize MCP client
     console.log(`🚀 Initializing ${selectedMcpLabel} MCP client...`);
@@ -250,6 +262,80 @@ export async function POST(request: NextRequest) {
               console.log(`   Output:`, JSON.stringify(result, null, 2));
 
               // Store in cache (24 hour TTL by default)
+              await scheduleCache.set(cacheKey, result);
+              console.log(`   💾 Cached: ${cacheKey}`);
+
+              return result;
+            }
+
+            // Cache logic for PGHL get_team_schedule tool (iCal-based)
+            if (toolName === 'get_team_schedule') {
+              const { team_id, season_id } = args ?? {};
+              const resolvedTeamId =
+                typeof team_id === "string" && team_id.trim() !== ""
+                  ? team_id
+                  : "unknown-team";
+              const resolvedSeasonId =
+                typeof season_id === "string" && season_id.trim() !== ""
+                  ? season_id
+                  : "9486"; // default to 2025-26 season
+
+              const cacheKey = `${selectedMcpServer}:team_schedule:${resolvedSeasonId}:${resolvedTeamId}`;
+
+              // Check cache first
+              const cachedData = await scheduleCache.get(cacheKey);
+              if (cachedData) {
+                console.log(`   ⚡ Cache hit: ${cacheKey}`);
+                console.log(`   Output (cached):`, JSON.stringify(cachedData, null, 2));
+                return cachedData;
+              }
+
+              // Cache miss - call MCP tool
+              console.log(`   🔍 Cache miss: ${cacheKey}`);
+              const startTime = Date.now();
+              const result = await toolDef.execute(args);
+              const elapsed = Date.now() - startTime;
+              console.log(`   ⏱️ MCP call took ${elapsed}ms`);
+              console.log(`   Output:`, JSON.stringify(result, null, 2));
+
+              // Store in cache (24 hour TTL)
+              await scheduleCache.set(cacheKey, result);
+              console.log(`   💾 Cached: ${cacheKey}`);
+
+              return result;
+            }
+
+            // Cache logic for PGHL get_division_schedule tool (iCal-based)
+            if (toolName === 'get_division_schedule') {
+              const { season_id, division_id, group_by_date } = args ?? {};
+              const resolvedSeasonId =
+                typeof season_id === "string" && season_id.trim() !== ""
+                  ? season_id
+                  : "unknown-season";
+              const resolvedDivisionId =
+                typeof division_id === "string" && division_id.trim() !== ""
+                  ? division_id
+                  : "all-divisions";
+
+              const cacheKey = `${selectedMcpServer}:division_schedule:${resolvedSeasonId}:${resolvedDivisionId}`;
+
+              // Check cache first
+              const cachedData = await scheduleCache.get(cacheKey);
+              if (cachedData) {
+                console.log(`   ⚡ Cache hit: ${cacheKey}`);
+                console.log(`   Output (cached):`, JSON.stringify(cachedData, null, 2));
+                return cachedData;
+              }
+
+              // Cache miss - call MCP tool
+              console.log(`   🔍 Cache miss: ${cacheKey}`);
+              const startTime = Date.now();
+              const result = await toolDef.execute(args);
+              const elapsed = Date.now() - startTime;
+              console.log(`   ⏱️ MCP call took ${elapsed}ms`);
+              console.log(`   Output:`, JSON.stringify(result, null, 2));
+
+              // Store in cache (24 hour TTL)
               await scheduleCache.set(cacheKey, result);
               console.log(`   💾 Cached: ${cacheKey}`);
 
