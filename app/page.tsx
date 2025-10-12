@@ -17,10 +17,10 @@ export default function HockeyGoTimePage() {
           <Image
             src="/hgt-logo.png"
             alt="HockeyGoTime logo"
-            width={180}
-            height={60}
+            width={249}
+            height={83}
             priority
-            className="h-12 w-auto"
+            className="h-[83px] w-auto"
           />
           <h1 className="text-2xl font-black uppercase tracking-widest text-slate-800 sm:text-3xl md:text-4xl">
             Your AI Hockey Schedule Sidekick
