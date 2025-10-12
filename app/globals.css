@@ -124,21 +124,21 @@
 /* Hockey puck sliding animation */
 @keyframes slide-puck {
   0% {
-    transform: translateX(-50px);
+    left: -40px;
     opacity: 0;
   }
-  10% {
+  5% {
     opacity: 1;
   }
-  90% {
+  95% {
     opacity: 1;
   }
   100% {
-    transform: translateX(calc(100vw - 100px));
+    left: 100%;
     opacity: 0;
   }
 }
 
 .animate-slide-puck {
-  animation: slide-puck 4s ease-in-out infinite;
+  animation: slide-puck 2.5s linear infinite;
 }
