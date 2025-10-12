@@ -124,6 +124,15 @@ export async function POST(request: NextRequest) {
     // Convert UIMessages to ModelMessages
     const modelMessages = convertToModelMessages(messages);
 
+    // Get current date for AI context
+    const currentDate = new Date().toLocaleDateString('en-US', {
+      timeZone: 'America/Los_Angeles',
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+
     // Build system prompt with user preferences context
     const promptPreference = {
       team:
@@ -146,6 +155,7 @@ export async function POST(request: NextRequest) {
         normalizedPreferences?.arrivalBufferMinutes ??
         preferences?.arrivalBufferMinutes ??
         60,
+      currentDate,
     };
 
     let systemPrompt =
@@ -153,13 +163,14 @@ export async function POST(request: NextRequest) {
         ? PGHL_SYSTEM_INSTRUCTIONS
         : HOCKEY_SYSTEM_INSTRUCTIONS;
 
-    // Inject user preferences
+    // Inject user preferences and current date
     systemPrompt = systemPrompt
       .replace("{userTeam}", promptPreference.team)
       .replace("{userDivision}", promptPreference.division)
       .replace("{userSeason}", promptPreference.season)
       .replace("{userHomeAddress}", promptPreference.homeAddress)
-      .replace("{userArrivalBuffer}", String(promptPreference.arrivalBuffer));
+      .replace("{userArrivalBuffer}", String(promptPreference.arrivalBuffer))
+      .replace("{currentDate}", promptPreference.currentDate);
 
     // Inject PGHL team ID mappings for PGHL mode
     if (selectedMcpServer === "pghl") {
