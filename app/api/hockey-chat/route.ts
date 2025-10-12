@@ -4,7 +4,7 @@ import { HOCKEY_SYSTEM_INSTRUCTIONS } from "@/components/agent/hockey-prompt";
 import { PGHL_SYSTEM_INSTRUCTIONS } from "@/components/agent/pghl-prompt";
 import { getSchahaMCPClient, getPghlMCPClient } from "@/lib/mcp";
 import { PGHL_TEAM_IDS, PGHL_SEASON_IDS } from "@/lib/pghl-mappings";
-import { openai } from "@ai-sdk/openai";
+import { google } from "@ai-sdk/google";
 import { streamText, convertToModelMessages, stepCountIs } from "ai";
 import { NextRequest } from "next/server";
 import {
@@ -519,15 +519,10 @@ export async function POST(request: NextRequest) {
     };
 
     const result = streamText({
-      model: openai("gpt-5-mini"),
+      model: google("gemini-2.5-flash-preview-09-2025"),
       system: systemPrompt,
       messages: modelMessages,
       tools: wrappedTools,
-      providerOptions: {
-        openai: {
-          reasoningEffort: "low",
-        },
-      },
       stopWhen: stepCountIs(5), // Enable multi-step execution: tool call -> text response
       onFinish: async ({ text, toolCalls, toolResults, steps }) => {
         console.log(`📊 Stream finished:`);
