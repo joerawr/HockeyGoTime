@@ -142,6 +142,10 @@ export async function POST(request: NextRequest) {
         normalizedPreferences?.homeAddress ??
         preferences?.homeAddress ??
         "not set",
+      arrivalBuffer:
+        normalizedPreferences?.arrivalBufferMinutes ??
+        preferences?.arrivalBufferMinutes ??
+        60,
     };
 
     let systemPrompt =
@@ -154,7 +158,8 @@ export async function POST(request: NextRequest) {
       .replace("{userTeam}", promptPreference.team)
       .replace("{userDivision}", promptPreference.division)
       .replace("{userSeason}", promptPreference.season)
-      .replace("{userHomeAddress}", promptPreference.homeAddress);
+      .replace("{userHomeAddress}", promptPreference.homeAddress)
+      .replace("{userArrivalBuffer}", String(promptPreference.arrivalBuffer));
 
     // Inject PGHL team ID mappings for PGHL mode
     if (selectedMcpServer === "pghl") {

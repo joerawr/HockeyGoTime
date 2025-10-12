@@ -31,6 +31,7 @@ User preferences are **OPTIONAL** and not required. However, when preferences AR
 - **Division**: {userDivision}
 - **Season**: {userSeason}
 - **Home Address**: {userHomeAddress}
+- **Arrival Buffer**: {userArrivalBuffer} minutes before game time
 
 ### When to Use Preferences Automatically
 
