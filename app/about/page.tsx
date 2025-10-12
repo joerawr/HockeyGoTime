@@ -10,21 +10,35 @@ export default function About() {
         </Link>
       </div>
 
-      <main className="p-6 space-y-4">
-        <p className="text-muted-foreground">
-          This starter showcases a minimal AI chat interface using the Next.js
-          App Router and a small set of reusable UI primitives.
-        </p>
+      <main className="p-6 space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold mb-2">HockeyGoTime (HGT) - Stop Hunting for Hockey Schedules</h2>
+          <p className="text-muted-foreground">
+            Tired of navigating confusing league websites to find your kid&apos;s next game? HGT brings AI to youth hockey scheduling for SCAHA and PGHL families.
+          </p>
+        </div>
+
+        <div>
+          <h3 className="text-lg font-semibold mb-3">Instead of clicking through websites, just ask:</h3>
+          <ul className="space-y-2 text-muted-foreground">
+            <li>• &quot;When&apos;s our next game?&quot;</li>
+            <li>• &quot;What time should I leave for the game this Saturday?&quot;</li>
+            <li>• &quot;Show me our team stats&quot;</li>
+            <li>• &quot;Who do we play on November 5th?&quot;</li>
+            <li>• &quot;How far is the drive to the rink?&quot;</li>
+          </ul>
+        </div>
+
         <p>
-          Explore the code in{" "}
-          <code className="px-1 py-0.5 bg-muted rounded">app/page.tsx</code> and
-          the UI building blocks under{" "}
-          <code className="px-1 py-0.5 bg-muted rounded">components</code>.
+          HGT understands your questions naturally and gives you quick answers. Set your preferences (team, division, home address) once and HGT remembers them—but only in your browser.
         </p>
-        <p>
-          Use this as a foundation for your own product, and customize the
-          layout, styles, and components to fit your needs.
-        </p>
+
+        <div className="bg-muted p-4 rounded-lg">
+          <h3 className="font-semibold mb-2">Your data, your device</h3>
+          <p className="text-sm text-muted-foreground">
+            Everything stays local. HGT processes your preferences and queries entirely in your browser. We never see, store, or track your information.
+          </p>
+        </div>
       </main>
     </div>
   );

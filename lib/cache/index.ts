@@ -6,6 +6,7 @@
 import { MemoryCacheProvider } from './memory-cache';
 import type { ScheduleData } from '@/types/schedule';
 import type { TeamStats, PlayerStats } from '@/types/stats';
+import type { MCPServerId } from '@/types/preferences';
 
 /**
  * Schedule cache singleton
@@ -30,34 +31,39 @@ export const playerStatsCache = new MemoryCacheProvider<PlayerStats>();
  * Utility: Generate cache key for schedule queries
  */
 export function getScheduleCacheKey(
+  mcpServer: MCPServerId,
   season: string,
   division: string,
   team: string,
-  date?: string
+  date?: string,
+  scope?: string
 ): string {
-  const baseKey = `schedule:${season}:${division}:${team}`;
-  return date ? `${baseKey}:${date}` : baseKey;
+  const baseKey = `schedule:${mcpServer}:${season}:${division}:${team}`;
+  const withDate = date ? `${baseKey}:${date}` : baseKey;
+  return scope ? `${withDate}:${scope}` : withDate;
 }
 
 /**
  * Utility: Generate cache key for team stats
  */
 export function getTeamStatsCacheKey(
+  mcpServer: MCPServerId,
   season: string,
   division: string,
   team: string
 ): string {
-  return `team-stats:${season}:${division}:${team}`;
+  return `team-stats:${mcpServer}:${season}:${division}:${team}`;
 }
 
 /**
  * Utility: Generate cache key for player stats
  */
 export function getPlayerStatsCacheKey(
+  mcpServer: MCPServerId,
   season: string,
   division: string,
   team: string,
   player: string
 ): string {
-  return `player-stats:${season}:${division}:${team}:${player}`;
+  return `player-stats:${mcpServer}:${season}:${division}:${team}:${player}`;
 }

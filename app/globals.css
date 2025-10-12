@@ -120,3 +120,25 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Hockey puck sliding animation */
+@keyframes slide-puck {
+  0% {
+    left: -40px;
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+.animate-slide-puck {
+  animation: slide-puck 2.5s linear infinite;
+}

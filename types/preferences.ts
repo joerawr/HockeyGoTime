@@ -3,7 +3,12 @@
  * Stores user's hockey team, home location, and timing preferences for personalized queries
  */
 
+export type MCPServerId = 'scaha' | 'pghl';
+
 export interface UserPreferences {
+  // Data Source
+  mcpServer: MCPServerId;     // 'scaha' | 'pghl'
+
   // Team Identity
   team: string;              // e.g., "Jr. Kings (1)"
   division: string;          // e.g., "14U B"
@@ -24,7 +29,8 @@ export interface UserPreferences {
  * Default user preferences for new users
  */
 export const DEFAULT_PREFERENCES: Partial<UserPreferences> = {
-  season: '2025/2026',
+  mcpServer: 'scaha',
+  season: '2025/26',  // SCAHA uses slash format: "2025/26" (current season)
   prepTimeMinutes: 30,
   arrivalBufferMinutes: 60,
 };

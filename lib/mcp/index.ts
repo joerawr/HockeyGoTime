@@ -15,6 +15,12 @@ export {
   resetSchahaMCPClient,
 } from "./client/scaha-client";
 
+export {
+  PghlMCPClient,
+  getPghlMCPClient,
+  resetPghlMCPClient,
+} from "./client/pghl-client";
+
 export type {
   FirecrawlScrapeParams,
   FirecrawlBatchScrapeParams,
@@ -43,3 +49,13 @@ export type {
   SchahaPlayerGoalieStats,
   SchahaPlayerStats,
 } from "./client/scaha-types";
+
+export type {
+  PghlSelectOption,
+  PghlScheduleOptions,
+  PghlListScheduleOptionsParams,
+  PghlGetScheduleParams,
+  PghlGame,
+  PghlGetScheduleResult,
+  PghlMCPClientConfig,
+} from "./client/pghl-types";

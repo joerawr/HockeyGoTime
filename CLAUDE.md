@@ -59,6 +59,19 @@ The app connects to a local SCAHA MCP server via **StreamableHTTP transport**:
 - Defaults to 2025/2026 season
 - Hockey-parent-friendly tone
 
+### PGHL MCP Integration
+
+The app can also connect to the hosted PGHL MCP server via **StreamableHTTP**:
+
+- **MCP Client**: `lib/mcp/client/pghl-client.ts`
+  - Uses the production HTTP endpoint (`PGHL_MCP_URL`, defaults to `https://pghl-mcp.vercel.app/api/mcp`)
+  - Exposes `list_schedule_options` and `get_schedule`
+  - Shares the same singleton pattern as the SCAHA client
+- **System Prompt**: `components/agent/pghl-prompt.ts`
+  - Tailored for PGHL naming and season defaults (e.g., "2025-26")
+  - Encourages use of the progressive discovery tool
+  - Notes that venue travel times may require manual addresses
+
 ### Data Flow
 
 ```
@@ -91,6 +104,8 @@ SCAHA_MCP_SERVER_PATH=../scaha.net-mcp/dist/server.js  # Optional, defaults to t
 1. Save preferences (team, division, season, home address) for convenience
 2. Always specify team/division explicitly in each query
 3. Mix both approaches
+
+The preferences panel now includes a **League Data Source** dropdown (SCAHA vs PGHL). Changing the selection saves to localStorage and refreshes the page so the chat session reconnects to the appropriate MCP server.
 
 The preference panel includes:
 - "Edit" button to update preferences

@@ -36,6 +36,7 @@ import {
   ReasoningContent,
 } from "@/components/ai-elements/reasoning";
 import { Response } from "@/components/ai-elements/response";
+import { SlidingPuck } from "@/components/ui/sliding-puck";
 type ChatMessage = {
   id: string;
   role: "user" | "assistant";
@@ -441,6 +442,11 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
                 }
               });
             })()
+          )}
+          {isLoading && (
+            <div className="mt-4">
+              <SlidingPuck />
+            </div>
           )}
         </ConversationContent>
       </Conversation>
