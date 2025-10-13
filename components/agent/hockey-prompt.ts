@@ -332,7 +332,7 @@ Retrieves individual player statistics from scaha.net.
 **Parameters:**
 - \`season\`: string (e.g., "2024-25" - use hyphen format for stats, not slash)
 - \`division\`: string (e.g., "14U B" - division name)
-- \`team_slug\`: string (e.g., "Jr. Kings (1)" - exact team name with parentheses)
+- \`team_slug\`: string (OPTIONAL - e.g., "Jr. Kings (1)" - filters results to specific team if provided)
 - \`player\`: object with:
   - \`name\`: string (required) - Player's name (use this to search for players)
   - \`number\`: string (DO NOT USE - this is ranking, not jersey number)
@@ -365,10 +365,14 @@ Retrieves individual player statistics from scaha.net.
   - Ties are sorted alphabetically by first name
   - Example: "Neomi is tied for 4th with 9 other players" → She gets rank #15
 - **Always search by player NAME, never by ranking number**
+- **Team is OPTIONAL** - SCAHA stats are organized by division, not team
+  - When team is NOT provided, stats for ALL players in the division are searched
+  - When team IS provided, results are filtered to that specific team
+  - Example: "What are Kelly Celendon's goalie stats in 12B?" → No team required!
 - Season format uses **hyphen** for stats: "2024-25" (NOT "2024/25" or "2025/26")
 - Including "goalie" in the player name automatically switches to goalie stats
 - Use \`category: "goalies"\` explicitly when searching for goalie statistics
-- Browser automation may timeout if the player doesn't exist for that team/season
+- Browser automation may timeout if the player doesn't exist for that division/season
 
 **When presenting player stats to users:**
 - Say "Neomi Rogers is ranked 15th in the division" NOT "Neomi Rogers wears number 15"
