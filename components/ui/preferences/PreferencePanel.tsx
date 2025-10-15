@@ -75,6 +75,11 @@ export function PreferencePanel() {
     PreferencesStore.set(updatedPreferences);
     setPreferences(updatedPreferences);
     setIsEditing(false);
+
+    // Reload page to ensure chat session picks up new preferences
+    if (typeof window !== "undefined") {
+      window.location.reload();
+    }
   };
 
   const handleEdit = () => {
