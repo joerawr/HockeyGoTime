@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
-    "start": "next start"
+    "start": "next start",
+    "import-venues": "tsx scripts/import-venues.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^2.0.17",
@@ -22,6 +23,7 @@
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@radix-ui/react-use-controllable-state": "^1.2.2",
+    "@supabase/supabase-js": "^2.75.0",
     "@vectorize-io/vectorize-client": "^0.4.0",
     "ai": "^5.0.44",
     "class-variance-authority": "^0.7.1",
@@ -48,7 +50,10 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/react-syntax-highlighter": "^15.5.13",
+    "csv-parse": "^6.1.0",
+    "dotenv": "^17.2.3",
     "tailwindcss": "^4",
+    "tsx": "^4.20.6",
     "tw-animate-css": "^1.3.8",
     "typescript": "^5"
   }
