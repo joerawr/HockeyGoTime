@@ -11,7 +11,7 @@ export function SlidingPuck() {
       <div className="relative h-8 flex-1 overflow-hidden">
         <div className="animate-slide-puck absolute left-0 top-1/2 -translate-y-1/2">
           <Image
-            src="/puck.jpg"
+            src="/puck.png"
             alt="Hockey puck"
             width={32}
             height={32}

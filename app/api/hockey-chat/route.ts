@@ -21,6 +21,7 @@ import {
 } from "@/types/preferences";
 import type { TravelCalculation } from "@/types/travel";
 import { z } from "zod";
+import { resolveVenue } from "@/lib/venue/resolver";
 
 const TRAVEL_API_ERROR_MESSAGE =
   "Sorry the google maps api isn't responding, please use maps.google.com. We'll look into the issue.";
@@ -85,7 +86,6 @@ const travelToolInputSchema = z.object({
     division: z.string(),
     gameType: z.string().optional(),
   }),
-  venueAddress: z.string(),
   timezone: z.string().optional(),
   userPreferences: z
     .object({
@@ -454,17 +454,31 @@ export async function POST(request: NextRequest) {
       ...wrappedMcpTools,
       calculate_travel_times: {
         description:
-          "Calculate travel duration, departure time, and wake-up time using Google Routes API and the user's preferences.",
+          "Calculate travel duration, departure time, and wake-up time using Google Routes API and the user's preferences. The venue address will be resolved automatically from the database.",
         inputSchema: travelToolInputSchema,
         execute: async (args: TravelToolArgs): Promise<TravelToolResult> => {
-          const { game, venueAddress, timezone, userPreferences: overrides } = args;
+          const { game, timezone, userPreferences: overrides } = args;
 
-          if (!game || !venueAddress) {
+          if (!game) {
             return {
               errorMessage:
-                "Missing game details or venue address for travel time calculation.",
+                "Missing game details for travel time calculation.",
             };
           }
+
+          // Resolve venue address from database
+          console.log(`🗺️ Resolving venue: "${game.venue}"`);
+          const venueResult = await resolveVenue(game.venue);
+
+          if (!venueResult) {
+            console.error(`❌ Venue not found: "${game.venue}"`);
+            return {
+              errorMessage: `I couldn't find the venue "${game.venue}" in our database. Please check the venue name and try again, or contact support if this venue should be available.`,
+            };
+          }
+
+          const venueAddress = venueResult.address;
+          console.log(`✅ Venue resolved: ${venueResult.canonical_name} → ${venueAddress}`);
 
           const overridesInput = overrides ?? {};
           const basePreferences =
