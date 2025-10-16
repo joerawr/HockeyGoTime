@@ -33,7 +33,7 @@ import { MODEL_PRICING } from "@/lib/analytics/constants";
 const TRAVEL_API_ERROR_MESSAGE =
   "Sorry the google maps api isn't responding, please use maps.google.com. We'll look into the issue.";
 const HOME_ADDRESS_REQUIRED_MESSAGE =
-  "I need a home address saved in your preferences to calculate travel times. Please add it and try again.";
+  "I need a starting address to calculate travel times. You can either save your home address in preferences, or tell me your current location (like 'Holiday Inn Express' or '123 Main St, Anaheim, CA').";
 
 function normalizePreferences(raw: any): UserPreferences | null {
   if (!raw) {
@@ -48,27 +48,14 @@ function normalizePreferences(raw: any): UserPreferences | null {
   const resolvedMcp: MCPServerId =
     merged.mcpServer === "pghl" ? "pghl" : "scaha";
 
-  if (!merged.homeAddress || typeof merged.homeAddress !== "string") {
-    return {
-      mcpServer: resolvedMcp,
-      team: merged.team ?? "",
-      division: merged.division ?? "",
-      season: merged.season ?? DEFAULT_PREFERENCES.season ?? "",
-      homeAddress: "",
-      prepTimeMinutes: Number(merged.prepTimeMinutes ?? DEFAULT_PREFERENCES.prepTimeMinutes ?? 30),
-      arrivalBufferMinutes: Number(
-        merged.arrivalBufferMinutes ?? DEFAULT_PREFERENCES.arrivalBufferMinutes ?? 60
-      ),
-      minWakeUpTime: merged.minWakeUpTime,
-    };
-  }
-
   return {
     mcpServer: resolvedMcp,
     team: merged.team ?? "",
     division: merged.division ?? "",
     season: merged.season ?? DEFAULT_PREFERENCES.season ?? "",
-    homeAddress: merged.homeAddress,
+    homeAddress: merged.homeAddress && typeof merged.homeAddress === "string" && merged.homeAddress.trim() !== ""
+      ? merged.homeAddress
+      : undefined,
     prepTimeMinutes: Number(merged.prepTimeMinutes ?? DEFAULT_PREFERENCES.prepTimeMinutes ?? 30),
     arrivalBufferMinutes: Number(
       merged.arrivalBufferMinutes ?? DEFAULT_PREFERENCES.arrivalBufferMinutes ?? 60

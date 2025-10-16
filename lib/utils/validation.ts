@@ -58,10 +58,8 @@ export function validatePreferences(prefs: UserPreferences): string[] {
     }
   }
 
-  // Home address validation
-  if (!prefs.homeAddress || prefs.homeAddress.trim() === '') {
-    errors.push('Home address is required');
-  }
+  // Home address validation (optional - only validate format if provided)
+  // No validation needed - it's optional
 
   // Prep time validation (0-240 minutes)
   if (prefs.prepTimeMinutes < 0 || prefs.prepTimeMinutes > 240) {
