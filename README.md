@@ -138,6 +138,38 @@ pnpm start
 - `pnpm dev` - Start development server with Turbopack
 - `pnpm build` - Build production app
 - `pnpm start` - Start production server
+- `pnpm tsx scripts/import-venues.ts <csv-file>` - Import venues to Supabase
+
+### Venue Database Management
+
+HockeyGoTime uses Supabase to store venue addresses and aliases for travel time calculations.
+
+**Add new venues:**
+
+1. Create a CSV file with format:
+   ```csv
+   canonical_name,address,place_id,aliases
+   Skating Edge Harbor City,"23770 S Western Ave, Harbor City, CA 90710",ChIJxcJI8YZK3YARJohntQW-P9I,Skating Edge|Bay Harbor
+   ```
+
+2. Get Place IDs from [Google Place Finder](https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder)
+
+3. Import to Supabase:
+   ```bash
+   pnpm tsx scripts/import-venues.ts data/my-venues.csv
+   ```
+
+**Refresh venue cache after updates:**
+
+```bash
+# Development
+curl -X POST http://localhost:3000/api/venue/refresh-cache
+
+# Production
+curl -X POST https://hockeygotime.net/api/venue/refresh-cache
+```
+
+Cache refreshes automatically on server restart, but use this endpoint to force an immediate refresh after adding/updating venues in Supabase.
 
 ## How It Works
 

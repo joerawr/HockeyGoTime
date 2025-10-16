@@ -12,6 +12,7 @@ This file provides guidance when working with code in this repository.
 - `pnpm build` - Build production app with Turbopack
 - `pnpm start` - Start production server
 - `pnpm tsc --noEmit` - Run TypeScript compiler to check for type errors
+- `pnpm tsx scripts/import-venues.ts <csv-file>` - Import venues to Supabase database
 
 ## Code Quality
 
@@ -131,6 +132,128 @@ The preference panel includes:
 - Player stats (get_player_stats - Phase 7)
 - Supabase persistent caching (Phase 8)
 - Hotel suggestions (deferred post-Capstone)
+
+## Venue Database Management
+
+HockeyGoTime uses **Supabase** to store venue addresses and aliases for travel time calculations. The venue resolver maps schedule venue names to physical addresses via:
+- **Canonical names** - Official venue names (e.g., "Skating Edge Harbor City")
+- **Aliases** - Alternate names from schedules (e.g., "Skating Edge", "Bay Harbor", "Harbor City")
+- **Google Place IDs** - For Maps API integration
+
+### Adding New Venues
+
+**1. Create CSV with venue data:**
+
+```csv
+canonical_name,address,place_id,aliases
+Skating Edge Harbor City,"23770 S Western Ave, Harbor City, CA 90710",ChIJxcJI8YZK3YARJohntQW-P9I,Skating Edge|Bay Harbor|Harbor City
+UTC La Jolla Ice,"4545 La Jolla Village Dr, San Diego, CA 92122",ChIJb9dF1tIA3IARkt0i1FstGVs,UTC|UTC Ice|La Jolla|La Jolla Ice
+```
+
+**CSV Format:**
+- `canonical_name` - Official venue name (required, unique)
+- `address` - Full address for Google Maps (required)
+- `place_id` - Google Maps Place ID starting with "ChIJ" (required)
+- `aliases` - Pipe-separated alternate names (optional)
+
+**2. Get Google Place IDs:**
+- Go to [Google Place Finder](https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder)
+- Search for venue address
+- Copy Place ID (starts with `ChIJ...`)
+
+**3. Import to Supabase:**
+
+```bash
+pnpm tsx scripts/import-venues.ts data/my-venues.csv
+```
+
+**Output:**
+```
+📥 Importing venues from data/my-venues.csv...
+Found 2 venues to import
+✅ Imported Skating Edge Harbor City (3 aliases)
+✅ Imported UTC La Jolla Ice (7 aliases)
+
+📊 Import Summary:
+   Venues imported: 2
+   Aliases imported: 10
+```
+
+### Refreshing Venue Cache
+
+The app caches venues in-memory on startup. After adding/updating venues in Supabase, refresh the cache:
+
+```bash
+# Development
+curl -X POST http://localhost:3000/api/venue/refresh-cache
+
+# Production
+curl -X POST https://hockeygotime.net/api/venue/refresh-cache
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "refreshed_at": "2025-10-16T20:00:00.000Z",
+  "message": "Cache refreshed successfully. Check console logs for venue/alias counts."
+}
+```
+
+**When to refresh:**
+- After importing new venues via CSV
+- After manually adding venues via Supabase SQL editor
+- After updating venue aliases
+- **Not needed** after server restart (auto-loads on startup)
+
+### Venue Resolution Flow
+
+```
+Schedule says: "Skating Edge Harbor City"
+  ↓
+Venue Resolver (lib/venue/resolver.ts)
+  ↓
+Checks in-memory cache for:
+  1. Exact canonical name match
+  2. Alias match (case-insensitive, fuzzy)
+  ↓
+Returns: { canonical_name, address, place_id }
+  ↓
+Travel Time Calculator uses address + place_id
+```
+
+### Database Schema
+
+**venues table:**
+```sql
+CREATE TABLE venues (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  canonical_name TEXT UNIQUE NOT NULL,
+  address TEXT NOT NULL,
+  place_id TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+**venue_aliases table:**
+```sql
+CREATE TABLE venue_aliases (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  venue_id UUID REFERENCES venues(id) ON DELETE CASCADE,
+  alias_text TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(venue_id, alias_text)
+);
+```
+
+### Key Files
+
+- `scripts/import-venues.ts` - CSV import script
+- `lib/venue/resolver.ts` - Venue name → address resolution
+- `lib/venue/cache.ts` - In-memory caching layer
+- `lib/venue/client.ts` - Supabase client
+- `app/api/venue/refresh-cache/route.ts` - Cache refresh endpoint
 
 ## Important Implementation Notes
 
