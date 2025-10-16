@@ -22,6 +22,13 @@ import {
 import type { TravelCalculation } from "@/types/travel";
 import { z } from "zod";
 import { resolveVenue } from "@/lib/venue/resolver";
+import {
+  trackConversation,
+  trackTokens,
+  trackToolCall,
+  trackExternalApiCall,
+} from "@/lib/analytics/metrics";
+import { MODEL_PRICING } from "@/lib/analytics/constants";
 
 const TRAVEL_API_ERROR_MESSAGE =
   "Sorry the google maps api isn't responding, please use maps.google.com. We'll look into the issue.";
@@ -542,9 +549,22 @@ export async function POST(request: NextRequest) {
               }
             );
 
+            // Track successful Google Routes API call
+            const today = new Date().toISOString().split("T")[0];
+            trackExternalApiCall("google-routes", true, today).catch((err) =>
+              console.error("❌ Failed to track Maps API call:", err)
+            );
+
             return calculation;
           } catch (error) {
             console.error("🗺️ Travel calculation error:", error);
+
+            // Track failed Google Routes API call
+            const today = new Date().toISOString().split("T")[0];
+            trackExternalApiCall("google-routes", false, today).catch((err) =>
+              console.error("❌ Failed to track Maps API error:", err)
+            );
+
             return { errorMessage: TRAVEL_API_ERROR_MESSAGE };
           }
         },
@@ -557,12 +577,51 @@ export async function POST(request: NextRequest) {
       messages: modelMessages,
       tools: wrappedTools,
       stopWhen: stepCountIs(5), // Enable multi-step execution: tool call -> text response
-      onFinish: async ({ text, toolCalls, toolResults, steps }) => {
+      onFinish: async ({ text, toolCalls, toolResults, steps, usage }) => {
         console.log(`📊 Stream finished:`);
         console.log(`   Text length: ${text?.length || 0}`);
         console.log(`   Tool calls: ${toolCalls?.length || 0}`);
         console.log(`   Tool results: ${toolResults?.length || 0}`);
         console.log(`   Steps: ${steps?.length || 0}`);
+
+        // Track analytics (non-blocking)
+        const today = new Date().toISOString().split("T")[0];
+
+        // Track conversation count
+        trackConversation(today).catch((error) =>
+          console.error("❌ Conversation tracking failed:", error)
+        );
+
+        // Track token usage and calculate cost
+        if (usage && usage.inputTokens && usage.outputTokens) {
+          const inputTokens = usage.inputTokens;
+          const outputTokens = usage.outputTokens;
+          const modelName = "gemini-2.5-flash";
+
+          trackTokens(modelName, inputTokens, outputTokens, today).catch(
+            (error) => console.error("❌ Token tracking failed:", error)
+          );
+
+          // Calculate and log cost
+          const pricing = MODEL_PRICING[modelName];
+          const inputCost = (inputTokens / 1_000_000) * pricing.inputPricePerMillion;
+          const outputCost = (outputTokens / 1_000_000) * pricing.outputPricePerMillion;
+          const totalCost = inputCost + outputCost;
+
+          console.log(`💰 Cost estimate:`);
+          console.log(`   Input tokens: ${inputTokens.toLocaleString()} ($${inputCost.toFixed(4)})`);
+          console.log(`   Output tokens: ${outputTokens.toLocaleString()} ($${outputCost.toFixed(4)})`);
+          console.log(`   Total cost: $${totalCost.toFixed(4)}`);
+        }
+
+        // Track tool calls
+        if (toolCalls && toolCalls.length > 0) {
+          for (const toolCall of toolCalls) {
+            trackToolCall(toolCall.toolName, today).catch((error) =>
+              console.error(`❌ Tool tracking failed for ${toolCall.toolName}:`, error)
+            );
+          }
+        }
 
         // Close the MCP client after streaming completes
         // This is critical to avoid "closed client" errors
