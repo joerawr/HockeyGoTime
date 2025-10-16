@@ -43,9 +43,7 @@ export function PreferencePanel() {
         !savedPrefs.division ||
         savedPrefs.division.trim() === "" ||
         !savedPrefs.season ||
-        savedPrefs.season.trim() === "" ||
-        !savedPrefs.homeAddress ||
-        savedPrefs.homeAddress.trim() === "";
+        savedPrefs.season.trim() === "";
 
       if (isMissingCoreInfo) {
         setIsEditing(true);
@@ -60,7 +58,7 @@ export function PreferencePanel() {
     team: "",
     division: "",
     season: DEFAULT_PREFERENCES.season || "2025/2026",
-    homeAddress: "",
+    homeAddress: undefined,
     prepTimeMinutes: DEFAULT_PREFERENCES.prepTimeMinutes ?? 30,
     arrivalBufferMinutes: DEFAULT_PREFERENCES.arrivalBufferMinutes ?? 60,
     minWakeUpTime: undefined,

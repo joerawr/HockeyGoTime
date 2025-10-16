@@ -15,7 +15,7 @@ export interface UserPreferences {
   season: string;            // e.g., "2025/2026"
 
   // Location & Travel
-  homeAddress: string;       // Full address for geocoding, e.g., "123 Main St, Los Angeles, CA 90001"
+  homeAddress?: string;      // Optional - Full address for geocoding. If traveling, provide hotel name in chat.
 
   // Timing Preferences
   prepTimeMinutes: number;   // Minutes needed to get ready, default: 30

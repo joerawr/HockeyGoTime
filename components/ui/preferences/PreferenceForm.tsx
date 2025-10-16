@@ -96,6 +96,7 @@ export function PreferenceForm({
         <p className="text-sm text-slate-500">
           Save your team info so we can answer schedule and travel questions faster.
         </p>
+        <p className="text-xs text-slate-400 italic">* Required field</p>
       </div>
 
       {errors.length > 0 && (
@@ -165,7 +166,7 @@ export function PreferenceForm({
 
         <div>
           <label htmlFor="homeAddress" className="mb-1 block text-sm font-semibold text-slate-700">
-            Home Address *
+            Home Address
           </label>
           <input
             type="text"
@@ -174,9 +175,8 @@ export function PreferenceForm({
             onChange={(e) => setFormData({ ...formData, homeAddress: e.target.value })}
             placeholder="123 Main St, Los Angeles, CA 90001"
             className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm transition focus-visible:border-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200"
-            required
           />
-          <p className="mt-1 text-xs text-slate-500">Full address for travel time calculations</p>
+          <p className="mt-1 text-xs text-slate-500">Optional - for travel time calculations. If traveling, provide hotel name in chat.</p>
         </div>
 
         <div>
