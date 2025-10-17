@@ -171,6 +171,59 @@ curl -X POST https://hockeygotime.net/api/venue/refresh-cache
 
 Cache refreshes automatically on server restart, but use this endpoint to force an immediate refresh after adding/updating venues in Supabase.
 
+### Gemini API Tier Management
+
+HockeyGoTime uses Google's Gemini 2.5 Flash model for AI chat. The API supports two tiers:
+
+**Check your current tier:**
+
+```bash
+pnpm tsx scripts/check-gemini-tier.ts
+```
+
+Or visit https://console.cloud.google.com/billing to see if billing is enabled.
+
+**Free Tier** (No billing enabled):
+- ✅ FREE tokens ($0.00)
+- ⚠️ Your data IS used to improve Google products
+- ⚠️ Rate limits: 1,500 requests/day (resets midnight PT)
+- ⚠️ May not support production traffic during peak usage
+
+**Paid Tier** (Billing enabled) - **RECOMMENDED FOR PRODUCTION**:
+- ✅ Your data is NOT used to improve Google products
+- ✅ Higher rate limits (production-ready)
+- ✅ Access to context caching and batch API
+- 💰 Cost: ~$0.30/$2.50 per 1M tokens (very affordable)
+
+**Multi-Environment Strategy (Recommended):**
+
+Use different API keys for different environments to optimize costs while maintaining privacy:
+
+1. **Production (main branch)**: Paid tier API key
+   - Protects real users' privacy
+   - Handles production traffic
+   - Cost: ~$2/month for typical usage
+
+2. **Development (dev branch)**: Free tier API key
+   - Saves money during testing
+   - 1,500 requests/day is plenty for development
+   - No charges during active development
+
+**How to set up:**
+```bash
+# 1. Create two Google Cloud projects at https://console.cloud.google.com/
+#    - Project 1: "HockeyGoTime-Prod" (enable billing)
+#    - Project 2: "HockeyGoTime-Dev" (no billing)
+
+# 2. Generate API keys for each at https://aistudio.google.com/app/apikey
+
+# 3. In Vercel dashboard, set environment variables per branch:
+#    - Production branch: Use paid tier API key
+#    - Development branch: Use free tier API key
+```
+
+Typical HockeyGoTime usage: ~$0.04 per 1,000 conversations on paid tier.
+
 ## How It Works
 
 ### Input Normalization
