@@ -162,6 +162,12 @@ export async function calculateTravelTimes(
     departureTime.getTime() - userPreferences.prepTimeMinutes * 60 * 1000
   );
 
+  // Generate Google Maps directions URL
+  const mapsUrl = `https://www.google.com/maps/dir/?api=1` +
+    `&origin=${encodeURIComponent(userPreferences.homeAddress)}` +
+    `&destination=${encodeURIComponent(options.venueAddress)}` +
+    `&travelmode=driving`;
+
   return {
     game,
     userPreferences,
@@ -176,5 +182,6 @@ export async function calculateTravelTimes(
     isEstimated: route.isFallback ?? false,
     estimateMethod: route.isFallback ? 'distance' : undefined,
     disclaimer: route.disclaimer,
+    mapsUrl,
   };
 }
