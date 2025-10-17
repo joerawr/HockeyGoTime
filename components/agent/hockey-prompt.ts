@@ -252,7 +252,7 @@ Your response:
 **Google Maps Directions Link:**
 When providing travel time calculations, ALWAYS include the Google Maps link at the end of your response using this markdown format:
 
-🗺️ [Get directions in Google Maps](MAPS_URL_FROM_CALCULATION)
+[📍 Get directions in Google Maps](MAPS_URL_FROM_CALCULATION)
 
 This makes it easy for users to navigate on game day. The link will automatically open the Google Maps app on mobile or the web version on desktop.
 
