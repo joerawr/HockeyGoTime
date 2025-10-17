@@ -30,7 +30,8 @@ interface ComputeRouteParams {
   originAddress: string;
   destinationAddress: string;
   /**
-   * Arrival time expressed in the user's local timezone (ISO 8601 string)
+   * Target arrival time expressed in the user's local timezone (ISO 8601 string)
+   * Used to calculate departure time for traffic-aware routing
    * Example: "2025-10-05T07:00:00-07:00"
    */
   arrivalTimeLocalISO: string;
@@ -62,34 +63,83 @@ function parseDuration(duration: string): number {
 /**
  * Build a ComputeRoutesRequest payload from calling parameters
  */
-function buildRequestPayload({
-  originAddress,
-  destinationAddress,
-  arrivalTimeLocalISO,
-  timezone,
-}: ComputeRouteParams): ComputeRoutesRequest {
-  const arrivalUTC = toUTC(arrivalTimeLocalISO, timezone);
-
-  return {
+function buildRequestPayload(
+  originAddress: string,
+  destinationAddress: string,
+  departureTimeLocalISO?: string,
+  timezone?: string
+): ComputeRoutesRequest {
+  const payload: ComputeRoutesRequest = {
     origin: { address: originAddress },
     destination: { address: destinationAddress },
     travelMode: 'DRIVE',
     routingPreference: 'TRAFFIC_AWARE_OPTIMAL',
-    arrivalTime: arrivalUTC.toISOString(),
+    trafficModel: 'PESSIMISTIC',
     computeAlternativeRoutes: false,
     languageCode: 'en-US',
     units: 'IMPERIAL',
   };
+
+  // Only set departureTime if provided (otherwise API defaults to now)
+  if (departureTimeLocalISO) {
+    const departureUTC = toUTC(departureTimeLocalISO, timezone);
+    payload.departureTime = departureUTC.toISOString();
+  }
+
+  return payload;
 }
 
+// Convergence settings for iterative departure time calculation
+const INITIAL_ESTIMATE_MINUTES = 45;
+const CONVERGENCE_THRESHOLD_SECONDS = 300; // 5 minutes
+const MAX_ITERATIONS = 2;
+
 /**
- * Call Google Routes API and return duration/distance for a DRIVE route.
+ * Call Google Routes API with iterative convergence to get accurate
+ * traffic-aware duration for a future departure time.
+ *
+ * Algorithm:
+ * 1. Estimate departure time (arrival - 45 min initial guess)
+ * 2. Get traffic-aware duration for that departure time
+ * 3. If |estimate - actual| > 5 min, refine and retry once
  *
  * @throws Error if the request fails or returns an unexpected shape.
  */
 export async function computeRoute(params: ComputeRouteParams): Promise<ComputeRouteResult> {
+  const { originAddress, destinationAddress, arrivalTimeLocalISO, timezone } = params;
+
   try {
-    return await requestRoutesApi(params);
+    // Convert arrival time to Date for calculations
+    const arrivalTime = new Date(arrivalTimeLocalISO);
+    if (Number.isNaN(arrivalTime.getTime())) {
+      throw new Error(`Invalid arrival time: ${arrivalTimeLocalISO}`);
+    }
+
+    // Iteration 1: Initial estimate
+    let estimatedDurationSeconds = INITIAL_ESTIMATE_MINUTES * 60;
+    let departureTime = new Date(arrivalTime.getTime() - estimatedDurationSeconds * 1000);
+
+    let result = await requestRoutesApi(
+      originAddress,
+      destinationAddress,
+      departureTime.toISOString(),
+      timezone
+    );
+
+    // Iteration 2: Refine if needed
+    const diff = Math.abs(result.durationSeconds - estimatedDurationSeconds);
+    if (diff > CONVERGENCE_THRESHOLD_SECONDS) {
+      // Recalculate departure time with actual duration
+      departureTime = new Date(arrivalTime.getTime() - result.durationSeconds * 1000);
+      result = await requestRoutesApi(
+        originAddress,
+        destinationAddress,
+        departureTime.toISOString(),
+        timezone
+      );
+    }
+
+    return result;
   } catch (error) {
     console.warn('[travel] Google Routes API failed, attempting fallback estimate.', error);
 
@@ -103,13 +153,23 @@ export async function computeRoute(params: ComputeRouteParams): Promise<ComputeR
   }
 }
 
-async function requestRoutesApi(params: ComputeRouteParams): Promise<ComputeRouteResult> {
+async function requestRoutesApi(
+  originAddress: string,
+  destinationAddress: string,
+  departureTimeISO: string,
+  timezone?: string
+): Promise<ComputeRouteResult> {
   const apiKey = process.env.GOOGLE_MAPS_API_KEY;
   if (!apiKey) {
     throw new Error('GOOGLE_MAPS_API_KEY environment variable is not set');
   }
 
-  const requestBody = buildRequestPayload(params);
+  const requestBody = buildRequestPayload(
+    originAddress,
+    destinationAddress,
+    departureTimeISO,
+    timezone
+  );
 
   const response = await fetch(ROUTES_ENDPOINT, {
     method: 'POST',
