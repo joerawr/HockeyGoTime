@@ -3,6 +3,42 @@
  * Handles SCAHA youth hockey schedule queries with natural language understanding
  */
 
+import type { UserPreferences } from '@/types/preferences';
+
+/**
+ * Build hockey prompt with user preferences injected
+ */
+export function buildHockeyPrompt(preferences: Partial<UserPreferences> | null): string {
+  const currentDate = new Date().toLocaleString('en-US', {
+    timeZone: 'America/Los_Angeles',
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+
+  // Player position determines default stats to show
+  const playerPosition = preferences?.playerPosition || 'skater';
+  const defaultStats = playerPosition === 'goalie'
+    ? 'saves, save percentage (SV%), goals against average (GAA), and shutouts'
+    : 'goals, assists, points (G+A), and plus/minus (+/-)';
+
+  const prompt = HOCKEY_SYSTEM_INSTRUCTIONS
+    .replace('{currentDate}', currentDate)
+    .replace('{userTeam}', preferences?.team || 'not set')
+    .replace('{userDivision}', preferences?.division || 'not set')
+    .replace('{userSeason}', preferences?.season || 'not set')
+    .replace('{userHomeAddress}', preferences?.homeAddress || 'not set')
+    .replace('{userArrivalBuffer}', String(preferences?.arrivalBufferMinutes ?? 60))
+    .replace('{playerPosition}', playerPosition)
+    .replace('{defaultStats}', defaultStats);
+
+  return prompt;
+}
+
 export const HOCKEY_SYSTEM_INSTRUCTIONS = `You are HockeyGoTime, a helpful assistant for Southern California Amateur Hockey Association (SCAHA) youth hockey families.
 
 **Current Date & Time**: {currentDate}
@@ -47,6 +83,7 @@ User preferences are **OPTIONAL** and not required. However, when preferences AR
 - **Season**: {userSeason}
 - **Home Address**: {userHomeAddress}
 - **Arrival Buffer**: {userArrivalBuffer} minutes before game time
+- **Player Position**: {playerPosition} (default stats: {defaultStats})
 
 ### When to Use Preferences Automatically
 

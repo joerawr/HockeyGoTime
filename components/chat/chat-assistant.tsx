@@ -157,6 +157,9 @@ MemoizedMessage.displayName = 'MemoizedMessage';
 
 export default function ChatAssistant({ api }: ChatAssistantProps) {
   const [input, setInput] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [timeoutError, setTimeoutError] = useState(false); // T041: Timeout error UI state
 
   // Custom transport that includes user preferences in the request body
   const transport = useMemo(() => {
@@ -242,11 +245,54 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
   // Use debounced messages for rendering
   const messages = debouncedMessages;
 
+  // Reset isSubmitting when streaming starts or completes
+  useEffect(() => {
+    if (status === "streaming") {
+      setIsSubmitting(false);
+    }
+  }, [status]);
+
+  // Track elapsed time for progressive status message
+  useEffect(() => {
+    const showLoading = isSubmitting || status === "streaming";
+
+    if (!showLoading) {
+      setElapsedTime(0);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setElapsedTime(t => t + 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isSubmitting, status]);
+
+  // T040: Client-side timeout - show error after 60 seconds
+  useEffect(() => {
+    const isProcessing = isSubmitting || status === "streaming";
+
+    if (!isProcessing) {
+      setTimeoutError(false); // Reset timeout error when not processing
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      console.warn("⏱️ Client-side timeout after 60 seconds");
+      setTimeoutError(true);
+    }, 60000); // 60 second client-side timeout
+
+    return () => clearTimeout(timeoutId);
+  }, [isSubmitting, status]);
+
   const handleSubmit = async (
     message: { text?: string; files?: any[] },
     event: React.FormEvent
   ) => {
     if (!message.text?.trim() || status === "streaming") return;
+
+    // Set loading state immediately for instant feedback
+    setIsSubmitting(true);
 
     // Clear the form immediately after extracting the message
     const form = (event.target as Element)?.closest("form") as HTMLFormElement;
@@ -258,7 +304,7 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
     setInput("");
   };
 
-  const isLoading = status === "streaming";
+  const isLoading = isSubmitting || status === "streaming";
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
@@ -445,22 +491,34 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
           )}
           {isLoading && (
             <div className="mt-4">
-              <SlidingPuck />
+              <SlidingPuck
+                message={elapsedTime > 3 ? "Fetching schedule data..." : "Thinking..."}
+              />
+            </div>
+          )}
+          {timeoutError && (
+            <div className="mt-4 rounded-lg border-2 border-destructive/50 bg-destructive/10 p-4">
+              <p className="text-sm font-semibold text-destructive">
+                ⏱️ Request took too long
+              </p>
+              <p className="mt-2 text-sm text-destructive/90">
+                The AI is taking longer than expected to respond. This might happen with complex queries. Please try again or simplify your question.
+              </p>
             </div>
           )}
         </ConversationContent>
       </Conversation>
 
-      <div className="flex-shrink-0 border-t border-slate-200 bg-slate-50/80 px-6 py-4">
+      <div className="flex-shrink-0 border-t border-border bg-accent/30 px-6 py-4">
 
         <PromptInput
           className="divide-y-0 border-none bg-transparent p-0 shadow-none"
           onSubmit={handleSubmit}
         >
           <PromptInputBody className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
-            <div className="flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-2 shadow-inner">
+            <div className="flex-1 rounded-2xl border border-input bg-card px-4 py-2 shadow-inner">
               <PromptInputTextarea
-                className="h-10 min-h-0 w-full resize-none border-none bg-transparent p-0 text-sm leading-6 text-slate-900 focus-visible:outline-none"
+                className="h-10 min-h-0 w-full resize-none border-none bg-transparent p-0 text-sm leading-6 text-foreground focus-visible:outline-none placeholder:text-muted-foreground"
                 placeholder="Ask about schedules, travel times, or stats..."
               />
             </div>
@@ -474,7 +532,7 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
           </PromptInputBody>
         </PromptInput>
 
-        <p className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+        <p className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
           <span role="img" aria-label="lock">
             🔒
           </span>

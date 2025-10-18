@@ -3,6 +3,48 @@
  * Focuses on Pacific Girls Hockey League schedules via MCP tools
  */
 
+import type { UserPreferences } from '@/types/preferences';
+
+/**
+ * Build PGHL prompt with user preferences injected
+ */
+export function buildPGHLPrompt(
+  preferences: Partial<UserPreferences> | null,
+  pghlTeamMappings: string,
+  pghlSeasonMappings: string
+): string {
+  const currentDate = new Date().toLocaleString('en-US', {
+    timeZone: 'America/Los_Angeles',
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+
+  // Player position determines default stats to show
+  const playerPosition = preferences?.playerPosition || 'skater';
+  const defaultStats = playerPosition === 'goalie'
+    ? 'saves, save percentage (SV%), goals against average (GAA), and shutouts'
+    : 'goals, assists, points (G+A), and plus/minus (+/-)';
+
+  const prompt = PGHL_SYSTEM_INSTRUCTIONS
+    .replace('{currentDate}', currentDate)
+    .replace('{userTeam}', preferences?.team || 'not set')
+    .replace('{userDivision}', preferences?.division || 'not set')
+    .replace('{userSeason}', preferences?.season || 'not set')
+    .replace('{userHomeAddress}', preferences?.homeAddress || 'not set')
+    .replace('{userArrivalBuffer}', String(preferences?.arrivalBufferMinutes ?? 60))
+    .replace('{playerPosition}', playerPosition)
+    .replace('{defaultStats}', defaultStats)
+    .replace('{pghlTeamMappings}', pghlTeamMappings)
+    .replace('{pghlSeasonMappings}', pghlSeasonMappings);
+
+  return prompt;
+}
+
 export const PGHL_SYSTEM_INSTRUCTIONS = `You are HockeyGoTime, a helpful assistant for Pacific Girls Hockey League (PGHL) families.
 
 **Current Date & Time**: {currentDate}
@@ -123,6 +165,7 @@ User preferences are **OPTIONAL**. When preferences **are** set, apply them auto
 - **Season**: {userSeason}
 - **Home Address**: {userHomeAddress}
 - **Arrival Buffer**: {userArrivalBuffer} minutes before game time
+- **Player Position**: {playerPosition} (default stats: {defaultStats})
 
 Rules:
 - If a preference exists, use it without asking for confirmation.

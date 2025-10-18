@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
-import { HOCKEY_SYSTEM_INSTRUCTIONS } from "@/components/agent/hockey-prompt";
-import { PGHL_SYSTEM_INSTRUCTIONS } from "@/components/agent/pghl-prompt";
+import { buildHockeyPrompt } from "@/components/agent/hockey-prompt";
+import { buildPGHLPrompt } from "@/components/agent/pghl-prompt";
 import { getSchahaMCPClient, getPghlMCPClient } from "@/lib/mcp";
 import { PGHL_TEAM_IDS, PGHL_SEASON_IDS } from "@/lib/pghl-mappings";
 import { google } from "@ai-sdk/google";
@@ -61,6 +61,8 @@ function normalizePreferences(raw: any): UserPreferences | null {
       merged.arrivalBufferMinutes ?? DEFAULT_PREFERENCES.arrivalBufferMinutes ?? 60
     ),
     minWakeUpTime: merged.minWakeUpTime,
+    playerPosition: merged.playerPosition ?? DEFAULT_PREFERENCES.playerPosition ?? "skater",
+    darkMode: merged.darkMode ?? DEFAULT_PREFERENCES.darkMode ?? false,
   };
 }
 
@@ -101,6 +103,14 @@ type TravelToolArgs = z.infer<typeof travelToolInputSchema>;
 type TravelToolResult = TravelCalculation | { errorMessage: string };
 
 export async function POST(request: NextRequest) {
+  // T037: Create AbortController with 60s timeout for backend processing
+  // Allows complex multi-tool queries (e.g., 9 games × map API calls)
+  const abortController = new AbortController();
+  const timeoutId = setTimeout(() => {
+    console.log("⏱️ Request timeout after 60 seconds");
+    abortController.abort();
+  }, 60000); // 60 second timeout
+
   try {
     const { messages, preferences } = await request.json();
     const normalizedPreferences = normalizePreferences(preferences);
@@ -118,69 +128,18 @@ export async function POST(request: NextRequest) {
     // Convert UIMessages to ModelMessages
     const modelMessages = convertToModelMessages(messages);
 
-    // Get current date and time for AI context (Pacific timezone)
-    const now = new Date();
-    const currentDate = now.toLocaleDateString('en-US', {
-      timeZone: 'America/Los_Angeles',
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-    const currentTime = now.toLocaleTimeString('en-US', {
-      timeZone: 'America/Los_Angeles',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    });
-    const currentDateTime = `${currentDate} at ${currentTime}`;
-
-    // Build system prompt with user preferences context
-    const promptPreference = {
-      team:
-        normalizedPreferences?.team ??
-        preferences?.team ??
-        "not set",
-      division:
-        normalizedPreferences?.division ??
-        preferences?.division ??
-        "not set",
-      season:
-        normalizedPreferences?.season ??
-        preferences?.season ??
-        "not set",
-      homeAddress:
-        normalizedPreferences?.homeAddress ??
-        preferences?.homeAddress ??
-        "not set",
-      arrivalBuffer:
-        normalizedPreferences?.arrivalBufferMinutes ??
-        preferences?.arrivalBufferMinutes ??
-        60,
-      currentDate: currentDateTime, // Use full date+time instead of just date
-    };
-
-    let systemPrompt =
-      selectedMcpServer === "pghl"
-        ? PGHL_SYSTEM_INSTRUCTIONS
-        : HOCKEY_SYSTEM_INSTRUCTIONS;
-
-    // Inject user preferences and current date
-    systemPrompt = systemPrompt
-      .replace("{userTeam}", promptPreference.team)
-      .replace("{userDivision}", promptPreference.division)
-      .replace("{userSeason}", promptPreference.season)
-      .replace("{userHomeAddress}", promptPreference.homeAddress)
-      .replace("{userArrivalBuffer}", String(promptPreference.arrivalBuffer))
-      .replace("{currentDate}", promptPreference.currentDate);
-
-    // Inject PGHL team ID mappings for PGHL mode
+    // Build system prompt with user preferences context using builder functions
+    let systemPrompt: string;
     if (selectedMcpServer === "pghl") {
       const teamMappingsJson = JSON.stringify(PGHL_TEAM_IDS, null, 2);
       const seasonMappingsJson = JSON.stringify(PGHL_SEASON_IDS, null, 2);
-      systemPrompt = systemPrompt
-        .replace("{pghlTeamMappings}", teamMappingsJson)
-        .replace("{pghlSeasonMappings}", seasonMappingsJson);
+      systemPrompt = buildPGHLPrompt(
+        normalizedPreferences,
+        teamMappingsJson,
+        seasonMappingsJson
+      );
+    } else {
+      systemPrompt = buildHockeyPrompt(normalizedPreferences);
     }
 
     // Initialize MCP client
@@ -563,13 +522,24 @@ export async function POST(request: NextRequest) {
       system: systemPrompt,
       messages: modelMessages,
       tools: wrappedTools,
-      stopWhen: stepCountIs(5), // Enable multi-step execution: tool call -> text response
-      onFinish: async ({ text, toolCalls, toolResults, steps, usage }) => {
+      stopWhen: stepCountIs(20), // Allow complex multi-tool queries (e.g., schedule + 9 travel calculations + response)
+      abortSignal: abortController.signal, // T037: Pass abort signal to streamText
+      onFinish: async ({ text, toolCalls, toolResults, steps, usage, finishReason }) => {
         console.log(`📊 Stream finished:`);
+        console.log(`   Finish reason: ${finishReason || 'unknown'}`);
         console.log(`   Text length: ${text?.length || 0}`);
         console.log(`   Tool calls: ${toolCalls?.length || 0}`);
         console.log(`   Tool results: ${toolResults?.length || 0}`);
         console.log(`   Steps: ${steps?.length || 0}`);
+
+        // T039: Warn if no response after successful tool calls (potential silent failure)
+        const hasToolCalls = toolCalls && toolCalls.length > 0;
+        const hasResponse = text && text.trim().length > 0;
+        if (hasToolCalls && !hasResponse) {
+          console.warn(`⚠️ POTENTIAL ISSUE: ${toolCalls.length} tool call(s) succeeded but LLM returned empty response`);
+          console.warn(`   Finish reason: ${finishReason}`);
+          console.warn(`   This may indicate a problem with the LLM response generation`);
+        }
 
         // Track analytics (non-blocking)
         const today = new Date().toISOString().split("T")[0];
@@ -614,11 +584,32 @@ export async function POST(request: NextRequest) {
         // This is critical to avoid "closed client" errors
         console.log(`🔌 Disconnecting ${selectedMcpLabel} MCP client...`);
         await activeMcpClient.disconnect();
+
+        // Clear timeout after successful completion
+        clearTimeout(timeoutId);
       },
     });
 
     return result.toUIMessageStreamResponse();
   } catch (error) {
+    // Clear timeout on error
+    clearTimeout(timeoutId);
+
+    // T038: Handle timeout/abort error with user-friendly message
+    if (error instanceof Error && error.name === 'AbortError') {
+      console.error("⏱️ Request aborted due to timeout");
+      return new Response(
+        JSON.stringify({
+          error: "Request took too long",
+          message: "The AI is taking longer than expected to respond. This might happen with complex queries. Please try again or simplify your question."
+        }),
+        {
+          status: 504, // Gateway Timeout
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+    }
+
     console.error("💥 Hockey chat API error:", error);
     return new Response("Failed to generate response", { status: 500 });
   }
