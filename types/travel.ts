@@ -18,7 +18,8 @@ export interface ComputeRoutesRequest {
   };
   travelMode: 'DRIVE';
   routingPreference: 'TRAFFIC_AWARE_OPTIMAL';
-  arrivalTime: string;        // ISO 8601 with timezone
+  departureTime?: string;     // ISO 8601 with timezone (optional, defaults to now)
+  trafficModel?: 'BEST_GUESS' | 'PESSIMISTIC' | 'OPTIMISTIC';
   computeAlternativeRoutes: boolean;
   languageCode: 'en-US';
   units: 'IMPERIAL';

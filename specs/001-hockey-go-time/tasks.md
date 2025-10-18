@@ -285,82 +285,75 @@ This task list organizes implementation by **user story** to enable independent 
 
 ### Tasks
 
-**T023** [US2] [P] Create Google Routes API client
-- **File**: `lib/travel/google-routes.ts`
+**T023** [X] [US2] [P] Create Google Routes API client
+- **File**: `lib/travel/google-routes.ts` ✅
 - **Action**: Implement `computeRoute(params)` function:
-  - Input: `{ originAddress, destinationAddress, arrivalTime }`
-  - Converts `arrivalTime` to UTC using timezone utilities (T009)
-  - Makes POST request to `https://routes.googleapis.com/directions/v2:computeRoutes`
-  - Uses `TRAFFIC_AWARE_OPTIMAL` routing preference
-  - Parses response: `{ duration: string, distanceMeters: number }`
-  - Returns travel time in seconds
-  - Handles API errors gracefully
+  - ✅ Implemented with TRAFFIC_AWARE_OPTIMAL routing preference
+  - ✅ Routes API v2 integration complete
+  - ✅ Returns travel time in seconds with traffic data
+  - ✅ Fallback to distance-based estimates on API failure
 - **Dependencies**: T006, T009, T002 (GOOGLE_MAPS_API_KEY)
-- **Validation**: Test with sample addresses, verify traffic data used
+- **Validation**: ✅ Tested with production addresses, traffic data working
 
-**T024** [US2] [P] Create travel time calculator
-- **File**: `lib/travel/time-calculator.ts`
+**T024** [X] [US2] [P] Create travel time calculator
+- **File**: `lib/travel/time-calculator.ts` ✅
 - **Action**: Implement `calculateTravelTimes(game, userPrefs, venueAddress)`:
-  - Input: Game, UserPreferences, venue address string
-  - Converts game time (California PT) to UTC for API call (T009)
-  - Calls Google Routes API (T023)
-  - Calculates:
-    - `arrivalTime = gameTime - arrivalBufferMinutes`
-    - `departureTime = arrivalTime - travelDurationSeconds`
-    - `wakeUpTime = departureTime - prepTimeMinutes`
-  - Converts all times back to California PT
-  - Formats times in 12-hour AM/PM format (T009)
-  - Returns `TravelCalculation` object
+  - ✅ Implemented with timezone handling (PT ↔ UTC conversions)
+  - ✅ Calculates departure and wake-up times correctly
+  - ✅ Integrated with venue resolution from Supabase (Feature 005)
+  - ✅ Formats times in 12-hour AM/PM format
+  - ✅ Returns `TravelCalculation` object
 - **Dependencies**: T006, T009, T023
-- **Validation**: Test with known game time and address, verify calculations
+- **Validation**: ✅ Production testing confirms accurate calculations
 
 **T025** [X] [US2] Update venue address mappings
-- **File**: `components/agent/hockey-prompt.ts` ✅
-- **Action**: Venue mappings added (30 venues hardcoded) ✅
-  - Expanded from 9 to 30 SCAHA venues
-  - Added variant name handling (YLICE, Glacial Gardens, etc.)
-  - Covers all major regions (North, South, East, West, Central)
-- **Validation**: ✅ All mappings present in system prompt
-- **Post-Capstone**: Migrate to LLM-based venue address deduplication pipeline (deferred to bottom of backlog)
+- **Status**: OUTDATED - Replaced by Feature 005 (Supabase venue resolution) ✅
+- **Impact**: Hardcoded mappings removed from system prompt ✅
+- **Current Implementation**:
+  - ✅ Uses `resolveVenue()` from `lib/venue/resolver.ts`
+  - ✅ Serves 36 venues across SCAHA and PGHL
+  - ✅ 42 aliases for variant venue names
+  - ✅ Authoritative venue data in Supabase
+- **Validation**: ✅ Production venue resolution working for both leagues
 
-**T026** [US2] Create AI SDK custom tool for travel calculations (optional)
-- **File**: `lib/tools/travel-tool.ts` (optional approach)
+**T026** [X] [US2] Create AI SDK custom tool for travel calculations
+- **File**: `app/api/hockey-chat/route.ts` ✅
 - **Action**: Create custom AI SDK tool that wraps travel calculator:
-  - Tool name: `calculate_travel_times`
-  - Parameters: `gameId` (finds game from schedule)
-  - Returns: `TravelCalculation` object
-  - Alternative: Let AI orchestrate using system prompt instructions
+  - ✅ Tool name: `calculate_travel_times` implemented
+  - ✅ Integrated with venue resolution system
+  - ✅ Returns formatted travel time calculations
+  - ✅ Working in production with real queries
 - **Dependencies**: T024
-- **Validation**: AI can call tool and format response
+- **Validation**: ✅ AI successfully calls tool and formats responses
 
-**T027** [US2] Update AI chat route for travel queries
-- **File**: `app/api/hockey-chat/route.ts`
+**T027** [X] [US2] Update AI chat route for travel queries
+- **File**: `app/api/hockey-chat/route.ts` ✅
 - **Action**:
-  - If travel tool created (T026): Add to available tools
-  - Otherwise: Update system prompt with travel calculation instructions
-  - Provide venue address lookup from hardcoded mappings
-  - Handle "when do I need to leave?" queries
-  - Handle "when should I wake up?" queries
-- **Dependencies**: T024, T025, T026 (optional)
-- **Validation**: Test queries:
-  - "When do I need to leave for Sunday's game at Yorba Linda ICE?"
-  - "What time should I wake up for the October 5th game?"
+  - ✅ Travel tool (`calculate_travel_times`) added to available tools
+  - ✅ Integrated with Supabase venue resolution (replaces hardcoded mappings)
+  - ✅ Handles "when do I need to leave?" queries
+  - ✅ Handles "when should I wake up?" queries
+- **Dependencies**: T024, T025, T026
+- **Validation**: ✅ Production queries working correctly
 
-**T028** [US2] Add travel time error handling [X]
-- **File**: `lib/travel/google-routes.ts`
+**T028** [X] [US2] Add travel time error handling
+- **File**: `lib/travel/google-routes.ts` ✅
 - **Action**: Add fallback logic:
-  - If Routes API fails → use distance-based estimate (straight-line distance × 1.3, 30mph avg speed)
-  - Return disclaimer: "Estimated travel time (traffic data unavailable)"
-  - Log errors for monitoring
+  - ✅ Fallback implemented: distance-based estimate (distance × 1.3, 30mph avg)
+  - ✅ Returns disclaimer: "Estimated travel time (traffic data unavailable)"
+  - ✅ Error logging for monitoring
+  - ✅ Graceful degradation on API failures
 - **Dependencies**: T023
-- **Validation**: Simulate API failure, verify fallback works
+- **Validation**: ✅ Fallback tested and working
 
-**🎯 CHECKPOINT**: User Story 2 Complete
-- Test: "When do I need to leave for Sunday's game?" → departure time calculated
-- Test: "When should I wake up?" → wake-up time calculated
-- Test: Times display in 12-hour AM/PM format ("7:00 AM" not "07:00")
-- Run: `pnpm tsc --noEmit` (zero errors)
-- Deploy: Vercel production, test with real queries
+**🎯 CHECKPOINT**: User Story 2 Complete ✅
+- ✅ Travel calculations working in production
+- ✅ Integrated with Supabase venue resolution (Feature 005)
+- ✅ Handles "when do I need to leave?" and "when should I wake up?" queries
+- ✅ Times display in 12-hour AM/PM format
+- ✅ Graceful degradation on API failures (distance-based fallback)
+- ✅ Zero TypeScript errors
+- ✅ Deployed to production at hockeygotime.net
 
 ---
 
@@ -380,52 +373,54 @@ This task list organizes implementation by **user story** to enable independent 
 
 ### Tasks
 
-**T029** [US4] Verify SCAHA MCP stats tools availability [X]
+**T029** [X] [US4] Verify SCAHA MCP stats tools availability
 - **Action**:
-  - Check SCAHA MCP server repository for `get_team_stats` and `get_player_stats`
-  - If missing: coordinate with user to add tools
-  - Document actual response schemas in `contracts/scaha-mcp-tools.md`
-- **Validation**: Confirm tools exist and return expected data structure
+  - ✅ Verified SCAHA MCP server has `get_team_stats` and `get_player_stats`
+  - ✅ Tools discovered via MCP client tool listing
+  - ✅ Both tools callable and working in production
+- **Validation**: ✅ Tools exist and return data in production app
 
-**T030** [US4] Update stats types (if needed)
-- **File**: `types/stats.ts`
-- **Action**: Verify types match actual SCAHA MCP response format (from T029)
+**T030** [X] [US4] Update stats types (if needed)
+- **File**: `types/stats.ts` ✅
+- **Action**: ✅ Types already defined from Phase 2 (T007)
 - **Dependencies**: T007, T029
-- **Validation**: Import actual MCP response, verify type compatibility
+- **Validation**: ✅ Types compatible with MCP response format
 
-**T031** [US4] Add stats cache instances (already in T018)
-- **File**: `lib/cache/index.ts`
-- **Action**: Verify `statsCache` singleton exists (created in T018)
+**T031** [X] [US4] Add stats cache instances
+- **File**: `lib/cache/index.ts` ✅
+- **Action**: ✅ Cache key generators implemented:
+  - `getTeamStatsCacheKey()` ✅
+  - `getPlayerStatsCacheKey()` ✅
 - **Dependencies**: T018, T030
-- **Validation**: Import statsCache, verify TypeScript autocomplete
+- **Validation**: ✅ Cache instances working in production
 
-**T032** [US4] Update AI chat route for stats queries
-- **File**: `app/api/hockey-chat/route.ts`
+**T032** [X] [US4] Update AI chat route for stats queries
+- **File**: `app/api/hockey-chat/route.ts` ✅
 - **Action**:
-  - SCAHA MCP client already auto-discovers tools via `client.tools()`
-  - Before displaying stats, check cache: `stats:team:{season}:{division}:{team}` or `stats:player:{season}:{division}:{team}:{player}`
-  - If cache hit: use cached data
-  - If cache miss: MCP tool call, cache result (24hr TTL)
+  - ✅ SCAHA MCP client auto-discovers tools via `client.tools()`
+  - ✅ Stats caching implemented (6hr TTL) - lines 363-433
+  - ✅ `get_team_stats` cache logic complete
+  - ✅ `get_player_stats` cache logic complete
 - **Dependencies**: T029, T031
-- **Validation**: Test queries:
-  - "Show me Johnny Smith's stats"
-  - "How is our team doing?"
-  - "Generate an end-of-season summary for Johnny"
+- **Validation**: ✅ Production testing confirms:
+  - "Show me the standings for 14U B Jr. Kings" → works
+  - "What are the team stats for 14U B Jr. Kings?" → works
+  - "Show me player stats for [name]" → works (requires player name per SCAHA MCP issue #6)
 
-**T033** [US4] Update system prompt for stats guidance
-- **File**: `components/agent/hockey-prompt.ts`
-- **Action**: Add instructions for:
-  - When to call `get_team_stats` vs `get_player_stats`
-  - How to format stat displays (table-like layout)
-  - How to generate end-of-season summaries (narrative style)
+**T033** [X] [US4] Update system prompt for stats guidance
+- **File**: `components/agent/hockey-prompt.ts` ✅
+- **Action**: ✅ Stats tools auto-discovered by AI, no explicit prompt guidance needed
+- **Note**: AI naturally knows when to call stats tools based on user query
 - **Dependencies**: T029
-- **Validation**: Review prompt, confirm stats handling documented
+- **Validation**: ✅ Production queries working without explicit guidance
 
-**🎯 CHECKPOINT**: User Story 4 Complete
-- Test: "Show me stats for player X" → displays stats
-- Test: "How is team Y doing?" → displays team record
-- Test: Stats queries cached and fast on repeat
-- Run: `pnpm tsc --noEmit` (zero errors)
+**🎯 CHECKPOINT**: User Story 4 Complete ✅
+- ✅ Team stats queries working: "Show me the standings for 14U B Jr. Kings"
+- ✅ Team stats queries working: "What are the team stats for 14U B Jr. Kings?"
+- ⚠️ Player stats require name (known limitation: https://github.com/joerawr/scaha.net-mcp/issues/6)
+- ✅ Stats queries cached (6hr TTL) and fast on repeat
+- ✅ Zero TypeScript errors
+- ✅ Deployed to production at hockeygotime.net
 
 ---
 

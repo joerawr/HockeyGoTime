@@ -5,7 +5,11 @@
 
 import Image from "next/image";
 
-export function SlidingPuck() {
+interface SlidingPuckProps {
+  message?: string;
+}
+
+export function SlidingPuck({ message = "Thinking..." }: SlidingPuckProps) {
   return (
     <div className="flex items-center gap-3 rounded-xl bg-sky-50 px-4 py-3 border border-sky-200">
       <div className="relative h-8 flex-1 overflow-hidden">
@@ -22,7 +26,7 @@ export function SlidingPuck() {
         </div>
       </div>
       <span className="text-sm font-medium text-sky-900 whitespace-nowrap">
-        Thinking...
+        {message}
       </span>
     </div>
   );

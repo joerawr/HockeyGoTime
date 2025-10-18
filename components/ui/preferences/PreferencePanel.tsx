@@ -10,9 +10,10 @@ import type { UserPreferences, MCPServerId } from "@/types/preferences";
 import { DEFAULT_PREFERENCES } from "@/types/preferences";
 import { PreferencesStore } from "@/lib/storage/preferences";
 import { PreferenceForm } from "./PreferenceForm";
+import { DarkModeToggle } from "./dark-mode-toggle";
 
 const panelContainerClasses =
-  "rounded-2xl border-2 border-slate-200 bg-white/95 p-6 shadow-md backdrop-blur-sm";
+  "rounded-2xl border-2 border-border bg-card/95 p-6 shadow-md backdrop-blur-sm";
 
 export function PreferencePanel() {
   const [preferences, setPreferences] = useState<UserPreferences | null>(null);
@@ -129,7 +130,7 @@ export function PreferencePanel() {
           onChange={handleMcpServerChange}
           disabled
         />
-        <p className="mt-6 text-sm text-slate-600">Loading preferences...</p>
+        <p className="mt-6 text-sm text-muted-foreground">Loading preferences...</p>
       </div>
     );
   }
@@ -148,7 +149,7 @@ export function PreferencePanel() {
   } else if (!preferences) {
     content = (
       <div>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-muted-foreground">
           No preferences set. Click Edit to set your preferences.
         </p>
         <button
@@ -163,8 +164,8 @@ export function PreferencePanel() {
     content = (
       <>
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-slate-900">Team Preferences</h3>
-          <p className="text-xs text-slate-500">Used for schedule, travel, and stats questions.</p>
+          <h3 className="text-lg font-semibold text-foreground">Team Preferences</h3>
+          <p className="text-xs text-muted-foreground">Used for schedule, travel, and stats questions.</p>
         </div>
 
         <div className="space-y-4 text-sm">
@@ -184,22 +185,30 @@ export function PreferencePanel() {
             label="Arrival Buffer:"
             value={`${preferences.arrivalBufferMinutes} min`}
           />
+          <PreferenceRow
+            label="Player Position:"
+            value={preferences.playerPosition === 'goalie' ? 'Goalie' : 'Skater'}
+          />
         </div>
 
         <div className="mt-6 flex gap-3">
           <button
             onClick={handleEdit}
-            className="flex-1 rounded-xl bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-300"
+            className="flex-1 rounded-xl bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground transition hover:bg-secondary/80"
           >
             Edit
           </button>
           <button
             onClick={handleClearAll}
-            className="flex-1 rounded-xl bg-red-100 px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-200"
+            className="flex-1 rounded-xl bg-destructive/10 px-4 py-2 text-sm font-semibold text-destructive transition hover:bg-destructive/20"
             title="Clear all preferences (useful for families with multiple players)"
           >
             Clear All
           </button>
+        </div>
+
+        <div className="mt-4">
+          <DarkModeToggle />
         </div>
       </>
     );
@@ -228,9 +237,9 @@ function PreferenceRow({
 }) {
   return (
     <div className="flex items-start justify-between gap-4">
-      <span className="text-sm font-medium text-slate-600">{label}</span>
+      <span className="text-sm font-medium text-muted-foreground">{label}</span>
       <span
-        className="max-w-[170px] text-sm font-semibold text-slate-900 text-right"
+        className="max-w-[170px] text-sm font-semibold text-foreground text-right"
         title={tooltip}
       >
         {value && String(value).trim() !== "" ? value : "—"}
@@ -251,7 +260,7 @@ function LeagueSelector({
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           League Data Source
         </p>
       </div>
@@ -259,7 +268,7 @@ function LeagueSelector({
         value={value}
         onChange={(event) => onChange(event.target.value as MCPServerId)}
         disabled={disabled}
-        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm transition focus-visible:border-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200 sm:w-auto"
+        className="w-full rounded-xl border border-input bg-card px-3 py-2 text-sm font-semibold text-foreground shadow-sm transition focus-visible:border-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200 sm:w-auto"
       >
         <option value="scaha">SCAHA</option>
         <option value="pghl">PGHL</option>
