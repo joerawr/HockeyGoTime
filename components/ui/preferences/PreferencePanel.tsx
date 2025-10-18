@@ -206,6 +206,10 @@ export function PreferencePanel() {
             Clear All
           </button>
         </div>
+
+        <div className="mt-4">
+          <DarkModeToggle />
+        </div>
       </>
     );
   }
@@ -217,9 +221,6 @@ export function PreferencePanel() {
         onChange={handleMcpServerChange}
         disabled={isLoading}
       />
-      <div className="mt-4">
-        <DarkModeToggle />
-      </div>
       <div className="mt-6">{content}</div>
     </div>
   );

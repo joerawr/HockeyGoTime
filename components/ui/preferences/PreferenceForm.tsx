@@ -10,6 +10,7 @@ import type { UserPreferences, MCPServerId, PlayerPosition } from "@/types/prefe
 import { DEFAULT_PREFERENCES } from "@/types/preferences";
 import { validatePreferences } from "@/lib/utils/validation";
 import { PlayerPositionSelector } from "./player-position-selector";
+import { DarkModeToggle } from "./dark-mode-toggle";
 
 interface PreferenceFormProps {
   initialPreferences?: UserPreferences | null;
@@ -238,6 +239,8 @@ export function PreferenceForm({
             setFormData({ ...formData, playerPosition: position })
           }
         />
+
+        <DarkModeToggle />
       </div>
 
       <div className="flex flex-col gap-3 pt-2 sm:flex-row">
