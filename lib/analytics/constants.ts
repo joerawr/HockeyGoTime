@@ -193,5 +193,15 @@ export const APP_TIMEZONE = "America/Los_Angeles";
  */
 export function getCurrentDateInAppTimezone(): string {
   const now = new Date();
-  return now.toLocaleDateString("en-CA", { timeZone: APP_TIMEZONE });
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: APP_TIMEZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const parts = formatter.formatToParts(now);
+  const year = parts.find((p) => p.type === "year")!.value;
+  const month = parts.find((p) => p.type === "month")!.value;
+  const day = parts.find((p) => p.type === "day")!.value;
+  return `${year}-${month}-${day}`;
 }

@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ConversationsChart } from "@/components/analytics/ConversationsChart";
 import { TokenUsageChart } from "@/components/analytics/TokenUsageChart";
 import { CostProjection } from "@/components/analytics/CostProjection";
-import { APP_TIMEZONE } from "@/lib/analytics/constants";
+import { getCurrentDateInAppTimezone } from "@/lib/analytics/constants";
 
 interface AnalyticsData {
   period: {
@@ -64,13 +64,24 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
 
   // Calculate date range (last 7 days) in PST to match tracking
-  const endDate = new Date().toLocaleDateString("en-CA", { timeZone: APP_TIMEZONE });
+  const endDate = getCurrentDateInAppTimezone();
 
   // Calculate start date (6 days ago, for 7 days total including today)
   const endDateObj = new Date(endDate + "T00:00:00");
   const startDateObj = new Date(endDateObj);
   startDateObj.setDate(startDateObj.getDate() - 6);
-  const startDate = startDateObj.toLocaleDateString("en-CA", { timeZone: APP_TIMEZONE });
+
+  // Format start date using the same helper for consistency
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const parts = formatter.formatToParts(startDateObj);
+  const year = parts.find((p) => p.type === "year")!.value;
+  const month = parts.find((p) => p.type === "month")!.value;
+  const day = parts.find((p) => p.type === "day")!.value;
+  const startDate = `${year}-${month}-${day}`;
 
   useEffect(() => {
     async function fetchAnalytics() {
