@@ -24,8 +24,9 @@ interface TokenUsageChartProps {
 
 export function TokenUsageChart({ data }: TokenUsageChartProps) {
   // Format data for Recharts
+  // IMPORTANT: Add T12:00:00 to prevent timezone shifting (midnight UTC → previous day in PST)
   const chartData = data.map((item) => ({
-    date: new Date(item.date).toLocaleDateString("en-US", {
+    date: new Date(item.date + "T12:00:00").toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
     }),
