@@ -6,7 +6,7 @@
  */
 
 import { getRedisClient } from "./client";
-import { KEY_PATTERNS, MODEL_PRICING, type SupportedModel } from "./constants";
+import { KEY_PATTERNS, MODEL_PRICING, getCurrentDateInAppTimezone, type SupportedModel } from "./constants";
 
 /**
  * Generate array of dates between start and end (inclusive)
@@ -122,12 +122,13 @@ export async function calculateCost(
 export async function projectMonthlyCost(
   modelName: SupportedModel
 ): Promise<number> {
-  const today = new Date();
+  const endDate = getCurrentDateInAppTimezone();
+
+  // Calculate date 7 days ago in PST
+  const today = new Date(endDate + "T00:00:00");
   const sevenDaysAgo = new Date(today);
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-  const startDate = sevenDaysAgo.toISOString().split("T")[0];
-  const endDate = today.toISOString().split("T")[0];
+  const startDate = sevenDaysAgo.toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
 
   const { dailyAverage } = await calculateCost(modelName, startDate, endDate);
 

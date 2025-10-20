@@ -80,6 +80,7 @@ export function TokenUsageChart({ data }: TokenUsageChartProps) {
             stroke="hsl(var(--primary))"
             strokeWidth={2}
             dot={{ r: 3 }}
+            connectNulls={true}
             name="Input Tokens"
           />
           <Line
@@ -88,6 +89,7 @@ export function TokenUsageChart({ data }: TokenUsageChartProps) {
             stroke="hsl(var(--chart-2))"
             strokeWidth={2}
             dot={{ r: 3 }}
+            connectNulls={true}
             name="Output Tokens"
           />
           <Line
@@ -97,6 +99,7 @@ export function TokenUsageChart({ data }: TokenUsageChartProps) {
             strokeWidth={1}
             strokeDasharray="5 5"
             dot={false}
+            connectNulls={true}
             name="Total"
           />
         </LineChart>

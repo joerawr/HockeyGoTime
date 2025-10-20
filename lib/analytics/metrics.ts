@@ -7,7 +7,7 @@
  */
 
 import { getRedisClient } from "./client";
-import { KEY_PATTERNS, TTL_SECONDS } from "./constants";
+import { KEY_PATTERNS, TTL_SECONDS, getCurrentDateInAppTimezone } from "./constants";
 
 /**
  * Lua script for atomic increment with TTL
@@ -43,7 +43,7 @@ return count
 export async function trackConversation(date?: string): Promise<void> {
   try {
     const redis = getRedisClient();
-    const today = date || new Date().toISOString().split("T")[0];
+    const today = date || getCurrentDateInAppTimezone();
     const key = KEY_PATTERNS.CONVERSATIONS(today);
 
     await redis.eval(INCRBY_WITH_EXPIRE, [key], [1, TTL_SECONDS.DAILY]);
@@ -73,7 +73,7 @@ export async function trackTokens(
 ): Promise<void> {
   try {
     const redis = getRedisClient();
-    const today = date || new Date().toISOString().split("T")[0];
+    const today = date || getCurrentDateInAppTimezone();
 
     const inputKey = KEY_PATTERNS.TOKEN_INPUT(modelName, today);
     const outputKey = KEY_PATTERNS.TOKEN_OUTPUT(modelName, today);
@@ -105,7 +105,7 @@ export async function trackToolCall(
 ): Promise<void> {
   try {
     const redis = getRedisClient();
-    const today = date || new Date().toISOString().split("T")[0];
+    const today = date || getCurrentDateInAppTimezone();
     const key = KEY_PATTERNS.TOOL_CALL(toolName, today);
 
     await redis.eval(INCRBY_WITH_EXPIRE, [key], [1, TTL_SECONDS.DAILY]);
@@ -134,7 +134,7 @@ export async function trackResponseTime(
 ): Promise<void> {
   try {
     const redis = getRedisClient();
-    const today = date || new Date().toISOString().split("T")[0];
+    const today = date || getCurrentDateInAppTimezone();
     const key = KEY_PATTERNS.RESPONSE_TIME_P95(endpoint, today);
 
     // For MVP: store latest value as approximation
@@ -162,7 +162,7 @@ export async function trackError(
 ): Promise<void> {
   try {
     const redis = getRedisClient();
-    const today = date || new Date().toISOString().split("T")[0];
+    const today = date || getCurrentDateInAppTimezone();
     const key = KEY_PATTERNS.ERROR_COUNT(endpoint, today);
 
     await redis.eval(INCRBY_WITH_EXPIRE, [key], [1, TTL_SECONDS.DAILY]);
@@ -188,7 +188,7 @@ export async function trackSuccess(
 ): Promise<void> {
   try {
     const redis = getRedisClient();
-    const today = date || new Date().toISOString().split("T")[0];
+    const today = date || getCurrentDateInAppTimezone();
     const key = KEY_PATTERNS.SUCCESS_COUNT(endpoint, today);
 
     await redis.eval(INCRBY_WITH_EXPIRE, [key], [1, TTL_SECONDS.DAILY]);
@@ -216,7 +216,7 @@ export async function trackExternalApiCall(
 ): Promise<void> {
   try {
     const redis = getRedisClient();
-    const today = date || new Date().toISOString().split("T")[0];
+    const today = date || getCurrentDateInAppTimezone();
     const callKey = KEY_PATTERNS.EXTERNAL_API_CALL(apiName, today);
 
     // Track total calls

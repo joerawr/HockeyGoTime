@@ -12,6 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ConversationsChart } from "@/components/analytics/ConversationsChart";
 import { TokenUsageChart } from "@/components/analytics/TokenUsageChart";
 import { CostProjection } from "@/components/analytics/CostProjection";
+import { APP_TIMEZONE } from "@/lib/analytics/constants";
 
 interface AnalyticsData {
   period: {
@@ -62,13 +63,14 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Calculate date range (last 7 days)
-  // Use UTC to match tracking (which uses toISOString())
-  const endDate = new Date();
-  const startDate = new Date();
-  startDate.setDate(startDate.getDate() - 6); // 7 days including today
+  // Calculate date range (last 7 days) in PST to match tracking
+  const endDate = new Date().toLocaleDateString("en-CA", { timeZone: APP_TIMEZONE });
 
-  const formatDate = (date: Date) => date.toISOString().split("T")[0];
+  // Calculate start date (6 days ago, for 7 days total including today)
+  const endDateObj = new Date(endDate + "T00:00:00");
+  const startDateObj = new Date(endDateObj);
+  startDateObj.setDate(startDateObj.getDate() - 6);
+  const startDate = startDateObj.toLocaleDateString("en-CA", { timeZone: APP_TIMEZONE });
 
   useEffect(() => {
     async function fetchAnalytics() {
@@ -76,13 +78,10 @@ export default function DashboardPage() {
         setLoading(true);
         setError(null);
 
-        const start = formatDate(startDate);
-        const end = formatDate(endDate);
-
         // Fetch analytics and cost data in parallel
         const [analyticsRes, costRes] = await Promise.all([
-          fetch(`/api/analytics?start_date=${start}&end_date=${end}`),
-          fetch(`/api/analytics/cost?start_date=${start}&end_date=${end}`),
+          fetch(`/api/analytics?start_date=${startDate}&end_date=${endDate}`),
+          fetch(`/api/analytics/cost?start_date=${startDate}&end_date=${endDate}`),
         ]);
 
         if (!analyticsRes.ok || !costRes.ok) {

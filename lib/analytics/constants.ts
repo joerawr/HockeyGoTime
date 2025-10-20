@@ -176,3 +176,22 @@ export const MAX_DATE_RANGE_DAYS = 90;
  * Client-side caching to reduce Redis load
  */
 export const DASHBOARD_CACHE_TTL = 30; // 30 seconds
+
+/**
+ * App timezone for consistent date handling
+ * All analytics tracking uses America/Los_Angeles to match user base
+ */
+export const APP_TIMEZONE = "America/Los_Angeles";
+
+/**
+ * Get current date in app timezone (PST/PDT)
+ *
+ * Returns date in YYYY-MM-DD format using America/Los_Angeles timezone.
+ * This ensures consistent tracking regardless of server location.
+ *
+ * @returns Date string in YYYY-MM-DD format (e.g., "2025-10-20")
+ */
+export function getCurrentDateInAppTimezone(): string {
+  const now = new Date();
+  return now.toLocaleDateString("en-CA", { timeZone: APP_TIMEZONE });
+}
