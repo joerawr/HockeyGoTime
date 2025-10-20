@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ConversationsChart } from "@/components/analytics/ConversationsChart";
 import { TokenUsageChart } from "@/components/analytics/TokenUsageChart";
 import { CostProjection } from "@/components/analytics/CostProjection";
-import { getCurrentDateInAppTimezone } from "@/lib/analytics/constants";
+import { getCurrentDateInAppTimezone, APP_TIMEZONE } from "@/lib/analytics/constants";
 
 interface AnalyticsData {
   period: {
@@ -71,8 +71,9 @@ export default function DashboardPage() {
   const startDateObj = new Date(endDateObj);
   startDateObj.setDate(startDateObj.getDate() - 6);
 
-  // Format start date using the same helper for consistency
+  // Format start date using PST timezone (CRITICAL: must match tracking timezone)
   const formatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: APP_TIMEZONE,
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -115,10 +116,6 @@ export default function DashboardPage() {
     }
 
     fetchAnalytics();
-
-    // Auto-refresh every 30 seconds
-    const interval = setInterval(fetchAnalytics, 30000);
-    return () => clearInterval(interval);
   }, []);
 
   if (loading) {
@@ -281,7 +278,7 @@ export default function DashboardPage() {
           auto-deletes after 90 days.
         </p>
         <p className="mt-1">
-          Dashboard auto-refreshes every 30 seconds
+          Refresh page to see updated metrics
         </p>
       </div>
     </div>
