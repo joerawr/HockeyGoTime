@@ -37,6 +37,7 @@ import {
 } from "@/components/ai-elements/reasoning";
 import { Response } from "@/components/ai-elements/response";
 import { SlidingPuck } from "@/components/ui/sliding-puck";
+import { HelperHints } from "@/components/chat/helper-hints";
 type ChatMessage = {
   id: string;
   role: "user" | "assistant";
@@ -160,6 +161,7 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [timeoutError, setTimeoutError] = useState(false); // T041: Timeout error UI state
+  const [league, setLeague] = useState<'scaha' | 'pghl'>('scaha');
 
   // Custom transport that includes user preferences in the request body
   const transport = useMemo(() => {
@@ -245,6 +247,14 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
   // Use debounced messages for rendering
   const messages = debouncedMessages;
 
+  // Load league preference
+  useEffect(() => {
+    const preferences = PreferencesStore.get();
+    if (preferences?.mcpServer) {
+      setLeague(preferences.mcpServer);
+    }
+  }, []);
+
   // Reset isSubmitting when streaming starts or completes
   useEffect(() => {
     if (status === "streaming") {
@@ -285,6 +295,17 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
     return () => clearTimeout(timeoutId);
   }, [isSubmitting, status]);
 
+  const handleExampleClick = (query: string) => {
+    setInput(query);
+    // Focus the textarea so user can see the filled query
+    setTimeout(() => {
+      const textarea = document.querySelector('textarea[placeholder*="Ask about"]');
+      if (textarea instanceof HTMLTextAreaElement) {
+        textarea.focus();
+      }
+    }, 100);
+  };
+
   const handleSubmit = async (
     message: { text?: string; files?: any[] },
     event: React.FormEvent
@@ -311,10 +332,13 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
       <Conversation className="flex-1 overflow-hidden">
         <ConversationContent className="space-y-4 px-6 py-6">
           {messages.length === 0 ? (
-            <ConversationEmptyState
-              title="Start a conversation"
-              description="Ask me anything and I'll help you out!"
-            />
+            <>
+              <ConversationEmptyState
+                title="Welcome to HockeyGoTime!"
+                description="I help hockey parents answer the question: When do we need to leave?"
+              />
+              <HelperHints onQueryClick={handleExampleClick} league={league} />
+            </>
           ) : (
             (() => {
               // Tool display name mapping
@@ -520,6 +544,8 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
               <PromptInputTextarea
                 className="h-10 min-h-0 w-full resize-none border-none bg-transparent p-0 text-sm leading-6 text-foreground focus-visible:outline-none placeholder:text-muted-foreground"
                 placeholder="Ask about schedules, travel times, or stats..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
               />
             </div>
             <PromptInputToolbar className="justify-end gap-2 p-0">
