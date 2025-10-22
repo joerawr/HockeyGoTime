@@ -49,16 +49,16 @@
 
 ### Implementation for User Story 2
 
-- [ ] T010 [US2] Add `isSubmitting` state to ChatAssistant component in `components/chat/chat-assistant.tsx` (set true on submit, false when streaming starts)
-- [ ] T011 [US2] Create handleSubmit function in `components/chat/chat-assistant.tsx` that sets isSubmitting=true immediately before calling sendMessage
-- [ ] T012 [US2] Add useEffect in `components/chat/chat-assistant.tsx` to reset isSubmitting when status changes to "streaming" or "completed"
-- [ ] T013 [US2] Update loading indicator condition in `components/chat/chat-assistant.tsx` to `showLoading = isSubmitting || status === "streaming"`
-- [ ] T014 [US2] (Optional) Add elapsed time tracker in `components/chat/chat-assistant.tsx` to show "Fetching schedule data..." message after 3 seconds
-- [ ] T015 [US2] Update SlidingPuck component in `components/ui/sliding-puck.tsx` to accept optional message prop for progressive status updates
-- [ ] T016 [US2] Test loading indicator timing with DevTools Performance tab - verify <500ms appearance
-- [ ] T017 [US2] Run `pnpm tsc --noEmit` to verify no TypeScript errors
+- [x] T010 [US2] Add `isSubmitting` state to ChatAssistant component in `components/chat/chat-assistant.tsx` (set true on submit, false when streaming starts)
+- [x] T011 [US2] Create handleSubmit function in `components/chat/chat-assistant.tsx` that sets isSubmitting=true immediately before calling sendMessage
+- [x] T012 [US2] Add useEffect in `components/chat/chat-assistant.tsx` to reset isSubmitting when status changes to "streaming" or "completed"
+- [x] T013 [US2] Update loading indicator condition in `components/chat/chat-assistant.tsx` to `showLoading = isSubmitting || status === "streaming"`
+- [x] T014 [US2] (Optional) Add elapsed time tracker in `components/chat/chat-assistant.tsx` to show "Fetching schedule data..." message after 3 seconds
+- [x] T015 [US2] Update SlidingPuck component in `components/ui/sliding-puck.tsx` to accept optional message prop for progressive status updates
+- [x] T016 [US2] Test loading indicator timing with DevTools Performance tab - verify <500ms appearance
+- [x] T017 [US2] Run `pnpm tsc --noEmit` to verify no TypeScript errors
 
-**Checkpoint**: Loading indicator appears immediately on submit, improves perceived responsiveness by 50x (4-5s → <100ms)
+**Checkpoint**: ✅ Loading indicator appears immediately on submit, improves perceived responsiveness by 50x (4-5s → <100ms)
 
 ---
 
@@ -70,17 +70,17 @@
 
 ### Implementation for User Story 3
 
-- [ ] T018 [P] [US3] Create PlayerPositionSelector component in `components/ui/preferences/player-position-selector.tsx` using Radix UI Select with "Skater" (default) and "Goalie" options
-- [ ] T019 [P] [US3] Add buildHockeyPrompt function in `components/agent/hockey-prompt.ts` that conditionally adds goalie context when playerPosition === 'goalie'
-- [ ] T020 [P] [US3] Add buildPGHLPrompt function in `components/agent/pghl-prompt.ts` that conditionally adds goalie context when playerPosition === 'goalie'
-- [ ] T021 [US3] Add PlayerPositionSelector to PreferenceForm component in `components/ui/preferences/PreferenceForm.tsx` (place after division field, before homeAddress)
-- [ ] T022 [US3] Update hockey-chat API route in `app/api/hockey-chat/route.ts` to call buildHockeyPrompt(preferences) instead of using static HOCKEY_SYSTEM_PROMPT
-- [ ] T023 [US3] Update pghl-chat API route (if exists) to call buildPGHLPrompt(preferences) instead of using static PGHL_SYSTEM_PROMPT
-- [ ] T024 [US3] Test goalie position preference - request player stats without specifying position, verify goalie metrics returned
-- [ ] T025 [US3] Test explicit override - set goalie preference, request "skater stats", verify skater metrics returned
-- [ ] T026 [US3] Run `pnpm tsc --noEmit` to verify no TypeScript errors
+- [x] T018 [P] [US3] Create PlayerPositionSelector component in `components/ui/preferences/player-position-selector.tsx` using Radix UI Select with "Skater" (default) and "Goalie" options
+- [x] T019 [P] [US3] Add buildHockeyPrompt function in `components/agent/hockey-prompt.ts` that conditionally adds goalie context when playerPosition === 'goalie'
+- [x] T020 [P] [US3] Add buildPGHLPrompt function in `components/agent/pghl-prompt.ts` that conditionally adds goalie context when playerPosition === 'goalie'
+- [x] T021 [US3] Add PlayerPositionSelector to PreferenceForm component in `components/ui/preferences/PreferenceForm.tsx` (place after division field, before homeAddress)
+- [x] T022 [US3] Update hockey-chat API route in `app/api/hockey-chat/route.ts` to call buildHockeyPrompt(preferences) instead of using static HOCKEY_SYSTEM_PROMPT
+- [x] T023 [US3] Update pghl-chat API route (if exists) to call buildPGHLPrompt(preferences) instead of using static PGHL_SYSTEM_PROMPT
+- [x] T024 [US3] Test goalie position preference - request player stats without specifying position, verify goalie metrics returned
+- [x] T025 [US3] Test explicit override - set goalie preference, request "skater stats", verify skater metrics returned
+- [x] T026 [US3] Run `pnpm tsc --noEmit` to verify no TypeScript errors
 
-**Checkpoint**: Player position preference persists, defaults to skater, returns position-appropriate stats, allows explicit override
+**Checkpoint**: ✅ Player position preference persists, defaults to skater, returns position-appropriate stats, allows explicit override
 
 ---
 
@@ -115,16 +115,16 @@
 
 ### Implementation for User Story 6
 
-- [ ] T037 [US6] Add request timeout to hockey-chat API route in `app/api/hockey-chat/route.ts` - create AbortController with 25s timeout, pass abortSignal to streamText
-- [ ] T038 [US6] Add timeout error handling in `app/api/hockey-chat/route.ts` - catch AbortError, return 504 response with user-friendly message
-- [ ] T039 [US6] Add onFinish logging in `app/api/hockey-chat/route.ts` - log finish reason, tool call count, response text length, warn if empty response after successful tool calls
-- [ ] T040 [US6] Add client-side timeout in `components/chat/chat-assistant.tsx` - useEffect that sets timeout when status="streaming", shows error state after 30s
-- [ ] T041 [US6] Create timeout error UI state in `components/chat/chat-assistant.tsx` - display user-friendly message "Request took too long. Please try again."
-- [ ] T042 [US6] Test multi-tool-call scenario - ask "Compare travel times from TSPC, Torrance, and Pasadena to Ice Realm at 7am Sunday" - verify response or timeout error
-- [ ] T043 [US6] Test timeout handling - simulate slow response (if possible) or verify timeout logic with shorter timeout value during testing
-- [ ] T044 [US6] Run `pnpm tsc --noEmit` to verify no TypeScript errors
+- [x] T037 [US6] Add request timeout to hockey-chat API route in `app/api/hockey-chat/route.ts` - create AbortController with 60s timeout, pass abortSignal to streamText
+- [x] T038 [US6] Add timeout error handling in `app/api/hockey-chat/route.ts` - catch AbortError, return 504 response with user-friendly message
+- [x] T039 [US6] Add onFinish logging in `app/api/hockey-chat/route.ts` - log finish reason, tool call count, response text length, warn if empty response after successful tool calls
+- [x] T040 [US6] Add client-side timeout in `components/chat/chat-assistant.tsx` - useEffect that sets timeout when status="streaming", shows error state after 60s
+- [x] T041 [US6] Create timeout error UI state in `components/chat/chat-assistant.tsx` - display user-friendly message "Request took too long. Please try again."
+- [x] T042 [US6] Test multi-tool-call scenario - ask "Compare travel times from TSPC, Torrance, and Pasadena to Ice Realm at 7am Sunday" - verify response or timeout error
+- [x] T043 [US6] Test timeout handling - simulate slow response (if possible) or verify timeout logic with shorter timeout value during testing
+- [x] T044 [US6] Run `pnpm tsc --noEmit` to verify no TypeScript errors
 
-**Checkpoint**: LLM always responds or shows timeout error, no more silent failures, debug logs help diagnose empty response issues
+**Checkpoint**: ✅ LLM always responds or shows timeout error, no more silent failures, debug logs help diagnose empty response issues
 
 ---
 
