@@ -18,7 +18,7 @@ interface HelperHintsProps {
 const SCAHA_EXAMPLES = [
   "When do we play next?",
   "When do we need to leave for our next game?",
-  "What are the teams standings in our division?",
+  "What are the team standings in our division?",
   "Who has the most points on our team?",
   "What are our earliest games?",
 ];
@@ -26,7 +26,7 @@ const SCAHA_EXAMPLES = [
 const PGHL_EXAMPLES = [
   "When do we play next?",
   "When do we need to leave for our next game?",
-  "What are the teams standings in our division?",
+  "What are the team standings in our division?",
   "Who do we play this weekend?",
   "What are our earliest games?",
 ];
