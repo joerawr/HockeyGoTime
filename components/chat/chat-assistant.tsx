@@ -295,32 +295,6 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
     return () => clearTimeout(timeoutId);
   }, [isSubmitting, status]);
 
-  // Ko-fi donation widget
-  useEffect(() => {
-    // Load Ko-fi script
-    const script = document.createElement('script');
-    script.src = 'https://storage.ko-fi.com/cdn/scripts/overlay-widget.js';
-    script.async = true;
-    script.onload = () => {
-      // Initialize Ko-fi widget after script loads
-      if (typeof window !== 'undefined' && (window as any).kofiWidgetOverlay) {
-        (window as any).kofiWidgetOverlay.draw('joerawr', {
-          'type': 'floating-chat',
-          'floating-chat.donateButton.text': 'Support Me',
-          'floating-chat.donateButton.background-color': '#00b9fe',
-          'floating-chat.donateButton.text-color': '#fff'
-        });
-      }
-    };
-    document.body.appendChild(script);
-
-    return () => {
-      // Cleanup script on unmount
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-    };
-  }, []);
 
   const handleExampleClick = (query: string) => {
     setInput(query);

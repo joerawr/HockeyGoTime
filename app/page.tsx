@@ -47,6 +47,23 @@ export default function HockeyGoTimePage() {
             <div className="flex h-full min-h-[560px] flex-col overflow-hidden rounded-3xl border-2 border-border bg-card/95 shadow-xl">
               <ChatAssistant api="/api/hockey-chat" />
             </div>
+
+            {/* Ko-fi donation button */}
+            <div className="mt-4 flex justify-center">
+              <a
+                href="https://ko-fi.com/joerawr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-transform hover:scale-105"
+              >
+                <img
+                  height="36"
+                  style={{ border: '0px', height: '36px' }}
+                  src="https://storage.ko-fi.com/cdn/kofi2.png?v=3"
+                  alt="Buy Me a Coffee at ko-fi.com"
+                />
+              </a>
+            </div>
           </section>
         </div>
       </main>
