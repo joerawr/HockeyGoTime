@@ -67,3 +67,24 @@ export interface TeamStats {
   // Metadata
   lastUpdated: string;       // ISO 8601 timestamp
 }
+
+/**
+ * Division Standings
+ * Complete standings table for all teams in a division
+ */
+export interface DivisionStandings {
+  season: string;            // e.g., "2025-26"
+  division: string;          // e.g., "14U B Regular Season"
+  teams: Array<{
+    team: string;            // e.g., "Jr. Kings (1)"
+    gp: number;              // Games played
+    w: number;               // Wins
+    l: number;               // Losses
+    t: number;               // Ties
+    points: number;          // League points
+    gf: number;              // Goals for
+    ga: number;              // Goals against
+    gd: number;              // Goal differential
+  }>;
+  total_teams: number;       // Number of teams in division
+}

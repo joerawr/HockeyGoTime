@@ -379,6 +379,46 @@ Retrieves team standings and statistics from scaha.net.
 - Use the exact division and team names from list_schedule_options or get_schedule responses
 - Browser automation may timeout if the requested option doesn't exist for that season
 
+### get_division_standings ⭐ NEW - BEST FOR FULL STANDINGS TABLE
+Retrieves complete standings for ALL teams in a division - **USE THIS for "show me the standings" queries!**
+
+**Parameters:**
+- \`season\`: string (e.g., "2025-26" - use hyphen format for stats)
+- \`division\`: string (e.g., "14U B" - the tool will select "14U B Regular Season" from dropdown)
+
+**Returns:** Complete standings table with:
+- season: Season identifier
+- division: Division name
+- teams: Array of all teams sorted by rank (1st place first)
+  - team: Team name (e.g., "Jr. Kings (1)")
+  - gp: Games played
+  - w: Wins
+  - l: Losses
+  - t: Ties
+  - points: Total points
+  - gf: Goals for
+  - ga: Goals against
+  - gd: Goal differential
+- total_teams: Number of teams in division
+
+**Use Cases - THIS IS THE RIGHT TOOL FOR:**
+- "What are the 14U B standings?" → \`get_division_standings({ season: "2025-26", division: "14U B" })\`
+- "Show me the division standings" → Use with user's saved division preference
+- "Who is in first place?" → Returns full table, 1st team is in first place
+- "What's the complete standings table?" → Returns all teams ranked
+
+**Why use this instead of get_team_stats:**
+- ✅ Returns ALL teams at once in a formatted table
+- ✅ Already sorted by rank (1st place first)
+- ✅ Shows complete division picture
+- ✅ Much faster than calling get_team_stats multiple times
+- ❌ DON'T use get_team_stats for full standings - use this tool instead!
+
+**Important Notes:**
+- Season format uses **hyphen**: "2025-26" (NOT "2025/26")
+- Returns teams in rank order (best record first)
+- This is the data visible on the SCAHA Schedule/Standings page
+
 ### get_player_stats
 Retrieves individual player statistics from scaha.net.
 
