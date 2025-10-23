@@ -186,7 +186,7 @@ export function PreferencePanel() {
             value={`${preferences.arrivalBufferMinutes} min`}
           />
           <PreferenceRow
-            label="Player Position:"
+            label="Skater/Goalie:"
             value={preferences.playerPosition === 'goalie' ? 'Goalie' : 'Skater'}
           />
         </div>

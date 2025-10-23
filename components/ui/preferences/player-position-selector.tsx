@@ -23,7 +23,7 @@ export function PlayerPositionSelector({
   return (
     <div className="space-y-2">
       <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        Player Position
+        Skater/Goalie
       </label>
       <div className="flex gap-2">
         <button
