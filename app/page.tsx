@@ -1,6 +1,7 @@
 import Image from "next/image";
 import ChatAssistant from "@/components/chat/chat-assistant";
 import { PreferencePanel } from "@/components/ui/preferences/PreferencePanel";
+import { FeedbackButton } from "@/components/ui/feedback/FeedbackButton";
 
 const suggestions = [
   '"When do we play next?"',
@@ -48,8 +49,9 @@ export default function HockeyGoTimePage() {
               <ChatAssistant api="/api/hockey-chat" />
             </div>
 
-            {/* Ko-fi donation button */}
-            <div className="mt-4 flex justify-center">
+            {/* Ko-fi donation button + Feedback */}
+            <div className="mt-4 flex justify-center items-center gap-3">
+              <FeedbackButton />
               <a
                 href="https://ko-fi.com/joerawr"
                 target="_blank"
