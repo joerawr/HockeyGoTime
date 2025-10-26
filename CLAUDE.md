@@ -95,9 +95,30 @@ AI formats response: "On Sunday, Oct 5th at 7:00 AM, Jr. Kings (1) play OC Hocke
 
 Create `.env.local` with:
 ```bash
+# AI API Keys
 OPENAI_API_KEY=sk-...your-key-here...
+GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_api_key
+
+# MCP Server
 SCAHA_MCP_SERVER_PATH=../scaha.net-mcp/dist/server.js  # Optional, defaults to this
+
+# Database
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your_anon_key
+
+# Google Services
+GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+
+# Analytics
+UPSTASH_REDIS_REST_URL=https://your-redis.upstash.io
+UPSTASH_REDIS_REST_TOKEN=your_redis_token
+
+# User Feedback (Resend Email Service)
+RESEND_API_KEY=re_...your-resend-key...
+FEEDBACK_EMAIL=your-email@example.com  # Must match email registered with Resend
 ```
+
+See `.env.example` for complete list with descriptions.
 
 ### User Preferences (Optional Feature)
 
@@ -115,6 +136,91 @@ The preference panel includes:
 
 **Never prompt users to set preferences** unless they use "we/our team" without having preferences saved.
 
+### User Feedback System
+
+HockeyGoTime includes an email-based feedback system using **Resend** for users to report issues directly from the app.
+
+**Components:**
+- `components/ui/feedback/FeedbackButton.tsx` - "Report Issue" button with MessageSquare icon
+- `components/ui/feedback/FeedbackModal.tsx` - Modal dialog for collecting feedback
+- `app/api/feedback/route.ts` - API endpoint that sends emails via Resend
+- `types/feedback.ts` - TypeScript interfaces for feedback data
+
+**User Experience:**
+- Click "Report Issue" button (next to donation button)
+- Modal opens with simple form:
+  - **Message field (required)**: Free-text description of the issue
+  - **Email field (optional)**: For follow-up contact
+- Auto-captures user context (team, division, league from preferences if saved)
+- Shows toast notification on success/error
+- Privacy-focused messaging: "We only collect your message, team preferences (if saved), and timestamp"
+
+**Implementation Details:**
+```typescript
+// Feedback is sent via Resend API to configured email
+POST /api/feedback
+{
+  message: "The schedule won't load...",
+  email: "optional@example.com",
+  userPrefs: {
+    team: "Jr. Kings (1)",
+    division: "14U B",
+    mcpServer: "scaha"
+  }
+}
+```
+
+**Email Format:**
+```
+From: HockeyGoTime Feedback <onboarding@resend.dev>
+To: FEEDBACK_EMAIL (from env vars)
+Subject: 🐛 HockeyGoTime User Feedback
+
+📝 New Feedback from HockeyGoTime
+
+Message:
+[User's message]
+
+---
+User Details:
+Email: [user's email or "Not provided"]
+Team: Jr. Kings (1)
+Division: 14U B
+League: SCAHA
+
+Submitted: 10/26/2025, 3:45:00 PM
+```
+
+**Resend Configuration:**
+1. Sign up at [resend.com](https://resend.com) (free tier: 3,000 emails/month)
+2. Create API key in dashboard
+3. Add to `.env.local`:
+   ```bash
+   RESEND_API_KEY=re_...
+   FEEDBACK_EMAIL=your-email@example.com
+   ```
+4. For production with custom domain:
+   - Verify domain at resend.com/domains
+   - Update `from` address in `app/api/feedback/route.ts`
+5. Add same env vars to Vercel dashboard for production
+
+**Important Notes:**
+- When using `onboarding@resend.dev` (testing), emails can ONLY be sent to the email address registered with your Resend account
+- `FEEDBACK_EMAIL` must exactly match your Resend account email (Gmail ignores periods, but Resend doesn't)
+- For production, verify your domain to send from a custom address and to any recipient
+- The user's email input is just metadata in the email body, not the destination
+
+**Related Files:**
+- Email implementation docs: `specs/008-user-feedback-features/implement_email_feedback.md`
+- Research and alternatives: `specs/008-user-feedback-features/research_feedback_ui.md`
+
+### Custom UI Assets
+
+**Donation Button:**
+The app uses a custom "Buy me a beer" button (`public/buymeabeer.png`) instead of Ko-fi's default coffee button. The button still links to Ko-fi but maintains brand consistency with a hockey/beer theme.
+
+**Location:** `app/page.tsx` (rendered next to FeedbackButton)
+
 ### MVP Scope
 
 **Currently Working:**
@@ -125,13 +231,16 @@ The preference panel includes:
 - ✅ User preferences (optional, localStorage-based)
 - ✅ In-memory caching (24-hour TTL)
 - ✅ Team name flexibility (handles inconsistent "(1)" suffix in SCAHA data)
+- ✅ User feedback system (email-based via Resend)
+- ✅ Travel time calculator with Google Routes API
+- ✅ Team standings (get_division_standings tool)
+- ✅ Dark mode support
 
-**Post-MVP:**
-- Travel time calculator with Google Routes API (Phase 6)
-- Team standings (get_team_stats - Phase 7)
-- Player stats (get_player_stats - Phase 7)
-- Supabase persistent caching (Phase 8)
-- Hotel suggestions (deferred post-Capstone)
+**Future Enhancements:**
+- Player stats (get_player_stats tool)
+- Supabase persistent caching (replace in-memory cache)
+- Hotel suggestions near venues
+- Screenshot support for feedback (GitHub Issues integration)
 
 ## Venue Database Management
 
