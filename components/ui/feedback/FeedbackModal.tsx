@@ -82,7 +82,7 @@ export function FeedbackModal({ open, onOpenChange }: FeedbackModalProps) {
         <DialogHeader>
           <DialogTitle>Report an Issue</DialogTitle>
           <DialogDescription>
-            Let us know what went wrong. We'll get back to you as soon as possible.
+            Just describe what happened. Copy and paste any error messages you see.
           </DialogDescription>
         </DialogHeader>
 
@@ -93,17 +93,20 @@ export function FeedbackModal({ open, onOpenChange }: FeedbackModalProps) {
             </Label>
             <Textarea
               id="message"
-              placeholder="Describe the issue you encountered..."
+              placeholder="Example: 'The schedule won't load' or copy/paste any error messages..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               required
               className="mt-2 min-h-[120px]"
               disabled={isSubmitting}
             />
+            <p className="mt-1 text-xs text-muted-foreground">
+              We only collect your message, team preferences (if saved), and timestamp. No personal data.
+            </p>
           </div>
 
           <div>
-            <Label htmlFor="email">Your email (optional)</Label>
+            <Label htmlFor="email">Your email (optional for follow-up)</Label>
             <Input
               id="email"
               type="email"
@@ -113,9 +116,6 @@ export function FeedbackModal({ open, onOpenChange }: FeedbackModalProps) {
               className="mt-2"
               disabled={isSubmitting}
             />
-            <p className="mt-1 text-xs text-muted-foreground">
-              We'll only use this to follow up about your issue
-            </p>
           </div>
 
           <div className="flex justify-end gap-2">
