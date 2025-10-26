@@ -1,0 +1,167 @@
+{
+  "name": "Team Schedule (Las Vegas Storm 12u AA)",
+  "url": "https://web.api.digitalshift.ca/partials/stats/schedule/ical?league_id=1447&team_id=586889&client_service_id=05e3fa78-061c-4607-a558-a54649c5044f",
+  "total_games": 16,
+  "games": [
+    {
+      "uid": "g-1107865@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Santa Clarita Lady Flyers 12u AA @ Las Vegas Storm 12u AA",
+      "away_team": "Santa Clarita Lady Flyers 12u AA",
+      "home_team": "Las Vegas Storm 12u AA",
+      "start": "2025-09-13T17:00:00.000Z",
+      "end": "2025-09-13T18:00:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107866@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "LA Lions 12u AA @ Las Vegas Storm 12u AA",
+      "away_team": "LA Lions 12u AA",
+      "home_team": "Las Vegas Storm 12u AA",
+      "start": "2025-09-14T01:00:00.000Z",
+      "end": "2025-09-14T02:00:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107868@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 12u AA @ CA Goldrush 12u A",
+      "away_team": "Las Vegas Storm 12u AA",
+      "home_team": "CA Goldrush 12u A",
+      "start": "2025-09-14T14:00:00.000Z",
+      "end": "2025-09-14T15:00:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107870@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 12u AA @ Santa Clarita Lady Flyers 12u AA",
+      "away_team": "Las Vegas Storm 12u AA",
+      "home_team": "Santa Clarita Lady Flyers 12u AA",
+      "start": "2025-09-14T22:45:00.000Z",
+      "end": "2025-09-14T23:45:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107889@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr. Golden Knights 12u A @ Las Vegas Storm 12u AA",
+      "away_team": "Vegas Jr. Golden Knights 12u A",
+      "home_team": "Las Vegas Storm 12u AA",
+      "start": "2025-11-01T15:30:00.000Z",
+      "end": "2025-11-01T16:30:00.000Z",
+      "location": "The Cube Santa Clarita / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107890@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 12u A @ Las Vegas Storm 12u AA",
+      "away_team": "San Diego Angels 12u A",
+      "home_team": "Las Vegas Storm 12u AA",
+      "start": "2025-11-01T21:45:00.000Z",
+      "end": "2025-11-01T22:45:00.000Z",
+      "location": "The Cube Santa Clarita / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107892@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 12u AA @ Santa Clarita Lady Flyers 12u AA",
+      "away_team": "Las Vegas Storm 12u AA",
+      "home_team": "Santa Clarita Lady Flyers 12u AA",
+      "start": "2025-11-02T15:00:00.000Z",
+      "end": "2025-11-02T16:00:00.000Z",
+      "location": "The Cube Santa Clarita / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107894@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 12u AA @ Vegas Jr. Golden Knights 12u A",
+      "away_team": "Las Vegas Storm 12u AA",
+      "home_team": "Vegas Jr. Golden Knights 12u A",
+      "start": "2025-11-02T20:45:00.000Z",
+      "end": "2025-11-02T21:45:00.000Z",
+      "location": "The Cube Santa Clarita / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107897@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 12u AA @ Delta Knights 12u AA",
+      "away_team": "Las Vegas Storm 12u AA",
+      "home_team": "Delta Knights 12u AA",
+      "start": "2025-11-15T15:00:00.000Z",
+      "end": "2025-11-15T16:00:00.000Z",
+      "location": "LA Kings Iceland / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107899@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "LA Lions 12u AA @ Las Vegas Storm 12u AA",
+      "away_team": "LA Lions 12u AA",
+      "home_team": "Las Vegas Storm 12u AA",
+      "start": "2025-11-15T23:40:00.000Z",
+      "end": "2025-11-16T00:40:00.000Z",
+      "location": "LA Kings Iceland / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107900@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 12u AA @ San Diego Angels 12u A",
+      "away_team": "Las Vegas Storm 12u AA",
+      "home_team": "San Diego Angels 12u A",
+      "start": "2025-11-16T15:00:00.000Z",
+      "end": "2025-11-16T16:00:00.000Z",
+      "location": "Toyota Sports Performance Center / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107902@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Delta Knights 12u AA @ Las Vegas Storm 12u AA",
+      "away_team": "Delta Knights 12u AA",
+      "home_team": "Las Vegas Storm 12u AA",
+      "start": "2025-11-16T22:15:00.000Z",
+      "end": "2025-11-16T23:15:00.000Z",
+      "location": "Toyota Sports Performance Center / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107912@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 12u AA @ Las Vegas Storm 12u AA",
+      "away_team": "Anaheim Lady Ducks 12u AA",
+      "home_team": "Las Vegas Storm 12u AA",
+      "start": "2025-12-20T15:30:00.000Z",
+      "end": "2025-12-20T16:30:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107914@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 12u AA @ San Diego Angels 12u A",
+      "away_team": "Las Vegas Storm 12u AA",
+      "home_team": "San Diego Angels 12u A",
+      "start": "2025-12-21T01:30:00.000Z",
+      "end": "2025-12-21T02:30:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107916@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush 12u A @ Las Vegas Storm 12u AA",
+      "away_team": "CA Goldrush 12u A",
+      "home_team": "Las Vegas Storm 12u AA",
+      "start": "2025-12-21T16:15:00.000Z",
+      "end": "2025-12-21T17:15:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107919@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 12u AA @ Anaheim Lady Ducks 12u AA",
+      "away_team": "Las Vegas Storm 12u AA",
+      "home_team": "Anaheim Lady Ducks 12u AA",
+      "start": "2025-12-22T00:30:00.000Z",
+      "end": "2025-12-22T01:30:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    }
+  ]
+}

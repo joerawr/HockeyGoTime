@@ -1,0 +1,2167 @@
+{
+  "name": "Full Season Schedule (All Teams)",
+  "url": "https://web.api.digitalshift.ca/partials/stats/schedule/ical?season_id=9486&league_id=1447&client_service_id=05e3fa78-061c-4607-a558-a54649c5044f",
+  "total_games": 216,
+  "games": [
+    {
+      "uid": "g-1108938@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr Golden Knights 14u AA @ San Jose Jr Sharks 14u AA",
+      "away_team": "Vegas Jr Golden Knights 14u AA",
+      "home_team": "San Jose Jr Sharks 14u AA",
+      "start": "2025-09-13T14:15:00.000Z",
+      "end": "2025-09-13T15:15:00.000Z",
+      "location": "Sharks Ice San Jose / Grey Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107864@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "LA Lions 12u AA @ CA Goldrush 12u A",
+      "away_team": "LA Lions 12u AA",
+      "home_team": "CA Goldrush 12u A",
+      "start": "2025-09-13T15:15:00.000Z",
+      "end": "2025-09-13T16:15:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108939@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 14u AA @ Santa Clarita Lady Flyers 14u AA",
+      "away_team": "Anaheim Lady Ducks 14u AA",
+      "home_team": "Santa Clarita Lady Flyers 14u AA",
+      "start": "2025-09-13T16:00:00.000Z",
+      "end": "2025-09-13T17:00:00.000Z",
+      "location": "Sharks Ice San Jose / Grey Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107865@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Santa Clarita Lady Flyers 12u AA @ Las Vegas Storm 12u AA",
+      "away_team": "Santa Clarita Lady Flyers 12u AA",
+      "home_team": "Las Vegas Storm 12u AA",
+      "start": "2025-09-13T17:00:00.000Z",
+      "end": "2025-09-13T18:00:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108940@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr Golden Knights 14u AA @ Santa Clarita Lady Flyers 14u AA",
+      "away_team": "Vegas Jr Golden Knights 14u AA",
+      "home_team": "Santa Clarita Lady Flyers 14u AA",
+      "start": "2025-09-13T21:15:00.000Z",
+      "end": "2025-09-13T22:15:00.000Z",
+      "location": "Sharks Ice San Jose / Grey Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108941@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 14u AA @ Anaheim Lady Ducks 14u AA",
+      "away_team": "San Jose Jr Sharks 14u AA",
+      "home_team": "Anaheim Lady Ducks 14u AA",
+      "start": "2025-09-13T23:00:00.000Z",
+      "end": "2025-09-14T00:00:00.000Z",
+      "location": "Sharks Ice San Jose / Grey Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107866@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "LA Lions 12u AA @ Las Vegas Storm 12u AA",
+      "away_team": "LA Lions 12u AA",
+      "home_team": "Las Vegas Storm 12u AA",
+      "start": "2025-09-14T01:00:00.000Z",
+      "end": "2025-09-14T02:00:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107867@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush 12u A @ Santa Clarita Lady Flyers 12u AA",
+      "away_team": "CA Goldrush 12u A",
+      "home_team": "Santa Clarita Lady Flyers 12u AA",
+      "start": "2025-09-14T02:45:00.000Z",
+      "end": "2025-09-14T03:45:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107868@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 12u AA @ CA Goldrush 12u A",
+      "away_team": "Las Vegas Storm 12u AA",
+      "home_team": "CA Goldrush 12u A",
+      "start": "2025-09-14T14:00:00.000Z",
+      "end": "2025-09-14T15:00:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108942@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 14u AA @ Vegas Jr Golden Knights 14u AA",
+      "away_team": "San Jose Jr Sharks 14u AA",
+      "home_team": "Vegas Jr Golden Knights 14u AA",
+      "start": "2025-09-14T15:00:00.000Z",
+      "end": "2025-09-14T16:00:00.000Z",
+      "location": "Sharks Ice San Jose / Black Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107869@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Santa Clarita Lady Flyers 12u AA @ LA Lions 12u AA",
+      "away_team": "Santa Clarita Lady Flyers 12u AA",
+      "home_team": "LA Lions 12u AA",
+      "start": "2025-09-14T15:45:00.000Z",
+      "end": "2025-09-14T16:45:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108943@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Santa Clarita Lady Flyers 14u AA @ Anaheim Lady Ducks 14u AA",
+      "away_team": "Santa Clarita Lady Flyers 14u AA",
+      "home_team": "Anaheim Lady Ducks 14u AA",
+      "start": "2025-09-14T16:45:00.000Z",
+      "end": "2025-09-14T17:45:00.000Z",
+      "location": "Sharks Ice San Jose / Black Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108944@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 14u AA @ Vegas Jr Golden Knights 14u AA",
+      "away_team": "Anaheim Lady Ducks 14u AA",
+      "home_team": "Vegas Jr Golden Knights 14u AA",
+      "start": "2025-09-14T22:00:00.000Z",
+      "end": "2025-09-14T23:00:00.000Z",
+      "location": "Sharks Ice San Jose / Black Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107870@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 12u AA @ Santa Clarita Lady Flyers 12u AA",
+      "away_team": "Las Vegas Storm 12u AA",
+      "home_team": "Santa Clarita Lady Flyers 12u AA",
+      "start": "2025-09-14T22:45:00.000Z",
+      "end": "2025-09-14T23:45:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108945@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Santa Clarita Lady Flyers 14u AA @ San Jose Jr Sharks 14u AA",
+      "away_team": "Santa Clarita Lady Flyers 14u AA",
+      "home_team": "San Jose Jr Sharks 14u AA",
+      "start": "2025-09-14T23:45:00.000Z",
+      "end": "2025-09-15T00:45:00.000Z",
+      "location": "Sharks Ice San Jose / Black Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107871@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush 12u A @ LA Lions 12u AA",
+      "away_team": "CA Goldrush 12u A",
+      "home_team": "LA Lions 12u AA",
+      "start": "2025-09-15T00:30:00.000Z",
+      "end": "2025-09-15T01:30:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109013@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 19u AA @ San Jose Jr Sharks 19u AA",
+      "away_team": "Anaheim Lady Ducks 19u AA",
+      "home_team": "San Jose Jr Sharks 19u AA",
+      "start": "2025-09-20T14:15:00.000Z",
+      "end": "2025-09-20T15:15:00.000Z",
+      "location": "Sharks Ice San Jose / Grey Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109014@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Portland Jr Winterhawks 19u AA @ CA Goldrush-1 16u AA",
+      "away_team": "Portland Jr Winterhawks 19u AA",
+      "home_team": "CA Goldrush-1 16u AA",
+      "start": "2025-09-20T16:00:00.000Z",
+      "end": "2025-09-20T17:00:00.000Z",
+      "location": "Sharks Ice San Jose / Grey Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109015@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 19u AA @ CA Goldrush-1 16u AA",
+      "away_team": "Anaheim Lady Ducks 19u AA",
+      "home_team": "CA Goldrush-1 16u AA",
+      "start": "2025-09-20T21:15:00.000Z",
+      "end": "2025-09-20T22:15:00.000Z",
+      "location": "Sharks Ice San Jose / Grey Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109016@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 19u AA @ Portland Jr Winterhawks 19u AA",
+      "away_team": "San Jose Jr Sharks 19u AA",
+      "home_team": "Portland Jr Winterhawks 19u AA",
+      "start": "2025-09-20T23:00:00.000Z",
+      "end": "2025-09-21T00:00:00.000Z",
+      "location": "Sharks Ice San Jose / Grey Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109017@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 19u AA @ Anaheim Lady Ducks 19u AA",
+      "away_team": "San Jose Jr Sharks 19u AA",
+      "home_team": "Anaheim Lady Ducks 19u AA",
+      "start": "2025-09-21T14:45:00.000Z",
+      "end": "2025-09-21T15:45:00.000Z",
+      "location": "Sharks Ice San Jose / Orange Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109018@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush-1 16u AA @ Portland Jr Winterhawks 19u AA",
+      "away_team": "CA Goldrush-1 16u AA",
+      "home_team": "Portland Jr Winterhawks 19u AA",
+      "start": "2025-09-21T16:30:00.000Z",
+      "end": "2025-09-21T17:30:00.000Z",
+      "location": "Sharks Ice San Jose / Orange Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109019@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Portland Jr Winterhawks 19u AA @ Anaheim Lady Ducks 19u AA",
+      "away_team": "Portland Jr Winterhawks 19u AA",
+      "home_team": "Anaheim Lady Ducks 19u AA",
+      "start": "2025-09-21T21:45:00.000Z",
+      "end": "2025-09-21T22:45:00.000Z",
+      "location": "Sharks Ice San Jose / Orange Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109020@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush-1 16u AA @ San Jose Jr Sharks 19u AA",
+      "away_team": "CA Goldrush-1 16u AA",
+      "home_team": "San Jose Jr Sharks 19u AA",
+      "start": "2025-09-21T23:30:00.000Z",
+      "end": "2025-09-22T00:30:00.000Z",
+      "location": "Sharks Ice San Jose / Orange Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108946@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 14u AA @ Anaheim Lady Ducks 14u AA",
+      "away_team": "Las Vegas Storm 14u AA",
+      "home_team": "Anaheim Lady Ducks 14u AA",
+      "start": "2025-09-27T14:00:00.000Z",
+      "end": "2025-09-27T15:00:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108947@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 14u AA @ Vegas Jr Golden Knights 14u AA",
+      "away_team": "San Diego Angels 14u AA",
+      "home_team": "Vegas Jr Golden Knights 14u AA",
+      "start": "2025-09-27T15:45:00.000Z",
+      "end": "2025-09-27T16:45:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108948@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 14u AA @ Las Vegas Storm 14u AA",
+      "away_team": "San Diego Angels 14u AA",
+      "home_team": "Las Vegas Storm 14u AA",
+      "start": "2025-09-27T21:45:00.000Z",
+      "end": "2025-09-27T22:45:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108949@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr Golden Knights 14u AA @ Anaheim Lady Ducks 14u AA",
+      "away_team": "Vegas Jr Golden Knights 14u AA",
+      "home_team": "Anaheim Lady Ducks 14u AA",
+      "start": "2025-09-27T23:30:00.000Z",
+      "end": "2025-09-28T00:30:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108950@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 14u AA @ Las Vegas Storm 14u AA",
+      "away_team": "Anaheim Lady Ducks 14u AA",
+      "home_team": "Las Vegas Storm 14u AA",
+      "start": "2025-09-28T14:00:00.000Z",
+      "end": "2025-09-28T15:00:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108951@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr Golden Knights 14u AA @ San Diego Angels 14u AA",
+      "away_team": "Vegas Jr Golden Knights 14u AA",
+      "home_team": "San Diego Angels 14u AA",
+      "start": "2025-09-28T15:45:00.000Z",
+      "end": "2025-09-28T16:45:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108952@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 14u AA @ Vegas Jr Golden Knights 14u AA",
+      "away_team": "Las Vegas Storm 14u AA",
+      "home_team": "Vegas Jr Golden Knights 14u AA",
+      "start": "2025-09-28T21:45:00.000Z",
+      "end": "2025-09-28T22:45:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108955@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 14u AA @ San Diego Angels 14u AA",
+      "away_team": "Anaheim Lady Ducks 14u AA",
+      "home_team": "San Diego Angels 14u AA",
+      "start": "2025-09-28T23:30:00.000Z",
+      "end": "2025-09-29T00:30:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107872@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "LA Lions 12u AA @ Vegas Jr. Golden Knights 12u A",
+      "away_team": "LA Lions 12u AA",
+      "home_team": "Vegas Jr. Golden Knights 12u A",
+      "start": "2025-10-04T15:00:00.000Z",
+      "end": "2025-10-04T16:00:00.000Z",
+      "location": "America First Center / Rink 2",
+      "description": ""
+    },
+    {
+      "uid": "g-1107873@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Delta Knights 12u AA @ Santa Clarita Lady Flyers 12u AA",
+      "away_team": "Delta Knights 12u AA",
+      "home_team": "Santa Clarita Lady Flyers 12u AA",
+      "start": "2025-10-04T16:40:00.000Z",
+      "end": "2025-10-04T17:40:00.000Z",
+      "location": "America First Center / Rink 2",
+      "description": ""
+    },
+    {
+      "uid": "g-1107874@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "LA Lions 12u AA @ Santa Clarita Lady Flyers 12u AA",
+      "away_team": "LA Lions 12u AA",
+      "home_team": "Santa Clarita Lady Flyers 12u AA",
+      "start": "2025-10-04T22:10:00.000Z",
+      "end": "2025-10-04T23:10:00.000Z",
+      "location": "America First Center / Rink 1",
+      "description": ""
+    },
+    {
+      "uid": "g-1107875@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr. Golden Knights 12u A @ Delta Knights 12u AA",
+      "away_team": "Vegas Jr. Golden Knights 12u A",
+      "home_team": "Delta Knights 12u AA",
+      "start": "2025-10-04T23:50:00.000Z",
+      "end": "2025-10-05T00:50:00.000Z",
+      "location": "America First Center / Rink 1",
+      "description": ""
+    },
+    {
+      "uid": "g-1107876@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Santa Clarita Lady Flyers 12u AA @ Vegas Jr. Golden Knights 12u A",
+      "away_team": "Santa Clarita Lady Flyers 12u AA",
+      "home_team": "Vegas Jr. Golden Knights 12u A",
+      "start": "2025-10-05T14:00:00.000Z",
+      "end": "2025-10-05T15:00:00.000Z",
+      "location": "City National Arena / Rink B",
+      "description": ""
+    },
+    {
+      "uid": "g-1107877@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Delta Knights 12u AA @ LA Lions 12u AA",
+      "away_team": "Delta Knights 12u AA",
+      "home_team": "LA Lions 12u AA",
+      "start": "2025-10-05T14:00:00.000Z",
+      "end": "2025-10-05T15:00:00.000Z",
+      "location": "America First Center / Rink 1",
+      "description": ""
+    },
+    {
+      "uid": "g-1107878@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr. Golden Knights 12u A @ LA Lions 12u AA",
+      "away_team": "Vegas Jr. Golden Knights 12u A",
+      "home_team": "LA Lions 12u AA",
+      "start": "2025-10-05T19:20:00.000Z",
+      "end": "2025-10-05T20:20:00.000Z",
+      "location": "City National Arena / Rink B",
+      "description": ""
+    },
+    {
+      "uid": "g-1107879@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Santa Clarita Lady Flyers 12u AA @ Delta Knights 12u AA",
+      "away_team": "Santa Clarita Lady Flyers 12u AA",
+      "home_team": "Delta Knights 12u AA",
+      "start": "2025-10-05T19:20:00.000Z",
+      "end": "2025-10-05T20:20:00.000Z",
+      "location": "America First Center / Rink 1",
+      "description": ""
+    },
+    {
+      "uid": "g-1109021@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr Golden Knights 16u AA @ Anaheim Lady Ducks 16u AA",
+      "away_team": "Vegas Jr Golden Knights 16u AA",
+      "home_team": "Anaheim Lady Ducks 16u AA",
+      "start": "2025-10-11T14:00:00.000Z",
+      "end": "2025-10-11T15:00:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108397@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 12u AAA @ San Jose Jr Sharks 12u AAA",
+      "away_team": "Anaheim Lady Ducks 12u AAA",
+      "home_team": "San Jose Jr Sharks 12u AAA",
+      "start": "2025-10-11T14:15:00.000Z",
+      "end": "2025-10-11T15:15:00.000Z",
+      "location": "Sharks Ice San Jose / Grey Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108398@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Tri Valley Lady Blue Devils 12u AAA @ LA Lions 12u AAA",
+      "away_team": "Tri Valley Lady Blue Devils 12u AAA",
+      "home_team": "LA Lions 12u AAA",
+      "start": "2025-10-11T15:45:00.000Z",
+      "end": "2025-10-11T16:45:00.000Z",
+      "location": "Sharks Ice San Jose / Grey Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109022@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 19u AA @ Vacaville Jets 16u AA",
+      "away_team": "Anaheim Lady Ducks 19u AA",
+      "home_team": "Vacaville Jets 16u AA",
+      "start": "2025-10-11T15:45:00.000Z",
+      "end": "2025-10-11T16:45:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108399@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "LA Lions 12u AAA @ San Jose Jr Sharks 12u AAA",
+      "away_team": "LA Lions 12u AAA",
+      "home_team": "San Jose Jr Sharks 12u AAA",
+      "start": "2025-10-11T20:45:00.000Z",
+      "end": "2025-10-11T21:45:00.000Z",
+      "location": "Sharks Ice San Jose / Grey Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109023@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 19u AA @ Vegas Jr Golden Knights 16u AA",
+      "away_team": "Anaheim Lady Ducks 19u AA",
+      "home_team": "Vegas Jr Golden Knights 16u AA",
+      "start": "2025-10-11T21:45:00.000Z",
+      "end": "2025-10-11T22:45:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108400@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Tri Valley Lady Blue Devils 12u AAA @ Anaheim Lady Ducks 12u AAA",
+      "away_team": "Tri Valley Lady Blue Devils 12u AAA",
+      "home_team": "Anaheim Lady Ducks 12u AAA",
+      "start": "2025-10-11T22:15:00.000Z",
+      "end": "2025-10-11T23:15:00.000Z",
+      "location": "Sharks Ice San Jose / Grey Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109024@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vacaville Jets 16u AA @ Anaheim Lady Ducks 16u AA",
+      "away_team": "Vacaville Jets 16u AA",
+      "home_team": "Anaheim Lady Ducks 16u AA",
+      "start": "2025-10-11T23:30:00.000Z",
+      "end": "2025-10-12T00:30:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109025@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 16u AA @ Vegas Jr Golden Knights 16u AA",
+      "away_team": "Anaheim Lady Ducks 16u AA",
+      "home_team": "Vegas Jr Golden Knights 16u AA",
+      "start": "2025-10-12T14:00:00.000Z",
+      "end": "2025-10-12T15:00:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108401@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 12u AAA @ Tri Valley Lady Blue Devils 12u AAA",
+      "away_team": "San Jose Jr Sharks 12u AAA",
+      "home_team": "Tri Valley Lady Blue Devils 12u AAA",
+      "start": "2025-10-12T14:45:00.000Z",
+      "end": "2025-10-12T15:45:00.000Z",
+      "location": "Sharks Ice San Jose / Orange Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109026@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vacaville Jets 16u AA @ Anaheim Lady Ducks 19u AA",
+      "away_team": "Vacaville Jets 16u AA",
+      "home_team": "Anaheim Lady Ducks 19u AA",
+      "start": "2025-10-12T15:45:00.000Z",
+      "end": "2025-10-12T16:45:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108402@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 12u AAA @ LA Lions 12u AAA",
+      "away_team": "Anaheim Lady Ducks 12u AAA",
+      "home_team": "LA Lions 12u AAA",
+      "start": "2025-10-12T16:15:00.000Z",
+      "end": "2025-10-12T17:15:00.000Z",
+      "location": "Sharks Ice San Jose / Orange Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108403@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "LA Lions 12u AAA @ Tri Valley Lady Blue Devils 12u AAA",
+      "away_team": "LA Lions 12u AAA",
+      "home_team": "Tri Valley Lady Blue Devils 12u AAA",
+      "start": "2025-10-12T21:15:00.000Z",
+      "end": "2025-10-12T22:15:00.000Z",
+      "location": "Sharks Ice San Jose / Orange Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109027@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr Golden Knights 16u AA @ Anaheim Lady Ducks 19u AA",
+      "away_team": "Vegas Jr Golden Knights 16u AA",
+      "home_team": "Anaheim Lady Ducks 19u AA",
+      "start": "2025-10-12T21:45:00.000Z",
+      "end": "2025-10-12T22:45:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108404@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 12u AAA @ Anaheim Lady Ducks 12u AAA",
+      "away_team": "San Jose Jr Sharks 12u AAA",
+      "home_team": "Anaheim Lady Ducks 12u AAA",
+      "start": "2025-10-12T22:45:00.000Z",
+      "end": "2025-10-12T23:45:00.000Z",
+      "location": "Sharks Ice San Jose / Orange Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109028@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 16u AA @ Vacaville Jets 16u AA",
+      "away_team": "Anaheim Lady Ducks 16u AA",
+      "home_team": "Vacaville Jets 16u AA",
+      "start": "2025-10-12T23:30:00.000Z",
+      "end": "2025-10-13T00:30:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109029@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 19u AA @ Vegas Jr Golden Knights 16u AA",
+      "away_team": "San Jose Jr Sharks 19u AA",
+      "home_team": "Vegas Jr Golden Knights 16u AA",
+      "start": "2025-10-18T15:00:00.000Z",
+      "end": "2025-10-18T16:00:00.000Z",
+      "location": "City National Arena / Rink B",
+      "description": ""
+    },
+    {
+      "uid": "g-1107880@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush 12u A @ Delta Knights 12u AA",
+      "away_team": "CA Goldrush 12u A",
+      "home_team": "Delta Knights 12u AA",
+      "start": "2025-10-18T16:15:00.000Z",
+      "end": "2025-10-18T17:15:00.000Z",
+      "location": "Oak Park Ice Rink / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109030@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Portland Jr Winterhawks 19u AA @ CA Goldrush-2 16u AA",
+      "away_team": "Portland Jr Winterhawks 19u AA",
+      "home_team": "CA Goldrush-2 16u AA",
+      "start": "2025-10-18T16:40:00.000Z",
+      "end": "2025-10-18T17:40:00.000Z",
+      "location": "City National Arena / Rink B",
+      "description": ""
+    },
+    {
+      "uid": "g-1107881@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "LA Lions 12u AA @ Anaheim Lady Ducks 12u AA",
+      "away_team": "LA Lions 12u AA",
+      "home_team": "Anaheim Lady Ducks 12u AA",
+      "start": "2025-10-18T18:00:00.000Z",
+      "end": "2025-10-18T19:00:00.000Z",
+      "location": "Oak Park Ice Rink / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109031@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 19u AA @ CA Goldrush-2 16u AA",
+      "away_team": "San Jose Jr Sharks 19u AA",
+      "home_team": "CA Goldrush-2 16u AA",
+      "start": "2025-10-18T22:20:00.000Z",
+      "end": "2025-10-18T23:20:00.000Z",
+      "location": "City National Arena / Rink B",
+      "description": ""
+    },
+    {
+      "uid": "g-1107882@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 12u AA @ CA Goldrush 12u A",
+      "away_team": "Anaheim Lady Ducks 12u AA",
+      "home_team": "CA Goldrush 12u A",
+      "start": "2025-10-18T23:45:00.000Z",
+      "end": "2025-10-19T00:45:00.000Z",
+      "location": "Oak Park Ice Rink / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109032@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr Golden Knights 16u AA @ Portland Jr Winterhawks 19u AA",
+      "away_team": "Vegas Jr Golden Knights 16u AA",
+      "home_team": "Portland Jr Winterhawks 19u AA",
+      "start": "2025-10-19T00:00:00.000Z",
+      "end": "2025-10-19T01:00:00.000Z",
+      "location": "City National Arena / Rink B",
+      "description": ""
+    },
+    {
+      "uid": "g-1107883@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "LA Lions 12u AA @ Delta Knights 12u AA",
+      "away_team": "LA Lions 12u AA",
+      "home_team": "Delta Knights 12u AA",
+      "start": "2025-10-19T01:30:00.000Z",
+      "end": "2025-10-19T02:30:00.000Z",
+      "location": "Oak Park Ice Rink / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109033@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr Golden Knights 16u AA @ San Jose Jr Sharks 19u AA",
+      "away_team": "Vegas Jr Golden Knights 16u AA",
+      "home_team": "San Jose Jr Sharks 19u AA",
+      "start": "2025-10-19T14:00:00.000Z",
+      "end": "2025-10-19T15:00:00.000Z",
+      "location": "City National Arena / Rink B",
+      "description": ""
+    },
+    {
+      "uid": "g-1107884@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Delta Knights 12u AA @ Anaheim Lady Ducks 12u AA",
+      "away_team": "Delta Knights 12u AA",
+      "home_team": "Anaheim Lady Ducks 12u AA",
+      "start": "2025-10-19T14:30:00.000Z",
+      "end": "2025-10-19T15:30:00.000Z",
+      "location": "Oak Park Ice Rink / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109034@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush-2 16u AA @ Portland Jr Winterhawks 19u AA",
+      "away_team": "CA Goldrush-2 16u AA",
+      "home_team": "Portland Jr Winterhawks 19u AA",
+      "start": "2025-10-19T15:40:00.000Z",
+      "end": "2025-10-19T16:40:00.000Z",
+      "location": "City National Arena / Rink B",
+      "description": ""
+    },
+    {
+      "uid": "g-1107885@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush 12u A @ LA Lions 12u AA",
+      "away_team": "CA Goldrush 12u A",
+      "home_team": "LA Lions 12u AA",
+      "start": "2025-10-19T16:15:00.000Z",
+      "end": "2025-10-19T17:15:00.000Z",
+      "location": "Oak Park Ice Rink / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109035@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Portland Jr Winterhawks 19u AA @ San Jose Jr Sharks 19u AA",
+      "away_team": "Portland Jr Winterhawks 19u AA",
+      "home_team": "San Jose Jr Sharks 19u AA",
+      "start": "2025-10-19T20:50:00.000Z",
+      "end": "2025-10-19T21:50:00.000Z",
+      "location": "City National Arena / Rink A",
+      "description": ""
+    },
+    {
+      "uid": "g-1109036@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush-2 16u AA @ Vegas Jr Golden Knights 16u AA",
+      "away_team": "CA Goldrush-2 16u AA",
+      "home_team": "Vegas Jr Golden Knights 16u AA",
+      "start": "2025-10-19T20:50:00.000Z",
+      "end": "2025-10-19T21:50:00.000Z",
+      "location": "America First Center / Rink 1",
+      "description": ""
+    },
+    {
+      "uid": "g-1107886@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 12u AA @ LA Lions 12u AA",
+      "away_team": "Anaheim Lady Ducks 12u AA",
+      "home_team": "LA Lions 12u AA",
+      "start": "2025-10-19T22:00:00.000Z",
+      "end": "2025-10-19T23:00:00.000Z",
+      "location": "Oak Park Ice Rink / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107887@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Delta Knights 12u AA @ CA Goldrush 12u A",
+      "away_team": "Delta Knights 12u AA",
+      "home_team": "CA Goldrush 12u A",
+      "start": "2025-10-19T23:45:00.000Z",
+      "end": "2025-10-20T00:45:00.000Z",
+      "location": "Oak Park Ice Rink / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108405@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 12u AAA @ LA Lions 12u AAA",
+      "away_team": "Anaheim Lady Ducks 12u AAA",
+      "home_team": "LA Lions 12u AAA",
+      "start": "2025-10-25T14:00:00.000Z",
+      "end": "2025-10-25T15:00:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108406@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 12u AAA @ Tri Valley Lady Blue Devils 12u AAA",
+      "away_team": "San Jose Jr Sharks 12u AAA",
+      "home_team": "Tri Valley Lady Blue Devils 12u AAA",
+      "start": "2025-10-25T15:45:00.000Z",
+      "end": "2025-10-25T16:45:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108407@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 12u AAA @ San Jose Jr Sharks 12u AAA",
+      "away_team": "Anaheim Lady Ducks 12u AAA",
+      "home_team": "San Jose Jr Sharks 12u AAA",
+      "start": "2025-10-25T21:45:00.000Z",
+      "end": "2025-10-25T22:45:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108408@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "LA Lions 12u AAA @ Tri Valley Lady Blue Devils 12u AAA",
+      "away_team": "LA Lions 12u AAA",
+      "home_team": "Tri Valley Lady Blue Devils 12u AAA",
+      "start": "2025-10-25T23:30:00.000Z",
+      "end": "2025-10-26T00:30:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108409@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Tri Valley Lady Blue Devils 12u AAA @ Anaheim Lady Ducks 12u AAA",
+      "away_team": "Tri Valley Lady Blue Devils 12u AAA",
+      "home_team": "Anaheim Lady Ducks 12u AAA",
+      "start": "2025-10-26T14:00:00.000Z",
+      "end": "2025-10-26T15:00:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108410@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 12u AAA @ LA Lions 12u AAA",
+      "away_team": "San Jose Jr Sharks 12u AAA",
+      "home_team": "LA Lions 12u AAA",
+      "start": "2025-10-26T15:45:00.000Z",
+      "end": "2025-10-26T16:45:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108411@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Tri Valley Lady Blue Devils 12u AAA @ San Jose Jr Sharks 12u AAA",
+      "away_team": "Tri Valley Lady Blue Devils 12u AAA",
+      "home_team": "San Jose Jr Sharks 12u AAA",
+      "start": "2025-10-26T21:45:00.000Z",
+      "end": "2025-10-26T22:45:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108412@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "LA Lions 12u AAA @ Anaheim Lady Ducks 12u AAA",
+      "away_team": "LA Lions 12u AAA",
+      "home_team": "Anaheim Lady Ducks 12u AAA",
+      "start": "2025-10-26T23:30:00.000Z",
+      "end": "2025-10-27T00:30:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107888@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 12u A @ Santa Clarita Lady Flyers 12u AA",
+      "away_team": "San Diego Angels 12u A",
+      "home_team": "Santa Clarita Lady Flyers 12u AA",
+      "start": "2025-11-01T14:00:00.000Z",
+      "end": "2025-11-01T15:00:00.000Z",
+      "location": "The Cube Santa Clarita / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108957@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 14u AA @ Santa Clarita Lady Flyers 14u AA",
+      "away_team": "Las Vegas Storm 14u AA",
+      "home_team": "Santa Clarita Lady Flyers 14u AA",
+      "start": "2025-11-01T14:00:00.000Z",
+      "end": "2025-11-01T15:00:00.000Z",
+      "location": "The Cube Santa Clarita / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109037@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vacaville Jets 16u AA @ San Diego Angels 19u AA",
+      "away_team": "Vacaville Jets 16u AA",
+      "home_team": "San Diego Angels 19u AA",
+      "start": "2025-11-01T14:00:00.000Z",
+      "end": "2025-11-01T15:00:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107889@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr. Golden Knights 12u A @ Las Vegas Storm 12u AA",
+      "away_team": "Vegas Jr. Golden Knights 12u A",
+      "home_team": "Las Vegas Storm 12u AA",
+      "start": "2025-11-01T15:30:00.000Z",
+      "end": "2025-11-01T16:30:00.000Z",
+      "location": "The Cube Santa Clarita / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108960@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 14u AA @ San Diego Angels 14u AA",
+      "away_team": "San Jose Jr Sharks 14u AA",
+      "home_team": "San Diego Angels 14u AA",
+      "start": "2025-11-01T15:45:00.000Z",
+      "end": "2025-11-01T16:45:00.000Z",
+      "location": "The Cube Santa Clarita / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109038@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush-1 16u AA @ Anaheim Lady Ducks 16u AA",
+      "away_team": "CA Goldrush-1 16u AA",
+      "home_team": "Anaheim Lady Ducks 16u AA",
+      "start": "2025-11-01T15:45:00.000Z",
+      "end": "2025-11-01T16:45:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107890@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 12u A @ Las Vegas Storm 12u AA",
+      "away_team": "San Diego Angels 12u A",
+      "home_team": "Las Vegas Storm 12u AA",
+      "start": "2025-11-01T21:45:00.000Z",
+      "end": "2025-11-01T22:45:00.000Z",
+      "location": "The Cube Santa Clarita / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109039@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush-1 16u AA @ Vacaville Jets 16u AA",
+      "away_team": "CA Goldrush-1 16u AA",
+      "home_team": "Vacaville Jets 16u AA",
+      "start": "2025-11-01T21:45:00.000Z",
+      "end": "2025-11-01T22:45:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107891@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Santa Clarita Lady Flyers 12u AA @ Vegas Jr. Golden Knights 12u A",
+      "away_team": "Santa Clarita Lady Flyers 12u AA",
+      "home_team": "Vegas Jr. Golden Knights 12u A",
+      "start": "2025-11-01T23:15:00.000Z",
+      "end": "2025-11-02T00:15:00.000Z",
+      "location": "The Cube Santa Clarita / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109040@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 19u AA @ Anaheim Lady Ducks 16u AA",
+      "away_team": "San Diego Angels 19u AA",
+      "home_team": "Anaheim Lady Ducks 16u AA",
+      "start": "2025-11-01T23:30:00.000Z",
+      "end": "2025-11-02T00:30:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108961@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 14u AA @ San Diego Angels 14u AA",
+      "away_team": "Las Vegas Storm 14u AA",
+      "home_team": "San Diego Angels 14u AA",
+      "start": "2025-11-02T00:45:00.000Z",
+      "end": "2025-11-02T01:45:00.000Z",
+      "location": "The Cube Santa Clarita / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108962@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Santa Clarita Lady Flyers 14u AA @ San Jose Jr Sharks 14u AA",
+      "away_team": "Santa Clarita Lady Flyers 14u AA",
+      "home_team": "San Jose Jr Sharks 14u AA",
+      "start": "2025-11-02T02:30:00.000Z",
+      "end": "2025-11-02T03:30:00.000Z",
+      "location": "The Cube Santa Clarita / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107892@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 12u AA @ Santa Clarita Lady Flyers 12u AA",
+      "away_team": "Las Vegas Storm 12u AA",
+      "home_team": "Santa Clarita Lady Flyers 12u AA",
+      "start": "2025-11-02T15:00:00.000Z",
+      "end": "2025-11-02T16:00:00.000Z",
+      "location": "The Cube Santa Clarita / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109041@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 19u AA @ Vacaville Jets 16u AA",
+      "away_team": "San Diego Angels 19u AA",
+      "home_team": "Vacaville Jets 16u AA",
+      "start": "2025-11-02T15:00:00.000Z",
+      "end": "2025-11-02T16:00:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107893@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr. Golden Knights 12u A @ San Diego Angels 12u A",
+      "away_team": "Vegas Jr. Golden Knights 12u A",
+      "home_team": "San Diego Angels 12u A",
+      "start": "2025-11-02T15:30:00.000Z",
+      "end": "2025-11-02T16:30:00.000Z",
+      "location": "The Cube Santa Clarita / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108963@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Santa Clarita Lady Flyers 14u AA @ Las Vegas Storm 14u AA",
+      "away_team": "Santa Clarita Lady Flyers 14u AA",
+      "home_team": "Las Vegas Storm 14u AA",
+      "start": "2025-11-02T16:30:00.000Z",
+      "end": "2025-11-02T17:30:00.000Z",
+      "location": "The Cube Santa Clarita / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109042@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 16u AA @ CA Goldrush-1 16u AA",
+      "away_team": "Anaheim Lady Ducks 16u AA",
+      "home_team": "CA Goldrush-1 16u AA",
+      "start": "2025-11-02T16:45:00.000Z",
+      "end": "2025-11-02T17:45:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108964@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 14u AA @ San Jose Jr Sharks 14u AA",
+      "away_team": "San Diego Angels 14u AA",
+      "home_team": "San Jose Jr Sharks 14u AA",
+      "start": "2025-11-02T17:00:00.000Z",
+      "end": "2025-11-02T18:00:00.000Z",
+      "location": "The Cube Santa Clarita / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107894@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 12u AA @ Vegas Jr. Golden Knights 12u A",
+      "away_team": "Las Vegas Storm 12u AA",
+      "home_team": "Vegas Jr. Golden Knights 12u A",
+      "start": "2025-11-02T20:45:00.000Z",
+      "end": "2025-11-02T21:45:00.000Z",
+      "location": "The Cube Santa Clarita / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107895@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Santa Clarita Lady Flyers 12u AA @ San Diego Angels 12u A",
+      "away_team": "Santa Clarita Lady Flyers 12u AA",
+      "home_team": "San Diego Angels 12u A",
+      "start": "2025-11-02T22:15:00.000Z",
+      "end": "2025-11-02T23:15:00.000Z",
+      "location": "The Cube Santa Clarita / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109043@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vacaville Jets 16u AA @ CA Goldrush-1 16u AA",
+      "away_team": "Vacaville Jets 16u AA",
+      "home_team": "CA Goldrush-1 16u AA",
+      "start": "2025-11-02T22:45:00.000Z",
+      "end": "2025-11-02T23:45:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108965@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 14u AA @ Las Vegas Storm 14u AA",
+      "away_team": "San Jose Jr Sharks 14u AA",
+      "home_team": "Las Vegas Storm 14u AA",
+      "start": "2025-11-02T23:45:00.000Z",
+      "end": "2025-11-03T00:45:00.000Z",
+      "location": "The Cube Santa Clarita / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109044@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 16u AA @ San Diego Angels 19u AA",
+      "away_team": "Anaheim Lady Ducks 16u AA",
+      "home_team": "San Diego Angels 19u AA",
+      "start": "2025-11-03T00:30:00.000Z",
+      "end": "2025-11-03T01:30:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108966@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 14u AA @ Santa Clarita Lady Flyers 14u AA",
+      "away_team": "San Diego Angels 14u AA",
+      "home_team": "Santa Clarita Lady Flyers 14u AA",
+      "start": "2025-11-03T01:30:00.000Z",
+      "end": "2025-11-03T02:30:00.000Z",
+      "location": "The Cube Santa Clarita / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109045@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vacaville Jets 16u AA @ CA Goldrush-1 16u AA",
+      "away_team": "Vacaville Jets 16u AA",
+      "home_team": "CA Goldrush-1 16u AA",
+      "start": "2025-11-08T14:45:00.000Z",
+      "end": "2025-11-08T15:45:00.000Z",
+      "location": "Vacaville Ice Sports / Mason Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109046@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr Golden Knights 16u AA @ CA Goldrush-2 16u AA",
+      "away_team": "Vegas Jr Golden Knights 16u AA",
+      "home_team": "CA Goldrush-2 16u AA",
+      "start": "2025-11-08T19:15:00.000Z",
+      "end": "2025-11-08T20:15:00.000Z",
+      "location": "Vacaville Ice Sports / Davis Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109047@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush-2 16u AA @ CA Goldrush-1 16u AA",
+      "away_team": "CA Goldrush-2 16u AA",
+      "home_team": "CA Goldrush-1 16u AA",
+      "start": "2025-11-09T01:45:00.000Z",
+      "end": "2025-11-09T02:45:00.000Z",
+      "location": "Vacaville Ice Sports / Davis Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109048@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr Golden Knights 16u AA @ Vacaville Jets 16u AA",
+      "away_team": "Vegas Jr Golden Knights 16u AA",
+      "home_team": "Vacaville Jets 16u AA",
+      "start": "2025-11-09T03:30:00.000Z",
+      "end": "2025-11-09T04:30:00.000Z",
+      "location": "Vacaville Ice Sports / Davis Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109049@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush-2 16u AA @ Vacaville Jets 16u AA",
+      "away_team": "CA Goldrush-2 16u AA",
+      "home_team": "Vacaville Jets 16u AA",
+      "start": "2025-11-09T15:00:00.000Z",
+      "end": "2025-11-09T16:00:00.000Z",
+      "location": "Vacaville Ice Sports / Davis Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109050@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush-1 16u AA @ Vegas Jr Golden Knights 16u AA",
+      "away_team": "CA Goldrush-1 16u AA",
+      "home_team": "Vegas Jr Golden Knights 16u AA",
+      "start": "2025-11-09T16:45:00.000Z",
+      "end": "2025-11-09T17:45:00.000Z",
+      "location": "Vacaville Ice Sports / Davis Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109051@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vacaville Jets 16u AA @ Vegas Jr Golden Knights 16u AA",
+      "away_team": "Vacaville Jets 16u AA",
+      "home_team": "Vegas Jr Golden Knights 16u AA",
+      "start": "2025-11-09T23:00:00.000Z",
+      "end": "2025-11-10T00:00:00.000Z",
+      "location": "Vacaville Ice Sports / Davis Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109052@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush-1 16u AA @ CA Goldrush-2 16u AA",
+      "away_team": "CA Goldrush-1 16u AA",
+      "home_team": "CA Goldrush-2 16u AA",
+      "start": "2025-11-09T23:00:00.000Z",
+      "end": "2025-11-10T00:00:00.000Z",
+      "location": "Vacaville Ice Sports / Mason Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107896@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 12u A @ LA Lions 12u AA",
+      "away_team": "San Diego Angels 12u A",
+      "home_team": "LA Lions 12u AA",
+      "start": "2025-11-15T15:00:00.000Z",
+      "end": "2025-11-15T16:00:00.000Z",
+      "location": "Toyota Sports Performance Center / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107897@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 12u AA @ Delta Knights 12u AA",
+      "away_team": "Las Vegas Storm 12u AA",
+      "home_team": "Delta Knights 12u AA",
+      "start": "2025-11-15T15:00:00.000Z",
+      "end": "2025-11-15T16:00:00.000Z",
+      "location": "LA Kings Iceland / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107898@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 12u A @ Delta Knights 12u AA",
+      "away_team": "San Diego Angels 12u A",
+      "home_team": "Delta Knights 12u AA",
+      "start": "2025-11-15T22:00:00.000Z",
+      "end": "2025-11-15T23:00:00.000Z",
+      "location": "LA Kings Iceland / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107899@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "LA Lions 12u AA @ Las Vegas Storm 12u AA",
+      "away_team": "LA Lions 12u AA",
+      "home_team": "Las Vegas Storm 12u AA",
+      "start": "2025-11-15T23:40:00.000Z",
+      "end": "2025-11-16T00:40:00.000Z",
+      "location": "LA Kings Iceland / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107900@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 12u AA @ San Diego Angels 12u A",
+      "away_team": "Las Vegas Storm 12u AA",
+      "home_team": "San Diego Angels 12u A",
+      "start": "2025-11-16T15:00:00.000Z",
+      "end": "2025-11-16T16:00:00.000Z",
+      "location": "Toyota Sports Performance Center / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107901@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Delta Knights 12u AA @ LA Lions 12u AA",
+      "away_team": "Delta Knights 12u AA",
+      "home_team": "LA Lions 12u AA",
+      "start": "2025-11-16T15:00:00.000Z",
+      "end": "2025-11-16T16:00:00.000Z",
+      "location": "LA Kings Iceland / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107902@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Delta Knights 12u AA @ Las Vegas Storm 12u AA",
+      "away_team": "Delta Knights 12u AA",
+      "home_team": "Las Vegas Storm 12u AA",
+      "start": "2025-11-16T22:15:00.000Z",
+      "end": "2025-11-16T23:15:00.000Z",
+      "location": "Toyota Sports Performance Center / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107903@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "LA Lions 12u AA @ San Diego Angels 12u A",
+      "away_team": "LA Lions 12u AA",
+      "home_team": "San Diego Angels 12u A",
+      "start": "2025-11-16T23:30:00.000Z",
+      "end": "2025-11-17T00:30:00.000Z",
+      "location": "Toyota Sports Performance Center / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108413@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Tri Valley Lady Blue Devils 12u AAA @ San Jose Jr Sharks 12u AAA",
+      "away_team": "Tri Valley Lady Blue Devils 12u AAA",
+      "home_team": "San Jose Jr Sharks 12u AAA",
+      "start": "2025-11-22T14:45:00.000Z",
+      "end": "2025-11-22T15:45:00.000Z",
+      "location": "Dublin Iceland / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108414@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "LA Lions 12u AAA @ Anaheim Lady Ducks 12u AAA",
+      "away_team": "LA Lions 12u AAA",
+      "home_team": "Anaheim Lady Ducks 12u AAA",
+      "start": "2025-11-22T16:15:00.000Z",
+      "end": "2025-11-22T17:15:00.000Z",
+      "location": "Dublin Iceland / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109053@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 19u AA @ Portland Jr Winterhawks 19u AA",
+      "away_team": "Anaheim Lady Ducks 19u AA",
+      "home_team": "Portland Jr Winterhawks 19u AA",
+      "start": "2025-11-22T16:45:00.000Z",
+      "end": "2025-11-22T17:45:00.000Z",
+      "location": "Sherwood Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109054@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 19u AA @ San Jose Jr Sharks 19u AA",
+      "away_team": "San Diego Angels 19u AA",
+      "home_team": "San Jose Jr Sharks 19u AA",
+      "start": "2025-11-22T18:30:00.000Z",
+      "end": "2025-11-22T19:30:00.000Z",
+      "location": "Sherwood Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108415@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 12u AAA @ Anaheim Lady Ducks 12u AAA",
+      "away_team": "San Jose Jr Sharks 12u AAA",
+      "home_team": "Anaheim Lady Ducks 12u AAA",
+      "start": "2025-11-22T23:30:00.000Z",
+      "end": "2025-11-23T00:30:00.000Z",
+      "location": "Dublin Iceland / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109055@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 19u AA @ San Jose Jr Sharks 19u AA",
+      "away_team": "Anaheim Lady Ducks 19u AA",
+      "home_team": "San Jose Jr Sharks 19u AA",
+      "start": "2025-11-22T23:40:00.000Z",
+      "end": "2025-11-23T00:40:00.000Z",
+      "location": "Sherwood Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108416@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Tri Valley Lady Blue Devils 12u AAA @ LA Lions 12u AAA",
+      "away_team": "Tri Valley Lady Blue Devils 12u AAA",
+      "home_team": "LA Lions 12u AAA",
+      "start": "2025-11-23T01:00:00.000Z",
+      "end": "2025-11-23T02:00:00.000Z",
+      "location": "Dublin Iceland / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109056@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Portland Jr Winterhawks 19u AA @ San Diego Angels 19u AA",
+      "away_team": "Portland Jr Winterhawks 19u AA",
+      "home_team": "San Diego Angels 19u AA",
+      "start": "2025-11-23T02:30:00.000Z",
+      "end": "2025-11-23T03:30:00.000Z",
+      "location": "Winterhawks Skating Center / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109057@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Portland Jr Winterhawks 19u AA @ Anaheim Lady Ducks 19u AA",
+      "away_team": "Portland Jr Winterhawks 19u AA",
+      "home_team": "Anaheim Lady Ducks 19u AA",
+      "start": "2025-11-23T14:00:00.000Z",
+      "end": "2025-11-23T15:00:00.000Z",
+      "location": "Winterhawks Skating Center / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108417@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 12u AAA @ Tri Valley Lady Blue Devils 12u AAA",
+      "away_team": "Anaheim Lady Ducks 12u AAA",
+      "home_team": "Tri Valley Lady Blue Devils 12u AAA",
+      "start": "2025-11-23T15:00:00.000Z",
+      "end": "2025-11-23T16:00:00.000Z",
+      "location": "Dublin Iceland / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108418@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "LA Lions 12u AAA @ San Jose Jr Sharks 12u AAA",
+      "away_team": "LA Lions 12u AAA",
+      "home_team": "San Jose Jr Sharks 12u AAA",
+      "start": "2025-11-23T16:30:00.000Z",
+      "end": "2025-11-23T17:30:00.000Z",
+      "location": "Dublin Iceland / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109058@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 19u AA @ Portland Jr Winterhawks 19u AA",
+      "away_team": "San Jose Jr Sharks 19u AA",
+      "home_team": "Portland Jr Winterhawks 19u AA",
+      "start": "2025-11-23T17:20:00.000Z",
+      "end": "2025-11-23T18:20:00.000Z",
+      "location": "Winterhawks Skating Center / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109059@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 19u AA @ Anaheim Lady Ducks 19u AA",
+      "away_team": "San Diego Angels 19u AA",
+      "home_team": "Anaheim Lady Ducks 19u AA",
+      "start": "2025-11-23T19:00:00.000Z",
+      "end": "2025-11-23T20:00:00.000Z",
+      "location": "Winterhawks Skating Center / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109060@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 19u AA @ San Diego Angels 19u AA",
+      "away_team": "San Jose Jr Sharks 19u AA",
+      "home_team": "San Diego Angels 19u AA",
+      "start": "2025-11-23T22:30:00.000Z",
+      "end": "2025-11-23T23:30:00.000Z",
+      "location": "Winterhawks Skating Center / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108419@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 12u AAA @ LA Lions 12u AAA",
+      "away_team": "Anaheim Lady Ducks 12u AAA",
+      "home_team": "LA Lions 12u AAA",
+      "start": "2025-11-23T23:00:00.000Z",
+      "end": "2025-11-24T00:00:00.000Z",
+      "location": "Dublin Iceland / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108420@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 12u AAA @ Tri Valley Lady Blue Devils 12u AAA",
+      "away_team": "San Jose Jr Sharks 12u AAA",
+      "home_team": "Tri Valley Lady Blue Devils 12u AAA",
+      "start": "2025-11-24T00:30:00.000Z",
+      "end": "2025-11-24T01:30:00.000Z",
+      "location": "Dublin Iceland / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107904@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Santa Clarita Lady Flyers 12u AA @ Anaheim Lady Ducks 12u AA",
+      "away_team": "Santa Clarita Lady Flyers 12u AA",
+      "home_team": "Anaheim Lady Ducks 12u AA",
+      "start": "2025-12-06T15:00:00.000Z",
+      "end": "2025-12-06T16:00:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107905@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr. Golden Knights 12u A @ CA Goldrush 12u A",
+      "away_team": "Vegas Jr. Golden Knights 12u A",
+      "home_team": "CA Goldrush 12u A",
+      "start": "2025-12-06T16:45:00.000Z",
+      "end": "2025-12-06T17:45:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107906@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Santa Clarita Lady Flyers 12u AA @ CA Goldrush 12u A",
+      "away_team": "Santa Clarita Lady Flyers 12u AA",
+      "home_team": "CA Goldrush 12u A",
+      "start": "2025-12-06T22:45:00.000Z",
+      "end": "2025-12-06T23:45:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107907@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 12u AA @ Vegas Jr. Golden Knights 12u A",
+      "away_team": "Anaheim Lady Ducks 12u AA",
+      "home_team": "Vegas Jr. Golden Knights 12u A",
+      "start": "2025-12-07T00:30:00.000Z",
+      "end": "2025-12-07T01:30:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107908@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 12u AA @ Santa Clarita Lady Flyers 12u AA",
+      "away_team": "Anaheim Lady Ducks 12u AA",
+      "home_team": "Santa Clarita Lady Flyers 12u AA",
+      "start": "2025-12-07T15:00:00.000Z",
+      "end": "2025-12-07T16:00:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107909@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush 12u A @ Vegas Jr. Golden Knights 12u A",
+      "away_team": "CA Goldrush 12u A",
+      "home_team": "Vegas Jr. Golden Knights 12u A",
+      "start": "2025-12-07T16:45:00.000Z",
+      "end": "2025-12-07T17:45:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107910@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr. Golden Knights 12u A @ Santa Clarita Lady Flyers 12u AA",
+      "away_team": "Vegas Jr. Golden Knights 12u A",
+      "home_team": "Santa Clarita Lady Flyers 12u AA",
+      "start": "2025-12-07T22:45:00.000Z",
+      "end": "2025-12-07T23:45:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107911@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush 12u A @ Anaheim Lady Ducks 12u AA",
+      "away_team": "CA Goldrush 12u A",
+      "home_team": "Anaheim Lady Ducks 12u AA",
+      "start": "2025-12-08T00:30:00.000Z",
+      "end": "2025-12-08T01:30:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109061@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr Golden Knights 16u AA @ CA Goldrush-1 16u AA",
+      "away_team": "Vegas Jr Golden Knights 16u AA",
+      "home_team": "CA Goldrush-1 16u AA",
+      "start": "2025-12-13T16:15:00.000Z",
+      "end": "2025-12-13T17:15:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109062@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush-2 16u AA @ Anaheim Lady Ducks 16u AA",
+      "away_team": "CA Goldrush-2 16u AA",
+      "home_team": "Anaheim Lady Ducks 16u AA",
+      "start": "2025-12-13T18:00:00.000Z",
+      "end": "2025-12-13T19:00:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109063@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr Golden Knights 16u AA @ Anaheim Lady Ducks 16u AA",
+      "away_team": "Vegas Jr Golden Knights 16u AA",
+      "home_team": "Anaheim Lady Ducks 16u AA",
+      "start": "2025-12-14T02:00:00.000Z",
+      "end": "2025-12-14T03:00:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109064@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush-1 16u AA @ CA Goldrush-2 16u AA",
+      "away_team": "CA Goldrush-1 16u AA",
+      "home_team": "CA Goldrush-2 16u AA",
+      "start": "2025-12-14T03:45:00.000Z",
+      "end": "2025-12-14T04:45:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109065@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 16u AA @ CA Goldrush-1 16u AA",
+      "away_team": "Anaheim Lady Ducks 16u AA",
+      "home_team": "CA Goldrush-1 16u AA",
+      "start": "2025-12-14T15:00:00.000Z",
+      "end": "2025-12-14T16:00:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109066@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush-2 16u AA @ Vegas Jr Golden Knights 16u AA",
+      "away_team": "CA Goldrush-2 16u AA",
+      "home_team": "Vegas Jr Golden Knights 16u AA",
+      "start": "2025-12-14T16:45:00.000Z",
+      "end": "2025-12-14T17:45:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109067@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush-1 16u AA @ Vegas Jr Golden Knights 16u AA",
+      "away_team": "CA Goldrush-1 16u AA",
+      "home_team": "Vegas Jr Golden Knights 16u AA",
+      "start": "2025-12-14T23:45:00.000Z",
+      "end": "2025-12-15T00:45:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109068@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 16u AA @ CA Goldrush-2 16u AA",
+      "away_team": "Anaheim Lady Ducks 16u AA",
+      "home_team": "CA Goldrush-2 16u AA",
+      "start": "2025-12-15T01:30:00.000Z",
+      "end": "2025-12-15T02:30:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108967@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Santa Clarita Lady Flyers 14u AA @ San Diego Angels 14u AA",
+      "away_team": "Santa Clarita Lady Flyers 14u AA",
+      "home_team": "San Diego Angels 14u AA",
+      "start": "2025-12-20T15:00:00.000Z",
+      "end": "2025-12-20T16:00:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109069@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 19u AA @ Anaheim Lady Ducks 19u AA",
+      "away_team": "San Diego Angels 19u AA",
+      "home_team": "Anaheim Lady Ducks 19u AA",
+      "start": "2025-12-20T15:00:00.000Z",
+      "end": "2025-12-20T16:00:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107912@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 12u AA @ Las Vegas Storm 12u AA",
+      "away_team": "Anaheim Lady Ducks 12u AA",
+      "home_team": "Las Vegas Storm 12u AA",
+      "start": "2025-12-20T15:30:00.000Z",
+      "end": "2025-12-20T16:30:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108968@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 14u AA @ Anaheim Lady Ducks 14u AA",
+      "away_team": "San Jose Jr Sharks 14u AA",
+      "home_team": "Anaheim Lady Ducks 14u AA",
+      "start": "2025-12-20T16:45:00.000Z",
+      "end": "2025-12-20T17:45:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109070@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Portland Jr Winterhawks 19u AA @ San Jose Jr Sharks 19u AA",
+      "away_team": "Portland Jr Winterhawks 19u AA",
+      "home_team": "San Jose Jr Sharks 19u AA",
+      "start": "2025-12-20T16:45:00.000Z",
+      "end": "2025-12-20T17:45:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107913@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 12u A @ CA Goldrush 12u A",
+      "away_team": "San Diego Angels 12u A",
+      "home_team": "CA Goldrush 12u A",
+      "start": "2025-12-20T17:00:00.000Z",
+      "end": "2025-12-20T18:00:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108969@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Santa Clarita Lady Flyers 14u AA @ Anaheim Lady Ducks 14u AA",
+      "away_team": "Santa Clarita Lady Flyers 14u AA",
+      "home_team": "Anaheim Lady Ducks 14u AA",
+      "start": "2025-12-20T22:45:00.000Z",
+      "end": "2025-12-20T23:45:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109071@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 19u AA @ San Jose Jr Sharks 19u AA",
+      "away_team": "San Diego Angels 19u AA",
+      "home_team": "San Jose Jr Sharks 19u AA",
+      "start": "2025-12-20T22:45:00.000Z",
+      "end": "2025-12-20T23:45:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108970@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 14u AA @ San Jose Jr Sharks 14u AA",
+      "away_team": "San Diego Angels 14u AA",
+      "home_team": "San Jose Jr Sharks 14u AA",
+      "start": "2025-12-21T00:30:00.000Z",
+      "end": "2025-12-21T01:30:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109072@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 19u AA @ Portland Jr Winterhawks 19u AA",
+      "away_team": "Anaheim Lady Ducks 19u AA",
+      "home_team": "Portland Jr Winterhawks 19u AA",
+      "start": "2025-12-21T00:30:00.000Z",
+      "end": "2025-12-21T01:30:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107914@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 12u AA @ San Diego Angels 12u A",
+      "away_team": "Las Vegas Storm 12u AA",
+      "home_team": "San Diego Angels 12u A",
+      "start": "2025-12-21T01:30:00.000Z",
+      "end": "2025-12-21T02:30:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107915@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 12u AA @ CA Goldrush 12u A",
+      "away_team": "Anaheim Lady Ducks 12u AA",
+      "home_team": "CA Goldrush 12u A",
+      "start": "2025-12-21T03:00:00.000Z",
+      "end": "2025-12-21T04:00:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108971@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 14u AA @ Santa Clarita Lady Flyers 14u AA",
+      "away_team": "San Diego Angels 14u AA",
+      "home_team": "Santa Clarita Lady Flyers 14u AA",
+      "start": "2025-12-21T15:00:00.000Z",
+      "end": "2025-12-21T16:00:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109073@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 19u AA @ Anaheim Lady Ducks 19u AA",
+      "away_team": "San Jose Jr Sharks 19u AA",
+      "home_team": "Anaheim Lady Ducks 19u AA",
+      "start": "2025-12-21T15:00:00.000Z",
+      "end": "2025-12-21T16:00:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107916@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush 12u A @ Las Vegas Storm 12u AA",
+      "away_team": "CA Goldrush 12u A",
+      "home_team": "Las Vegas Storm 12u AA",
+      "start": "2025-12-21T16:15:00.000Z",
+      "end": "2025-12-21T17:15:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108972@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 14u AA @ San Jose Jr Sharks 14u AA",
+      "away_team": "Anaheim Lady Ducks 14u AA",
+      "home_team": "San Jose Jr Sharks 14u AA",
+      "start": "2025-12-21T16:45:00.000Z",
+      "end": "2025-12-21T17:45:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109074@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Portland Jr Winterhawks 19u AA @ San Diego Angels 19u AA",
+      "away_team": "Portland Jr Winterhawks 19u AA",
+      "home_team": "San Diego Angels 19u AA",
+      "start": "2025-12-21T16:45:00.000Z",
+      "end": "2025-12-21T17:45:00.000Z",
+      "location": "Anaheim Ice / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107917@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 12u A @ Anaheim Lady Ducks 12u AA",
+      "away_team": "San Diego Angels 12u A",
+      "home_team": "Anaheim Lady Ducks 12u AA",
+      "start": "2025-12-21T17:45:00.000Z",
+      "end": "2025-12-21T18:45:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108973@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 14u AA @ Santa Clarita Lady Flyers 14u AA",
+      "away_team": "San Jose Jr Sharks 14u AA",
+      "home_team": "Santa Clarita Lady Flyers 14u AA",
+      "start": "2025-12-21T21:15:00.000Z",
+      "end": "2025-12-21T22:15:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109075@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 19u AA @ Portland Jr Winterhawks 19u AA",
+      "away_team": "San Jose Jr Sharks 19u AA",
+      "home_team": "Portland Jr Winterhawks 19u AA",
+      "start": "2025-12-21T22:45:00.000Z",
+      "end": "2025-12-21T23:45:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107918@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush 12u A @ San Diego Angels 12u A",
+      "away_team": "CA Goldrush 12u A",
+      "home_team": "San Diego Angels 12u A",
+      "start": "2025-12-21T23:00:00.000Z",
+      "end": "2025-12-22T00:00:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108974@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 14u AA @ San Diego Angels 14u AA",
+      "away_team": "Anaheim Lady Ducks 14u AA",
+      "home_team": "San Diego Angels 14u AA",
+      "start": "2025-12-21T23:00:00.000Z",
+      "end": "2025-12-22T00:00:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107919@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 12u AA @ Anaheim Lady Ducks 12u AA",
+      "away_team": "Las Vegas Storm 12u AA",
+      "home_team": "Anaheim Lady Ducks 12u AA",
+      "start": "2025-12-22T00:30:00.000Z",
+      "end": "2025-12-22T01:30:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109076@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 19u AA @ San Diego Angels 19u AA",
+      "away_team": "Anaheim Lady Ducks 19u AA",
+      "home_team": "San Diego Angels 19u AA",
+      "start": "2025-12-22T00:30:00.000Z",
+      "end": "2025-12-22T01:30:00.000Z",
+      "location": "Anaheim Ice / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108421@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Tri Valley Lady Blue Devils 12u AAA @ LA Lions 12u AAA",
+      "away_team": "Tri Valley Lady Blue Devils 12u AAA",
+      "home_team": "LA Lions 12u AAA",
+      "start": "2026-01-03T15:00:00.000Z",
+      "end": "2026-01-03T16:00:00.000Z",
+      "location": "Toyota Sports Performance Center / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108422@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 12u AAA @ San Jose Jr Sharks 12u AAA",
+      "away_team": "Anaheim Lady Ducks 12u AAA",
+      "home_team": "San Jose Jr Sharks 12u AAA",
+      "start": "2026-01-03T15:45:00.000Z",
+      "end": "2026-01-03T16:45:00.000Z",
+      "location": "Toyota Sports Performance Center / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109077@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vacaville Jets 16u AA @ CA Goldrush-2 16u AA",
+      "away_team": "Vacaville Jets 16u AA",
+      "home_team": "CA Goldrush-2 16u AA",
+      "start": "2026-01-03T16:15:00.000Z",
+      "end": "2026-01-03T17:15:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108975@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr Golden Knights 14u AA @ Las Vegas Storm 14u AA",
+      "away_team": "Vegas Jr Golden Knights 14u AA",
+      "home_team": "Las Vegas Storm 14u AA",
+      "start": "2026-01-03T17:00:00.000Z",
+      "end": "2026-01-03T18:00:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107920@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 12u AA @ San Diego Angels 12u A",
+      "away_team": "Anaheim Lady Ducks 12u AA",
+      "home_team": "San Diego Angels 12u A",
+      "start": "2026-01-03T17:45:00.000Z",
+      "end": "2026-01-03T18:45:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109078@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 19u AA @ Anaheim Lady Ducks 16u AA",
+      "away_team": "San Diego Angels 19u AA",
+      "home_team": "Anaheim Lady Ducks 16u AA",
+      "start": "2026-01-03T18:00:00.000Z",
+      "end": "2026-01-03T19:00:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108976@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 14u AA @ Anaheim Lady Ducks 14u AA",
+      "away_team": "San Diego Angels 14u AA",
+      "home_team": "Anaheim Lady Ducks 14u AA",
+      "start": "2026-01-03T18:45:00.000Z",
+      "end": "2026-01-03T19:45:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107921@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Delta Knights 12u AA @ Vegas Jr. Golden Knights 12u A",
+      "away_team": "Delta Knights 12u AA",
+      "home_team": "Vegas Jr. Golden Knights 12u A",
+      "start": "2026-01-03T19:15:00.000Z",
+      "end": "2026-01-03T20:15:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108423@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Tri Valley Lady Blue Devils 12u AAA @ San Jose Jr Sharks 12u AAA",
+      "away_team": "Tri Valley Lady Blue Devils 12u AAA",
+      "home_team": "San Jose Jr Sharks 12u AAA",
+      "start": "2026-01-03T22:15:00.000Z",
+      "end": "2026-01-03T23:15:00.000Z",
+      "location": "Toyota Sports Performance Center / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108424@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "LA Lions 12u AAA @ Anaheim Lady Ducks 12u AAA",
+      "away_team": "LA Lions 12u AAA",
+      "home_team": "Anaheim Lady Ducks 12u AAA",
+      "start": "2026-01-04T00:00:00.000Z",
+      "end": "2026-01-04T01:00:00.000Z",
+      "location": "Toyota Sports Performance Center / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107922@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr. Golden Knights 12u A @ Anaheim Lady Ducks 12u AA",
+      "away_team": "Vegas Jr. Golden Knights 12u A",
+      "home_team": "Anaheim Lady Ducks 12u AA",
+      "start": "2026-01-04T00:15:00.000Z",
+      "end": "2026-01-04T01:15:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108977@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr Golden Knights 14u AA @ San Diego Angels 14u AA",
+      "away_team": "Vegas Jr Golden Knights 14u AA",
+      "home_team": "San Diego Angels 14u AA",
+      "start": "2026-01-04T00:15:00.000Z",
+      "end": "2026-01-04T01:15:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107923@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Delta Knights 12u AA @ San Diego Angels 12u A",
+      "away_team": "Delta Knights 12u AA",
+      "home_team": "San Diego Angels 12u A",
+      "start": "2026-01-04T01:45:00.000Z",
+      "end": "2026-01-04T02:45:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108978@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 14u AA @ Anaheim Lady Ducks 14u AA",
+      "away_team": "Las Vegas Storm 14u AA",
+      "home_team": "Anaheim Lady Ducks 14u AA",
+      "start": "2026-01-04T02:00:00.000Z",
+      "end": "2026-01-04T03:00:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109079@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 19u AA @ Vacaville Jets 16u AA",
+      "away_team": "San Diego Angels 19u AA",
+      "home_team": "Vacaville Jets 16u AA",
+      "start": "2026-01-04T02:00:00.000Z",
+      "end": "2026-01-04T03:00:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1109080@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 16u AA @ CA Goldrush-2 16u AA",
+      "away_team": "Anaheim Lady Ducks 16u AA",
+      "home_team": "CA Goldrush-2 16u AA",
+      "start": "2026-01-04T03:45:00.000Z",
+      "end": "2026-01-04T04:45:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108425@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 12u AAA @ Tri Valley Lady Blue Devils 12u AAA",
+      "away_team": "Anaheim Lady Ducks 12u AAA",
+      "home_team": "Tri Valley Lady Blue Devils 12u AAA",
+      "start": "2026-01-04T15:00:00.000Z",
+      "end": "2026-01-04T16:00:00.000Z",
+      "location": "Toyota Sports Performance Center / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109081@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush-2 16u AA @ Vacaville Jets 16u AA",
+      "away_team": "CA Goldrush-2 16u AA",
+      "home_team": "Vacaville Jets 16u AA",
+      "start": "2026-01-04T15:00:00.000Z",
+      "end": "2026-01-04T16:00:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108426@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 12u AAA @ LA Lions 12u AAA",
+      "away_team": "San Jose Jr Sharks 12u AAA",
+      "home_team": "LA Lions 12u AAA",
+      "start": "2026-01-04T15:15:00.000Z",
+      "end": "2026-01-04T16:15:00.000Z",
+      "location": "Toyota Sports Performance Center / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108979@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 14u AA @ Las Vegas Storm 14u AA",
+      "away_team": "San Diego Angels 14u AA",
+      "home_team": "Las Vegas Storm 14u AA",
+      "start": "2026-01-04T15:30:00.000Z",
+      "end": "2026-01-04T16:30:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109082@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 16u AA @ San Diego Angels 19u AA",
+      "away_team": "Anaheim Lady Ducks 16u AA",
+      "home_team": "San Diego Angels 19u AA",
+      "start": "2026-01-04T16:45:00.000Z",
+      "end": "2026-01-04T17:45:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108980@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 14u AA @ Vegas Jr Golden Knights 14u AA",
+      "away_team": "Anaheim Lady Ducks 14u AA",
+      "home_team": "Vegas Jr Golden Knights 14u AA",
+      "start": "2026-01-04T17:15:00.000Z",
+      "end": "2026-01-04T18:15:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1107924@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 12u A @ Vegas Jr. Golden Knights 12u A",
+      "away_team": "San Diego Angels 12u A",
+      "home_team": "Vegas Jr. Golden Knights 12u A",
+      "start": "2026-01-04T17:45:00.000Z",
+      "end": "2026-01-04T18:45:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107925@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 12u AA @ Delta Knights 12u AA",
+      "away_team": "Anaheim Lady Ducks 12u AA",
+      "home_team": "Delta Knights 12u AA",
+      "start": "2026-01-04T19:15:00.000Z",
+      "end": "2026-01-04T20:15:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108427@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 12u AAA @ Anaheim Lady Ducks 12u AAA",
+      "away_team": "San Jose Jr Sharks 12u AAA",
+      "home_team": "Anaheim Lady Ducks 12u AAA",
+      "start": "2026-01-04T22:15:00.000Z",
+      "end": "2026-01-04T23:15:00.000Z",
+      "location": "Toyota Sports Performance Center / NHL Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108428@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "LA Lions 12u AAA @ Tri Valley Lady Blue Devils 12u AAA",
+      "away_team": "LA Lions 12u AAA",
+      "home_team": "Tri Valley Lady Blue Devils 12u AAA",
+      "start": "2026-01-04T22:30:00.000Z",
+      "end": "2026-01-04T23:30:00.000Z",
+      "location": "Toyota Sports Performance Center / Olympic Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1108981@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Anaheim Lady Ducks 14u AA @ San Diego Angels 14u AA",
+      "away_team": "Anaheim Lady Ducks 14u AA",
+      "home_team": "San Diego Angels 14u AA",
+      "start": "2026-01-04T22:45:00.000Z",
+      "end": "2026-01-04T23:45:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109083@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vacaville Jets 16u AA @ Anaheim Lady Ducks 16u AA",
+      "away_team": "Vacaville Jets 16u AA",
+      "home_team": "Anaheim Lady Ducks 16u AA",
+      "start": "2026-01-04T23:45:00.000Z",
+      "end": "2026-01-05T00:45:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107926@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr. Golden Knights 12u A @ Delta Knights 12u AA",
+      "away_team": "Vegas Jr. Golden Knights 12u A",
+      "home_team": "Delta Knights 12u AA",
+      "start": "2026-01-05T00:15:00.000Z",
+      "end": "2026-01-05T01:15:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108982@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 14u AA @ Vegas Jr Golden Knights 14u AA",
+      "away_team": "Las Vegas Storm 14u AA",
+      "home_team": "Vegas Jr Golden Knights 14u AA",
+      "start": "2026-01-05T00:30:00.000Z",
+      "end": "2026-01-05T01:30:00.000Z",
+      "location": "Las Vegas Ice Center / North Rink",
+      "description": ""
+    },
+    {
+      "uid": "g-1109084@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "CA Goldrush-2 16u AA @ San Diego Angels 19u AA",
+      "away_team": "CA Goldrush-2 16u AA",
+      "home_team": "San Diego Angels 19u AA",
+      "start": "2026-01-05T01:30:00.000Z",
+      "end": "2026-01-05T02:30:00.000Z",
+      "location": "Lake Forest Ice Palace / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1107927@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Diego Angels 12u A @ Anaheim Lady Ducks 12u AA",
+      "away_team": "San Diego Angels 12u A",
+      "home_team": "Anaheim Lady Ducks 12u AA",
+      "start": "2026-01-05T01:45:00.000Z",
+      "end": "2026-01-05T02:45:00.000Z",
+      "location": "Kroc Center Ice Arena / Main",
+      "description": ""
+    },
+    {
+      "uid": "g-1108983@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Santa Clarita Lady Flyers 14u AA @ Vegas Jr Golden Knights 14u AA",
+      "away_team": "Santa Clarita Lady Flyers 14u AA",
+      "home_team": "Vegas Jr Golden Knights 14u AA",
+      "start": "2026-01-10T15:30:00.000Z",
+      "end": "2026-01-10T16:30:00.000Z",
+      "location": "America First Center / Rink 2",
+      "description": ""
+    },
+    {
+      "uid": "g-1108984@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 14u AA @ Las Vegas Storm 14u AA",
+      "away_team": "San Jose Jr Sharks 14u AA",
+      "home_team": "Las Vegas Storm 14u AA",
+      "start": "2026-01-10T17:10:00.000Z",
+      "end": "2026-01-10T18:10:00.000Z",
+      "location": "America First Center / Rink 2",
+      "description": ""
+    },
+    {
+      "uid": "g-1108985@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Santa Clarita Lady Flyers 14u AA @ Las Vegas Storm 14u AA",
+      "away_team": "Santa Clarita Lady Flyers 14u AA",
+      "home_team": "Las Vegas Storm 14u AA",
+      "start": "2026-01-10T22:40:00.000Z",
+      "end": "2026-01-10T23:40:00.000Z",
+      "location": "City National Arena / Rink B",
+      "description": ""
+    },
+    {
+      "uid": "g-1108986@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr Golden Knights 14u AA @ San Jose Jr Sharks 14u AA",
+      "away_team": "Vegas Jr Golden Knights 14u AA",
+      "home_team": "San Jose Jr Sharks 14u AA",
+      "start": "2026-01-11T00:20:00.000Z",
+      "end": "2026-01-11T01:20:00.000Z",
+      "location": "City National Arena / Rink B",
+      "description": ""
+    },
+    {
+      "uid": "g-1108987@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Vegas Jr Golden Knights 14u AA @ Santa Clarita Lady Flyers 14u AA",
+      "away_team": "Vegas Jr Golden Knights 14u AA",
+      "home_team": "Santa Clarita Lady Flyers 14u AA",
+      "start": "2026-01-11T15:20:00.000Z",
+      "end": "2026-01-11T16:20:00.000Z",
+      "location": "City National Arena / Rink B",
+      "description": ""
+    },
+    {
+      "uid": "g-1108988@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 14u AA @ San Jose Jr Sharks 14u AA",
+      "away_team": "Las Vegas Storm 14u AA",
+      "home_team": "San Jose Jr Sharks 14u AA",
+      "start": "2026-01-11T15:20:00.000Z",
+      "end": "2026-01-11T16:20:00.000Z",
+      "location": "America First Center / Rink 2",
+      "description": ""
+    },
+    {
+      "uid": "g-1108989@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "San Jose Jr Sharks 14u AA @ Santa Clarita Lady Flyers 14u AA",
+      "away_team": "San Jose Jr Sharks 14u AA",
+      "home_team": "Santa Clarita Lady Flyers 14u AA",
+      "start": "2026-01-11T20:20:00.000Z",
+      "end": "2026-01-11T21:20:00.000Z",
+      "location": "City National Arena / Rink B",
+      "description": ""
+    },
+    {
+      "uid": "g-1108990@05e3fa78-061c-4607-a558-a54649c5044f",
+      "summary": "Las Vegas Storm 14u AA @ Vegas Jr Golden Knights 14u AA",
+      "away_team": "Las Vegas Storm 14u AA",
+      "home_team": "Vegas Jr Golden Knights 14u AA",
+      "start": "2026-01-11T20:20:00.000Z",
+      "end": "2026-01-11T21:20:00.000Z",
+      "location": "America First Center / Rink 2",
+      "description": ""
+    }
+  ]
+}
