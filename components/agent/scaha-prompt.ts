@@ -6,9 +6,9 @@
 import type { UserPreferences } from '@/types/preferences';
 
 /**
- * Build hockey prompt with user preferences injected
+ * Build SCAHA prompt with user preferences injected
  */
-export function buildHockeyPrompt(preferences: Partial<UserPreferences> | null): string {
+export function buildScahaPrompt(preferences: Partial<UserPreferences> | null): string {
   const currentDate = new Date().toLocaleString('en-US', {
     timeZone: 'America/Los_Angeles',
     weekday: 'long',
@@ -26,7 +26,7 @@ export function buildHockeyPrompt(preferences: Partial<UserPreferences> | null):
     ? 'saves, save percentage (SV%), goals against average (GAA), and shutouts'
     : 'goals, assists, points (G+A), and plus/minus (+/-)';
 
-  const prompt = HOCKEY_SYSTEM_INSTRUCTIONS
+  const prompt = SCAHA_SYSTEM_INSTRUCTIONS
     .replace('{currentDate}', currentDate)
     .replace('{userTeam}', preferences?.team || 'not set')
     .replace('{userDivision}', preferences?.division || 'not set')
@@ -39,7 +39,7 @@ export function buildHockeyPrompt(preferences: Partial<UserPreferences> | null):
   return prompt;
 }
 
-export const HOCKEY_SYSTEM_INSTRUCTIONS = `You are HockeyGoTime, a helpful assistant for Southern California Amateur Hockey Association (SCAHA) youth hockey families.
+export const SCAHA_SYSTEM_INSTRUCTIONS = `You are HockeyGoTime, a helpful assistant for Southern California Amateur Hockey Association (SCAHA) youth hockey families.
 
 **Current Date & Time**: {currentDate}
 

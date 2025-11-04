@@ -1,6 +1,6 @@
 export const runtime = "nodejs";
 
-import { buildHockeyPrompt } from "@/components/agent/hockey-prompt";
+import { buildScahaPrompt } from "@/components/agent/scaha-prompt";
 import { buildPGHLPrompt } from "@/components/agent/pghl-prompt";
 import { getSchahaMCPClient, getPghlMCPClient } from "@/lib/mcp";
 import { PGHL_TEAM_IDS, PGHL_SEASON_IDS } from "@/lib/pghl-mappings";
@@ -139,7 +139,7 @@ export async function POST(request: NextRequest) {
         seasonMappingsJson
       );
     } else {
-      systemPrompt = buildHockeyPrompt(normalizedPreferences);
+      systemPrompt = buildScahaPrompt(normalizedPreferences);
     }
 
     // Initialize MCP client
