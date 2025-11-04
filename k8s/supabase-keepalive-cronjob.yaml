@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: supabase-keepalive
+  namespace: hockeygotime
+spec:
+  # Run every 6 hours (at 00:00, 06:00, 12:00, 18:00 UTC)
+  schedule: "0 */6 * * *"
+
+  # Keep history of last 8 successful and failed jobs (2 days worth)
+  successfulJobsHistoryLimit: 8
+  failedJobsHistoryLimit: 8
+
+  jobTemplate:
+    spec:
+      # Don't retry failed jobs automatically - CronJob will handle next run
+      backoffLimit: 2
+
+      template:
+        metadata:
+          labels:
+            app: supabase-keepalive
+        spec:
+          restartPolicy: Never
+
+          containers:
+          - name: curl
+            image: curlimages/curl:latest
+
+            # POST to venue cache refresh endpoint
+            command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Hitting Supabase keepalive endpoint..."
+              curl -X POST \
+                --max-time 60 \
+                --fail \
+                --silent \
+                --show-error \
+                https://hockeygotime.net/api/venue/refresh-cache
+              echo ""
+              echo "Success! Database keepalive completed at $(date)"
+
+            resources:
+              requests:
+                memory: "16Mi"
+                cpu: "10m"
+              limits:
+                memory: "32Mi"
+                cpu: "50m"
