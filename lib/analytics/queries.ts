@@ -252,16 +252,13 @@ export async function getResponseTimes(
   // Build Redis keys for all dates
   const keys = dates.map((date) => KEY_PATTERNS.RESPONSE_TIME_P95(endpoint, date));
 
-  // Fetch all stats in parallel (using pipeline for efficiency)
-  const pipeline = redis.pipeline();
-  for (const key of keys) {
-    pipeline.hgetall(key);
-  }
-  const results = await pipeline.exec();
+  // Fetch all stats individually (hash fields can't use mget)
+  const statsPromises = keys.map((key) => redis.hgetall(key));
+  const statsResults = await Promise.all(statsPromises);
 
   // Map to response format
   return dates.map((date, index) => {
-    const stats = results?.[index]?.[1] as Record<string, string> | null;
+    const stats = statsResults[index] as Record<string, string> | null;
 
     if (!stats || !stats.count) {
       return { date, average: 0, min: 0, max: 0, count: 0 };
