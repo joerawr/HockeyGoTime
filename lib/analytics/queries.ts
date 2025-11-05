@@ -232,6 +232,52 @@ export async function getExternalApiCosts(
 }
 
 /**
+ * Get response time metrics for an endpoint
+ *
+ * Returns aggregate response time statistics (average, min, max) for each day.
+ *
+ * @param endpoint - API route path (e.g., "/api/hockey-chat")
+ * @param startDate - Start date in YYYY-MM-DD format
+ * @param endDate - End date in YYYY-MM-DD format
+ * @returns Array of daily response time stats
+ */
+export async function getResponseTimes(
+  endpoint: string,
+  startDate: string,
+  endDate: string
+): Promise<Array<{ date: string; average: number; min: number; max: number; count: number }>> {
+  const redis = getRedisClient();
+  const dates = generateDateRange(startDate, endDate);
+
+  // Build Redis keys for all dates
+  const keys = dates.map((date) => KEY_PATTERNS.RESPONSE_TIME_P95(endpoint, date));
+
+  // Fetch all stats in parallel (using pipeline for efficiency)
+  const pipeline = redis.pipeline();
+  for (const key of keys) {
+    pipeline.hgetall(key);
+  }
+  const results = await pipeline.exec();
+
+  // Map to response format
+  return dates.map((date, index) => {
+    const stats = results?.[index]?.[1] as Record<string, string> | null;
+
+    if (!stats || !stats.count) {
+      return { date, average: 0, min: 0, max: 0, count: 0 };
+    }
+
+    const count = parseInt(stats.count, 10) || 0;
+    const total = parseFloat(stats.total) || 0;
+    const min = parseFloat(stats.min) || 0;
+    const max = parseFloat(stats.max) || 0;
+    const average = count > 0 ? total / count : 0;
+
+    return { date, average, min, max, count };
+  });
+}
+
+/**
  * Get all metrics for a date range
  *
  * Convenience function that fetches all metrics in parallel.
