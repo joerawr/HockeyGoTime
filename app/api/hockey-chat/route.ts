@@ -28,7 +28,7 @@ import {
   trackToolCall,
   trackExternalApiCall,
 } from "@/lib/analytics/metrics";
-import { MODEL_PRICING } from "@/lib/analytics/constants";
+import { MODEL_PRICING, getCurrentDateInAppTimezone } from "@/lib/analytics/constants";
 
 const TRAVEL_API_ERROR_MESSAGE =
   "Sorry the google maps api isn't responding, please use maps.google.com. We'll look into the issue.";
@@ -496,8 +496,7 @@ export async function POST(request: NextRequest) {
             );
 
             // Track successful Google Routes API call
-            const today = new Date().toISOString().split("T")[0];
-            trackExternalApiCall("google-routes", true, today).catch((err) =>
+            trackExternalApiCall("google-routes", true).catch((err) =>
               console.error("❌ Failed to track Maps API call:", err)
             );
 
@@ -506,8 +505,7 @@ export async function POST(request: NextRequest) {
             console.error("🗺️ Travel calculation error:", error);
 
             // Track failed Google Routes API call
-            const today = new Date().toISOString().split("T")[0];
-            trackExternalApiCall("google-routes", false, today).catch((err) =>
+            trackExternalApiCall("google-routes", false).catch((err) =>
               console.error("❌ Failed to track Maps API error:", err)
             );
 
@@ -542,10 +540,8 @@ export async function POST(request: NextRequest) {
         }
 
         // Track analytics (non-blocking)
-        const today = new Date().toISOString().split("T")[0];
-
         // Track conversation count
-        trackConversation(today).catch((error) =>
+        trackConversation().catch((error) =>
           console.error("❌ Conversation tracking failed:", error)
         );
 
@@ -555,7 +551,7 @@ export async function POST(request: NextRequest) {
           const outputTokens = usage.outputTokens;
           const modelName = "gemini-2.5-flash";
 
-          trackTokens(modelName, inputTokens, outputTokens, today).catch(
+          trackTokens(modelName, inputTokens, outputTokens).catch(
             (error) => console.error("❌ Token tracking failed:", error)
           );
 
@@ -574,7 +570,7 @@ export async function POST(request: NextRequest) {
         // Track tool calls
         if (toolCalls && toolCalls.length > 0) {
           for (const toolCall of toolCalls) {
-            trackToolCall(toolCall.toolName, today).catch((error) =>
+            trackToolCall(toolCall.toolName).catch((error) =>
               console.error(`❌ Tool tracking failed for ${toolCall.toolName}:`, error)
             );
           }
