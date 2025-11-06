@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ConversationsChart } from "@/components/analytics/ConversationsChart";
 import { TokenUsageChart } from "@/components/analytics/TokenUsageChart";
+import { ResponseTimeChart } from "@/components/analytics/ResponseTimeChart";
 import { CostProjection } from "@/components/analytics/CostProjection";
 import { getCurrentDateInAppTimezone, APP_TIMEZONE } from "@/lib/analytics/constants";
 
@@ -57,9 +58,31 @@ interface CostData {
   };
 }
 
+interface PerformanceData {
+  period: {
+    start: string;
+    end: string;
+  };
+  endpoint: string;
+  summary: {
+    total_requests: number;
+    average_response_time_ms: number;
+    min_response_time_ms: number;
+    max_response_time_ms: number;
+  };
+  daily_metrics: Array<{
+    date: string;
+    average: number;
+    min: number;
+    max: number;
+    count: number;
+  }>;
+}
+
 export default function DashboardPage() {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
   const [costData, setCostData] = useState<CostData | null>(null);
+  const [performanceData, setPerformanceData] = useState<PerformanceData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -90,23 +113,26 @@ export default function DashboardPage() {
         setLoading(true);
         setError(null);
 
-        // Fetch analytics and cost data in parallel
-        const [analyticsRes, costRes] = await Promise.all([
+        // Fetch analytics, cost, and performance data in parallel
+        const [analyticsRes, costRes, performanceRes] = await Promise.all([
           fetch(`/api/analytics?start_date=${startDate}&end_date=${endDate}`),
           fetch(`/api/analytics/cost?start_date=${startDate}&end_date=${endDate}`),
+          fetch(`/api/analytics/performance?start_date=${startDate}&end_date=${endDate}`),
         ]);
 
-        if (!analyticsRes.ok || !costRes.ok) {
+        if (!analyticsRes.ok || !costRes.ok || !performanceRes.ok) {
           throw new Error("Failed to fetch analytics data");
         }
 
-        const [analytics, cost] = await Promise.all([
+        const [analytics, cost, performance] = await Promise.all([
           analyticsRes.json(),
           costRes.json(),
+          performanceRes.json(),
         ]);
 
         setAnalyticsData(analytics);
         setCostData(cost);
+        setPerformanceData(performance);
       } catch (err) {
         console.error("Failed to fetch analytics:", err);
         setError(err instanceof Error ? err.message : "Unknown error");
@@ -173,7 +199,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Total Conversations</CardDescription>
@@ -197,6 +223,22 @@ export default function DashboardPage() {
               ${costData.cost_breakdown.total_cost.toFixed(4)}
             </CardTitle>
           </CardHeader>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>Avg Response Time</CardDescription>
+            <CardTitle className="text-3xl">
+              {performanceData?.summary.average_response_time_ms
+                ? `${(performanceData.summary.average_response_time_ms / 1000).toFixed(1)}s`
+                : 'N/A'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-xs text-muted-foreground pb-3">
+            {performanceData?.summary.total_requests
+              ? `${performanceData.summary.total_requests} requests`
+              : 'No data yet'}
+          </CardContent>
         </Card>
       </div>
 
@@ -239,6 +281,21 @@ export default function DashboardPage() {
           <TokenUsageChart data={tokenData} />
         </CardContent>
       </Card>
+
+      {/* Response Time Chart */}
+      {performanceData && performanceData.summary.total_requests > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>API Response Times</CardTitle>
+            <CardDescription>
+              Average response time per day (includes MCP scraping + AI inference)
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponseTimeChart data={performanceData.daily_metrics} />
+          </CardContent>
+        </Card>
+      )}
 
       {/* Tool Usage Breakdown */}
       {Object.keys(analyticsData.metrics.tools).length > 0 && (

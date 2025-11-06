@@ -27,8 +27,9 @@ import {
   trackTokens,
   trackToolCall,
   trackExternalApiCall,
+  trackResponseTime,
 } from "@/lib/analytics/metrics";
-import { MODEL_PRICING, getCurrentDateInAppTimezone } from "@/lib/analytics/constants";
+import { MODEL_PRICING } from "@/lib/analytics/constants";
 
 const TRAVEL_API_ERROR_MESSAGE =
   "Sorry the google maps api isn't responding, please use maps.google.com. We'll look into the issue.";
@@ -103,6 +104,9 @@ type TravelToolArgs = z.infer<typeof travelToolInputSchema>;
 type TravelToolResult = TravelCalculation | { errorMessage: string };
 
 export async function POST(request: NextRequest) {
+  // Track request start time for performance metrics
+  const requestStartTime = Date.now();
+
   // T037: Create AbortController with 60s timeout for backend processing
   // Allows complex multi-tool queries (e.g., 9 games × map API calls)
   const abortController = new AbortController();
@@ -540,6 +544,13 @@ export async function POST(request: NextRequest) {
         }
 
         // Track analytics (non-blocking)
+        // Track response time
+        const totalDuration = Date.now() - requestStartTime;
+        console.log(`⏱️ Total request duration: ${totalDuration}ms`);
+        trackResponseTime("/api/hockey-chat", totalDuration).catch(
+          (error) => console.error("❌ Response time tracking failed:", error)
+        );
+
         // Track conversation count
         trackConversation().catch((error) =>
           console.error("❌ Conversation tracking failed:", error)
