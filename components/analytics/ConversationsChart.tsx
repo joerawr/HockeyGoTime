@@ -53,10 +53,11 @@ export function ConversationsChart({ data }: ConversationsChartProps) {
               borderRadius: "6px",
             }}
             labelStyle={{ color: "hsl(var(--foreground))" }}
+            itemStyle={{ color: "hsl(var(--foreground))" }}
           />
           <Bar
             dataKey="conversations"
-            fill="hsl(var(--primary))"
+            fill="hsl(var(--chart-2))"
             radius={[4, 4, 0, 0]}
           />
         </BarChart>
