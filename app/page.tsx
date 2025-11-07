@@ -8,6 +8,7 @@ const suggestions = [
   '"What time should I leave?"',
   '"Who are we playing Sunday?"',
   '"Show our team stats"',
+  '"Who has the most points on our team?"',
 ];
 
 export default function HockeyGoTimePage() {

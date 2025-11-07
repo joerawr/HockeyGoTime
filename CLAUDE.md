@@ -60,6 +60,12 @@ The app connects to a local SCAHA MCP server via **StreamableHTTP transport**:
 - Defaults to 2025/2026 season
 - Hockey-parent-friendly tone
 
+**Data Limitations**:
+- ⚠️ **Jersey numbers are NOT available** from SCAHA.net
+  - The MCP server scrapes publicly available data from scaha.net
+  - SCAHA's website does not publish player jersey numbers
+  - Player roster includes names, positions, and stats only
+
 ### PGHL MCP Integration
 
 The app can also connect to the hosted PGHL MCP server via **StreamableHTTP**:
