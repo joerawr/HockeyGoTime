@@ -116,11 +116,52 @@ export async function trackToolCall(
 }
 
 /**
+ * Lua script for updating response time aggregate stats
+ *
+ * Atomically updates count, total, min, and max for response time tracking.
+ * This allows us to calculate average without storing every individual value.
+ *
+ * KEYS[1] = Redis hash key for response time stats
+ * ARGV[1] = Duration in milliseconds
+ * ARGV[2] = TTL in seconds
+ *
+ * Returns: Updated count
+ */
+const UPDATE_RESPONSE_TIME_STATS = `
+local duration = tonumber(ARGV[1])
+local ttl = tonumber(ARGV[2])
+
+-- Increment count
+local count = redis.call("HINCRBY", KEYS[1], "count", 1)
+
+-- Add to total
+redis.call("HINCRBYFLOAT", KEYS[1], "total", duration)
+
+-- Update min (get current min, or set if not exists)
+local current_min = redis.call("HGET", KEYS[1], "min")
+if not current_min or tonumber(current_min) > duration then
+    redis.call("HSET", KEYS[1], "min", duration)
+end
+
+-- Update max
+local current_max = redis.call("HGET", KEYS[1], "max")
+if not current_max or tonumber(current_max) < duration then
+    redis.call("HSET", KEYS[1], "max", duration)
+end
+
+-- Set TTL if this is the first write
+if redis.call("TTL", KEYS[1]) < 0 then
+    redis.call("EXPIRE", KEYS[1], ttl)
+end
+
+return count
+`;
+
+/**
  * Track API response time
  *
- * Records P95 response time for an endpoint.
- * Note: This is a simplified implementation that stores the latest value.
- * For true P95 calculation, consider using Redis sorted sets or streaming percentiles.
+ * Records aggregate response time statistics (count, total, min, max) for an endpoint.
+ * This allows calculation of average response time without storing every individual value.
  *
  * @param endpoint - API route path (e.g., "/api/hockey-chat")
  * @param durationMs - Response time in milliseconds
@@ -137,9 +178,8 @@ export async function trackResponseTime(
     const today = date || getCurrentDateInAppTimezone();
     const key = KEY_PATTERNS.RESPONSE_TIME_P95(endpoint, today);
 
-    // For MVP: store latest value as approximation
-    // Future enhancement: use sorted sets for accurate P95
-    await redis.set(key, durationMs, { ex: TTL_SECONDS.DAILY });
+    // Use Lua script to atomically update aggregate stats
+    await redis.eval(UPDATE_RESPONSE_TIME_STATS, [key], [durationMs, TTL_SECONDS.DAILY]);
   } catch (error) {
     console.error("❌ Response time tracking failed:", error);
     // Non-blocking: don't throw, just log
