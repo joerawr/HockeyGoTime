@@ -29,6 +29,7 @@ import {
   trackExternalApiCall,
 } from "@/lib/analytics/metrics";
 import { MODEL_PRICING } from "@/lib/analytics/constants";
+import { validateUserInput } from "@/lib/guardrails";
 
 const TRAVEL_API_ERROR_MESSAGE =
   "Sorry the google maps api isn't responding, please use maps.google.com. We'll look into the issue.";
@@ -127,6 +128,29 @@ export async function POST(request: NextRequest) {
 
     // Convert UIMessages to ModelMessages
     const modelMessages = convertToModelMessages(messages);
+
+    // Guardrail validation - check last user message for off-topic/injection attempts
+    const lastUserMessage = messages.findLast((m: any) => m.role === 'user');
+    if (lastUserMessage) {
+      const guardrailResult = validateUserInput(lastUserMessage.content, {
+        preferences: {
+          team: normalizedPreferences?.team,
+          division: normalizedPreferences?.division,
+          mcpServer: selectedMcpServer,
+        },
+        conversationHistory: messages.slice(0, -1),
+      });
+
+      if (!guardrailResult.allowed) {
+        return new Response(
+          JSON.stringify({
+            error: guardrailResult.reason,
+            category: guardrailResult.category,
+          }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+    }
 
     // Build system prompt with user preferences context using builder functions
     let systemPrompt: string;
