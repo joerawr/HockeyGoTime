@@ -190,7 +190,6 @@ export async function POST(request: NextRequest) {
           ...toolDef,
           execute: async (args: any) => {
             console.log(`\n🏒 Tool called: ${toolName}`);
-            console.log(`   Input:`, JSON.stringify(args, null, 2));
 
             // Cache logic for get_schedule tool
             if (toolName === 'get_schedule') {
@@ -250,18 +249,16 @@ export async function POST(request: NextRequest) {
               // Check cache first
               const cachedData = await scheduleCache.get(cacheKey);
               if (cachedData) {
-                console.log(`   ⚡ Cache hit: ${cacheKey}`);
-                console.log(`   Output (cached):`, JSON.stringify(cachedData, null, 2));
+                console.log(`   ⚡ Cache hit`);
                 return cachedData;
               }
 
               // Cache miss - call MCP tool
-              console.log(`   🔍 Cache miss: ${cacheKey}`);
+              console.log(`   🔍 Cache miss - calling MCP`);
               const startTime = Date.now();
               const result = await toolDef.execute(args);
               const elapsed = Date.now() - startTime;
               console.log(`   ⏱️ MCP call took ${elapsed}ms`);
-              console.log(`   Output:`, JSON.stringify(result, null, 2));
 
               // Only cache successful responses (don't cache errors)
               if (!result.isError) {
@@ -291,18 +288,16 @@ export async function POST(request: NextRequest) {
               // Check cache first
               const cachedData = await scheduleCache.get(cacheKey);
               if (cachedData) {
-                console.log(`   ⚡ Cache hit: ${cacheKey}`);
-                console.log(`   Output (cached):`, JSON.stringify(cachedData, null, 2));
+                console.log(`   ⚡ Cache hit`);
                 return cachedData;
               }
 
               // Cache miss - call MCP tool
-              console.log(`   🔍 Cache miss: ${cacheKey}`);
+              console.log(`   🔍 Cache miss - calling MCP`);
               const startTime = Date.now();
               const result = await toolDef.execute(args);
               const elapsed = Date.now() - startTime;
               console.log(`   ⏱️ MCP call took ${elapsed}ms`);
-              console.log(`   Output:`, JSON.stringify(result, null, 2));
 
               // Only cache successful responses (don't cache errors)
               if (!result.isError) {
@@ -332,18 +327,16 @@ export async function POST(request: NextRequest) {
               // Check cache first
               const cachedData = await scheduleCache.get(cacheKey);
               if (cachedData) {
-                console.log(`   ⚡ Cache hit: ${cacheKey}`);
-                console.log(`   Output (cached):`, JSON.stringify(cachedData, null, 2));
+                console.log(`   ⚡ Cache hit`);
                 return cachedData;
               }
 
               // Cache miss - call MCP tool
-              console.log(`   🔍 Cache miss: ${cacheKey}`);
+              console.log(`   🔍 Cache miss - calling MCP`);
               const startTime = Date.now();
               const result = await toolDef.execute(args);
               const elapsed = Date.now() - startTime;
               console.log(`   ⏱️ MCP call took ${elapsed}ms`);
-              console.log(`   Output:`, JSON.stringify(result, null, 2));
 
               // Only cache successful responses (don't cache errors)
               if (!result.isError) {
@@ -369,18 +362,16 @@ export async function POST(request: NextRequest) {
               // Check cache first
               const cachedData = await scheduleCache.get(cacheKey);
               if (cachedData) {
-                console.log(`   ⚡ Cache hit: ${cacheKey}`);
-                console.log(`   Output (cached):`, JSON.stringify(cachedData, null, 2));
+                console.log(`   ⚡ Cache hit`);
                 return cachedData;
               }
 
               // Cache miss - call MCP tool
-              console.log(`   🔍 Cache miss: ${cacheKey}`);
+              console.log(`   🔍 Cache miss - calling MCP`);
               const startTime = Date.now();
               const result = await toolDef.execute(args);
               const elapsed = Date.now() - startTime;
               console.log(`   ⏱️ MCP call took ${elapsed}ms`);
-              console.log(`   Output:`, JSON.stringify(result, null, 2));
 
               // Only cache successful responses (don't cache errors)
               if (!result.isError) {
@@ -412,18 +403,16 @@ export async function POST(request: NextRequest) {
               // Check cache first
               const cachedData = await scheduleCache.get(cacheKey);
               if (cachedData) {
-                console.log(`   ⚡ Cache hit: ${cacheKey}`);
-                console.log(`   Output (cached):`, JSON.stringify(cachedData, null, 2));
+                console.log(`   ⚡ Cache hit`);
                 return cachedData;
               }
 
               // Cache miss - call MCP tool
-              console.log(`   🔍 Cache miss: ${cacheKey}`);
+              console.log(`   🔍 Cache miss - calling MCP`);
               const startTime = Date.now();
               const result = await toolDef.execute(args);
               const elapsed = Date.now() - startTime;
               console.log(`   ⏱️ MCP call took ${elapsed}ms`);
-              console.log(`   Output:`, JSON.stringify(result, null, 2));
 
               // Only cache successful responses (don't cache errors)
               if (!result.isError) {
@@ -441,7 +430,6 @@ export async function POST(request: NextRequest) {
             const result = await toolDef.execute(args);
             const elapsed = Date.now() - startTime;
             console.log(`   ⏱️ Tool execution took ${elapsed}ms`);
-            console.log(`   Output:`, JSON.stringify(result, null, 2));
             return result;
           },
         },
@@ -465,18 +453,18 @@ export async function POST(request: NextRequest) {
           }
 
           // Resolve venue address from database
-          console.log(`🗺️ Resolving venue: "${game.venue}"`);
+          console.log(`🗺️ Resolving venue`);
           const venueResult = await resolveVenue(game.venue);
 
           if (!venueResult) {
-            console.error(`❌ Venue not found: "${game.venue}"`);
+            console.error(`❌ Venue not found in database`);
             return {
               errorMessage: `I couldn't find the venue "${game.venue}" in our database. Please check the venue name and try again, or contact support if this venue should be available.`,
             };
           }
 
           const venueAddress = venueResult.address;
-          console.log(`✅ Venue resolved: ${venueResult.canonical_name} → ${venueAddress}`);
+          console.log(`✅ Venue resolved`);
 
           const overridesInput = overrides ?? {};
           const basePreferences =
@@ -571,18 +559,18 @@ export async function POST(request: NextRequest) {
           const { venue, homeAddress } = args;
 
           // Resolve venue address from database
-          console.log(`🗺️ [distance] Resolving venue: "${venue}"`);
+          console.log(`🗺️ [distance] Resolving venue`);
           const venueResult = await resolveVenue(venue);
 
           if (!venueResult) {
-            console.error(`❌ [distance] Venue not found: "${venue}"`);
+            console.error(`❌ [distance] Venue not found in database`);
             return {
               errorMessage: `I couldn't find the venue "${venue}" in our database. Please check the venue name and try again.`,
             };
           }
 
           const destinationAddress = venueResult.address;
-          console.log(`✅ [distance] Venue resolved: ${venueResult.canonical_name} → ${destinationAddress}`);
+          console.log(`✅ [distance] Venue resolved`);
 
           // Get origin address (from parameter or user preferences)
           const originAddress = homeAddress ?? normalizedPreferences?.homeAddress;
@@ -605,7 +593,7 @@ export async function POST(request: NextRequest) {
               console.error("❌ Failed to track Distance Matrix API call:", err)
             );
 
-            console.log(`✅ [distance] Calculated: ${result.distanceMiles.toFixed(1)} miles from ${originAddress} to ${destinationAddress}`);
+            console.log(`✅ [distance] Distance calculated successfully`);
 
             return {
               distanceMiles: Math.round(result.distanceMiles * 10) / 10, // Round to 1 decimal
