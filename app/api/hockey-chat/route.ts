@@ -14,6 +14,7 @@ import {
   getPlayerStatsCacheKey,
 } from "@/lib/cache";
 import { calculateTravelTimes } from "@/lib/travel/time-calculator";
+import { calculateDistance } from "@/lib/travel/distance-calculator";
 import {
   DEFAULT_PREFERENCES,
   type UserPreferences,
@@ -193,7 +194,6 @@ export async function POST(request: NextRequest) {
           ...toolDef,
           execute: async (args: any) => {
             console.log(`\n🏒 Tool called: ${toolName}`);
-            console.log(`   Input:`, JSON.stringify(args, null, 2));
 
             // Cache logic for get_schedule tool
             if (toolName === 'get_schedule') {
@@ -253,22 +253,24 @@ export async function POST(request: NextRequest) {
               // Check cache first
               const cachedData = await scheduleCache.get(cacheKey);
               if (cachedData) {
-                console.log(`   ⚡ Cache hit: ${cacheKey}`);
-                console.log(`   Output (cached):`, JSON.stringify(cachedData, null, 2));
+                console.log(`   ⚡ Cache hit`);
                 return cachedData;
               }
 
               // Cache miss - call MCP tool
-              console.log(`   🔍 Cache miss: ${cacheKey}`);
+              console.log(`   🔍 Cache miss - calling MCP`);
               const startTime = Date.now();
               const result = await toolDef.execute(args);
               const elapsed = Date.now() - startTime;
               console.log(`   ⏱️ MCP call took ${elapsed}ms`);
-              console.log(`   Output:`, JSON.stringify(result, null, 2));
 
-              // Store in cache (24 hour TTL by default)
-              await scheduleCache.set(cacheKey, result);
-              console.log(`   💾 Cached: ${cacheKey}`);
+              // Only cache successful responses (don't cache errors)
+              if (!result.isError) {
+                await scheduleCache.set(cacheKey, result);
+                console.log(`   💾 Cached: ${cacheKey}`);
+              } else {
+                console.log(`   ⚠️ Not caching error response`);
+              }
 
               return result;
             }
@@ -290,22 +292,24 @@ export async function POST(request: NextRequest) {
               // Check cache first
               const cachedData = await scheduleCache.get(cacheKey);
               if (cachedData) {
-                console.log(`   ⚡ Cache hit: ${cacheKey}`);
-                console.log(`   Output (cached):`, JSON.stringify(cachedData, null, 2));
+                console.log(`   ⚡ Cache hit`);
                 return cachedData;
               }
 
               // Cache miss - call MCP tool
-              console.log(`   🔍 Cache miss: ${cacheKey}`);
+              console.log(`   🔍 Cache miss - calling MCP`);
               const startTime = Date.now();
               const result = await toolDef.execute(args);
               const elapsed = Date.now() - startTime;
               console.log(`   ⏱️ MCP call took ${elapsed}ms`);
-              console.log(`   Output:`, JSON.stringify(result, null, 2));
 
-              // Store in cache (24 hour TTL)
-              await scheduleCache.set(cacheKey, result);
-              console.log(`   💾 Cached: ${cacheKey}`);
+              // Only cache successful responses (don't cache errors)
+              if (!result.isError) {
+                await scheduleCache.set(cacheKey, result);
+                console.log(`   💾 Cached: ${cacheKey}`);
+              } else {
+                console.log(`   ⚠️ Not caching error response`);
+              }
 
               return result;
             }
@@ -327,22 +331,24 @@ export async function POST(request: NextRequest) {
               // Check cache first
               const cachedData = await scheduleCache.get(cacheKey);
               if (cachedData) {
-                console.log(`   ⚡ Cache hit: ${cacheKey}`);
-                console.log(`   Output (cached):`, JSON.stringify(cachedData, null, 2));
+                console.log(`   ⚡ Cache hit`);
                 return cachedData;
               }
 
               // Cache miss - call MCP tool
-              console.log(`   🔍 Cache miss: ${cacheKey}`);
+              console.log(`   🔍 Cache miss - calling MCP`);
               const startTime = Date.now();
               const result = await toolDef.execute(args);
               const elapsed = Date.now() - startTime;
               console.log(`   ⏱️ MCP call took ${elapsed}ms`);
-              console.log(`   Output:`, JSON.stringify(result, null, 2));
 
-              // Store in cache (24 hour TTL)
-              await scheduleCache.set(cacheKey, result);
-              console.log(`   💾 Cached: ${cacheKey}`);
+              // Only cache successful responses (don't cache errors)
+              if (!result.isError) {
+                await scheduleCache.set(cacheKey, result);
+                console.log(`   💾 Cached: ${cacheKey}`);
+              } else {
+                console.log(`   ⚠️ Not caching error response`);
+              }
 
               return result;
             }
@@ -360,22 +366,24 @@ export async function POST(request: NextRequest) {
               // Check cache first
               const cachedData = await scheduleCache.get(cacheKey);
               if (cachedData) {
-                console.log(`   ⚡ Cache hit: ${cacheKey}`);
-                console.log(`   Output (cached):`, JSON.stringify(cachedData, null, 2));
+                console.log(`   ⚡ Cache hit`);
                 return cachedData;
               }
 
               // Cache miss - call MCP tool
-              console.log(`   🔍 Cache miss: ${cacheKey}`);
+              console.log(`   🔍 Cache miss - calling MCP`);
               const startTime = Date.now();
               const result = await toolDef.execute(args);
               const elapsed = Date.now() - startTime;
               console.log(`   ⏱️ MCP call took ${elapsed}ms`);
-              console.log(`   Output:`, JSON.stringify(result, null, 2));
 
-              // Store in cache (6 hour TTL - stats change more frequently than schedules)
-              await scheduleCache.set(cacheKey, result, 6 * 60 * 60 * 1000);
-              console.log(`   💾 Cached (6hr TTL): ${cacheKey}`);
+              // Only cache successful responses (don't cache errors)
+              if (!result.isError) {
+                await scheduleCache.set(cacheKey, result, 6 * 60 * 60 * 1000);
+                console.log(`   💾 Cached (6hr TTL): ${cacheKey}`);
+              } else {
+                console.log(`   ⚠️ Not caching error response`);
+              }
 
               return result;
             }
@@ -399,22 +407,24 @@ export async function POST(request: NextRequest) {
               // Check cache first
               const cachedData = await scheduleCache.get(cacheKey);
               if (cachedData) {
-                console.log(`   ⚡ Cache hit: ${cacheKey}`);
-                console.log(`   Output (cached):`, JSON.stringify(cachedData, null, 2));
+                console.log(`   ⚡ Cache hit`);
                 return cachedData;
               }
 
               // Cache miss - call MCP tool
-              console.log(`   🔍 Cache miss: ${cacheKey}`);
+              console.log(`   🔍 Cache miss - calling MCP`);
               const startTime = Date.now();
               const result = await toolDef.execute(args);
               const elapsed = Date.now() - startTime;
               console.log(`   ⏱️ MCP call took ${elapsed}ms`);
-              console.log(`   Output:`, JSON.stringify(result, null, 2));
 
-              // Store in cache (6 hour TTL - stats change more frequently than schedules)
-              await scheduleCache.set(cacheKey, result, 6 * 60 * 60 * 1000);
-              console.log(`   💾 Cached (6hr TTL): ${cacheKey}`);
+              // Only cache successful responses (don't cache errors)
+              if (!result.isError) {
+                await scheduleCache.set(cacheKey, result, 6 * 60 * 60 * 1000);
+                console.log(`   💾 Cached (6hr TTL): ${cacheKey}`);
+              } else {
+                console.log(`   ⚠️ Not caching error response`);
+              }
 
               return result;
             }
@@ -424,7 +434,6 @@ export async function POST(request: NextRequest) {
             const result = await toolDef.execute(args);
             const elapsed = Date.now() - startTime;
             console.log(`   ⏱️ Tool execution took ${elapsed}ms`);
-            console.log(`   Output:`, JSON.stringify(result, null, 2));
             return result;
           },
         },
@@ -448,18 +457,18 @@ export async function POST(request: NextRequest) {
           }
 
           // Resolve venue address from database
-          console.log(`🗺️ Resolving venue: "${game.venue}"`);
+          console.log(`🗺️ Resolving venue`);
           const venueResult = await resolveVenue(game.venue);
 
           if (!venueResult) {
-            console.error(`❌ Venue not found: "${game.venue}"`);
+            console.error(`❌ Venue not found in database`);
             return {
               errorMessage: `I couldn't find the venue "${game.venue}" in our database. Please check the venue name and try again, or contact support if this venue should be available.`,
             };
           }
 
           const venueAddress = venueResult.address;
-          console.log(`✅ Venue resolved: ${venueResult.canonical_name} → ${venueAddress}`);
+          console.log(`✅ Venue resolved`);
 
           const overridesInput = overrides ?? {};
           const basePreferences =
@@ -538,6 +547,76 @@ export async function POST(request: NextRequest) {
             );
 
             return { errorMessage: TRAVEL_API_ERROR_MESSAGE };
+          }
+        },
+      },
+      calculate_venue_distances: {
+        description:
+          "Calculate driving distance in miles from user's home address to a venue. Works for any game date (past, present, or future). Returns distance only, no traffic predictions. Use this for seasonal mileage calculations or when you just need to know 'how far' without departure/arrival times.",
+        inputSchema: z.object({
+          venue: z.string().describe("Venue name (will be resolved to address automatically)"),
+          homeAddress: z.string().optional().describe("Starting address (defaults to user's saved home address)"),
+        }),
+        execute: async (args: { venue: string; homeAddress?: string }) => {
+          const { venue, homeAddress } = args;
+
+          // Resolve venue address from database
+          console.log(`🗺️ [distance] Resolving venue`);
+          const venueResult = await resolveVenue(venue);
+
+          if (!venueResult) {
+            console.error(`❌ [distance] Venue not found in database`);
+            return {
+              errorMessage: `I couldn't find the venue "${venue}" in our database. Please check the venue name and try again.`,
+            };
+          }
+
+          const destinationAddress = venueResult.address;
+          console.log(`✅ [distance] Venue resolved`);
+
+          // Get origin address (from parameter or user preferences)
+          const originAddress = homeAddress ?? normalizedPreferences?.homeAddress;
+
+          if (!originAddress) {
+            return {
+              errorMessage: HOME_ADDRESS_REQUIRED_MESSAGE,
+            };
+          }
+
+          try {
+            const result = await calculateDistance({
+              originAddress,
+              destinationAddress,
+            });
+
+            // Track successful Google Distance Matrix API call
+            const today = new Date().toISOString().split("T")[0];
+            trackExternalApiCall("google-distance-matrix", true, today).catch((err) =>
+              console.error("❌ Failed to track Distance Matrix API call:", err)
+            );
+
+            console.log(`✅ [distance] Distance calculated successfully`);
+
+            return {
+              distanceMiles: Math.round(result.distanceMiles * 10) / 10, // Round to 1 decimal
+              distanceMeters: result.distanceMeters,
+              venueAddress: destinationAddress,
+              venueName: venueResult.canonical_name,
+              originAddress: result.originAddress,
+              mapsUrl: result.mapsUrl,
+            };
+          } catch (error) {
+            console.error("🗺️ [distance] Distance calculation error:", error);
+
+            // Track failed Google Distance Matrix API call
+            const today = new Date().toISOString().split("T")[0];
+            trackExternalApiCall("google-distance-matrix", false, today).catch((err) =>
+              console.error("❌ Failed to track Distance Matrix API error:", err)
+            );
+
+            return {
+              errorMessage: "Sorry, I couldn't calculate the distance. Please try again or check the addresses manually on Google Maps.",
+            };
           }
         },
       },

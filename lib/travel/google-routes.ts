@@ -141,12 +141,12 @@ export async function computeRoute(params: ComputeRouteParams): Promise<ComputeR
 
     return result;
   } catch (error) {
-    console.warn('[travel] Google Routes API failed, attempting fallback estimate.', error);
+    console.warn('[travel] Google Routes API failed, attempting fallback estimate.');
 
     try {
       return await estimateRouteFromDistance(params);
     } catch (fallbackError) {
-      console.error('[travel] Fallback distance-based estimate also failed.', fallbackError);
+      console.error('[travel] Fallback distance-based estimate also failed.');
       // Re-throw original error to preserve context for callers
       throw error instanceof Error ? error : new Error(String(error));
     }

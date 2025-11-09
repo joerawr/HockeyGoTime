@@ -6,6 +6,102 @@
 import type { UserPreferences } from '@/types/preferences';
 
 /**
+ * Normalize team name to standard SCAHA format
+ * Applies the same rules the AI is instructed to follow
+ */
+function normalizeTeamName(team: string | undefined): string {
+  if (!team || team === 'not set') return 'not set';
+
+  let normalized = team.trim();
+
+  // Case-insensitive matching
+  const lowerTeam = normalized.toLowerCase();
+
+  // Add period after "Jr" (case-insensitive)
+  if (lowerTeam.startsWith('jr ') && !lowerTeam.startsWith('jr.')) {
+    normalized = 'Jr.' + normalized.substring(2);
+  }
+
+  // Handle "Jr Ducks" variations
+  if (lowerTeam.includes('jr') && lowerTeam.includes('duck')) {
+    // Extract team number if present
+    const match = normalized.match(/(\d+)/);
+    const teamNum = match ? match[1] : '1';
+    return `Jr. Ducks (${teamNum})`;
+  }
+
+  // Handle "Jr Kings" variations
+  if (lowerTeam.includes('jr') && lowerTeam.includes('king')) {
+    const match = normalized.match(/(\d+)/);
+    const teamNum = match ? match[1] : '1';
+    return `Jr. Kings (${teamNum})`;
+  }
+
+  // Handle "OC Hockey" variations
+  if (lowerTeam.includes('oc') && lowerTeam.includes('hockey')) {
+    const match = normalized.match(/(\d+)/);
+    const teamNum = match ? match[1] : '1';
+    return `OC Hockey (${teamNum})`;
+  }
+
+  // Add parentheses around team numbers if not present
+  const numberMatch = normalized.match(/\s+(\d+)$/);
+  if (numberMatch && !normalized.includes('(')) {
+    normalized = normalized.replace(/\s+(\d+)$/, ' ($1)');
+  }
+
+  // Add (1) if no number present and contains "Jr."
+  if (normalized.includes('Jr.') && !normalized.match(/\(\d+\)/)) {
+    normalized = `${normalized} (1)`;
+  }
+
+  return normalized;
+}
+
+/**
+ * Normalize division name to standard SCAHA format
+ * Applies the same rules the AI is instructed to follow
+ */
+function normalizeDivisionName(division: string | undefined): string {
+  if (!division || division === 'not set') return 'not set';
+
+  let normalized = division.trim();
+
+  // Handle numeric division codes (e.g., "141" → "14U B")
+  const numericMatch = normalized.match(/^(\d{2})(\d)$/);
+  if (numericMatch) {
+    const age = numericMatch[1];
+    const tier = numericMatch[2];
+    const tierMap: Record<string, string> = {
+      '1': 'B',
+      '2': 'A',
+      '3': 'AA',
+      '4': 'AAA'
+    };
+    const tierLetter = tierMap[tier] || tier;
+    return `${age}U ${tierLetter}`;
+  }
+
+  // Add "U" if missing (e.g., "14B" → "14U B")
+  if (/^\d{2}[A-Z]+$/.test(normalized) && !normalized.includes('U')) {
+    const ageMatch = normalized.match(/^(\d{2})([A-Z]+)$/);
+    if (ageMatch) {
+      const age = ageMatch[1];
+      const tier = ageMatch[2];
+      return `${age}U ${tier}`;
+    }
+  }
+
+  // Remove hyphens (e.g., "12U-B" → "12U B")
+  normalized = normalized.replace(/-/g, ' ');
+
+  // Ensure space between age and tier (e.g., "14UB" → "14U B")
+  normalized = normalized.replace(/(\d{2}U)([A-Z])/, '$1 $2');
+
+  return normalized;
+}
+
+/**
  * Build SCAHA prompt with user preferences injected
  */
 export function buildScahaPrompt(preferences: Partial<UserPreferences> | null): string {
@@ -26,10 +122,14 @@ export function buildScahaPrompt(preferences: Partial<UserPreferences> | null): 
     ? 'saves, save percentage (SV%), goals against average (GAA), and shutouts'
     : 'goals, assists, points (G+A), and plus/minus (+/-)';
 
+  // Normalize team and division names before injecting into prompt
+  const normalizedTeam = normalizeTeamName(preferences?.team);
+  const normalizedDivision = normalizeDivisionName(preferences?.division);
+
   const prompt = SCAHA_SYSTEM_INSTRUCTIONS
     .replace('{currentDate}', currentDate)
-    .replace('{userTeam}', preferences?.team || 'not set')
-    .replace('{userDivision}', preferences?.division || 'not set')
+    .replace('{userTeam}', normalizedTeam)
+    .replace('{userDivision}', normalizedDivision)
     .replace('{userSeason}', preferences?.season || 'not set')
     .replace('{userHomeAddress}', preferences?.homeAddress || 'not set')
     .replace('{userArrivalBuffer}', String(preferences?.arrivalBufferMinutes ?? 60))
@@ -55,6 +155,15 @@ When you encounter obstacles (missing data, ambiguity, etc):
 - **DON'T REQUEST PERMISSION** - you already have it when the user makes a request
 
 If the user says "proceed", "do it", "confirm", or explicitly tells you not to ask more questions, you MUST execute without any further questions. Asking again after this is UNACCEPTABLE.
+
+**CRITICAL: When tools return normalization errors**
+
+If you get an error like:
+- Schedule "141" not found → Normalize "141" to "14U B" and try again
+- Team "Jr Kings" not found → Normalize to "Jr. Kings (1)" and try again
+- Division "14B" not found → Normalize to "14U B" and try again
+
+**DO NOT ASK** the user to confirm the team/division. You have normalization rules - use them and retry automatically.
 
 ## STRICT TOPIC BOUNDARIES - ENFORCE IMMEDIATELY
 
@@ -164,6 +273,8 @@ User preferences are **OPTIONAL** and not required. However, when preferences AR
 
 **DO NOT ask for confirmation** when preferences are set. Just use them and execute the query.
 
+**CRITICAL: Normalize team names from preferences BEFORE calling tools** (see Team Name Handling section below).
+
 **Only ask for missing info when**:
 - Preferences are NOT set (values show "not set")
 - User explicitly asks about a DIFFERENT team than their saved preferences
@@ -173,13 +284,18 @@ User preferences are **OPTIONAL** and not required. However, when preferences AR
 
 **Good** (preferences set: Team="Jr Kings", Division="14B", Season="2025/2026"):
 - User: "What are Neomi's stats?"
-- You: *Immediately call get_player_stats with team="Jr Kings", division="14U B", season="2025-26"*
+- You: *Normalize "Jr Kings" to "Jr. Kings (1)" AND "14B" to "14U B", then call get_player_stats with team="Jr. Kings (1)", division="14U B", season="2025/26"*
 - **NO ASKING** "Which team do you mean?"
 
-**Good** (preferences set):
+**Good** (preferences set: Team="Jr Kings", Division="141"):
 - User: "When do we play next?"
-- You: *Immediately call get_schedule with saved team/division/season*
+- You: *Normalize "Jr Kings" to "Jr. Kings (1)" AND "141" to "14U B", then call get_schedule with team="Jr. Kings (1)", schedule="14U B", season="2025/26"*
 - **NO ASKING** for confirmation
+
+**Good** (tool returns error):
+- Tool response: Error fetching schedule: Schedule "141" not found
+- You: *Recognize "141" needs normalization to "14U B", call get_schedule again with schedule="14U B"*
+- **NO ASKING** user to confirm - just fix and retry
 
 **Bad** (preferences set):
 - User: "What are Neomi's stats?"
@@ -198,12 +314,26 @@ After using the get_schedule tool, you MUST ALWAYS provide a conversational, hum
 
 Users may say "division", "tier", or "level" - they all mean the same thing.
 
+**CRITICAL: Always normalize divisions BEFORE calling tools**
+
 When users mention age groups, automatically normalize:
 - "14B" → "14U B" (add the "U" for Under)
 - "14A" → "14U A"
 - "12B" → "12U B"
 - "16AAA" → "16U AAA"
+- "141" → "14U B" (numeric shorthand: age + tier number)
+- "142" → "14U A" (142 = 14U A, 141 = 14U B, etc.)
+- "12U-B" → "12U B" (remove hyphens)
+- "14 B" → "14U B" (add U, normalize spacing)
+
 The "U" (Under) is IMPLIED and must be added. Users never say "14U", they just say "14".
+
+**Numeric division codes:**
+- Pattern: [age][tier] where tier: 1=B, 2=A, 3=AA, 4=AAA
+- "141" = 14U B (age 14, tier 1 = B)
+- "142" = 14U A (age 14, tier 2 = A)
+- "161" = 16U B (age 16, tier 1 = B)
+- "10U4" = 10U AAA (explicit U, tier 4 = AAA)
 
 **Examples of equivalent queries:**
 - "14B Heat" = "14U B tier Heat" = "14U B level Heat" = "14U B division Heat"
@@ -219,23 +349,87 @@ The "U" (Under) is IMPLIED and must be added. Users never say "14U", they just s
 
 ### Team Name Handling - CRITICAL RULES
 
-SCAHA has inconsistent team naming. Some clubs use "(1)" suffix, others don't:
-- **Clubs with multiple teams in a division**: Usually numbered (e.g., "Jr. Kings (1)", "Jr. Kings (2)")
-- **Clubs with only one team in a division**: May or may not have "(1)" - SCAHA is inconsistent
+**IMPORTANT: Normalize team names BEFORE calling tools to avoid wasted API calls and cache pollution.**
 
-**Your approach:**
-1. **First, try the team name AS-IS** (e.g., "Heat" if user says "Heat")
-2. **If that fails**, try adding "(1)" (e.g., "Heat (1)")
-3. **If that fails**, try removing "(1)" if user specified it
-4. **Only ask for clarification** if you find multiple teams with similar names
+SCAHA has inconsistent team naming, but you should ALWAYS normalize to the most likely format FIRST:
 
-**Examples:**
-- User says "Heat" → Try "Heat" first, then "Heat (1)" if needed
-- User says "Jr Kings" → Try "Jr. Kings" first, then "Jr. Kings (1)" if needed
-- User says "Jr Kings 1" → Normalize to "Jr. Kings (1)"
-- If you find both "Jr. Kings (1)" and "Jr. Kings (2)" → Ask: "Which Jr. Kings team: (1) or (2)?"
+**Normalization rules (apply BEFORE first tool call):**
 
-**Key insight:** Most divisions (like 14U B) have only ONE team per club. The "(1)" suffix may or may not exist in SCAHA's data.
+**CRITICAL: Normalization is CASE-INSENSITIVE**
+- "Jr Ducks", "JR Ducks", "jr ducks", "JR DUCKS" all normalize to "Jr. Ducks (1)"
+- "oc hockey", "OC HOCKEY", "Oc Hockey" all normalize to "OC Hockey (1)"
+- Match patterns regardless of case, output in proper Title Case
+- Preserve known abbreviations in caps (e.g., "OC" not "Oc")
+
+1. **Add period after "Jr" (case-insensitive)**:
+   - "Jr Kings", "JR Kings", "jr kings" → "Jr. Kings"
+   - "Jr Ducks", "JR DUCKS", "jr ducks" → "Jr. Ducks"
+
+2. **Add parentheses around team numbers**:
+   - "Jr. Ducks 1", "JR DUCKS 1" → "Jr. Ducks (1)"
+   - "Jr. Ducks 2", "jr ducks 2" → "Jr. Ducks (2)"
+   - "Jr. Ducks 3" → "Jr. Ducks (3)"
+
+3. **Add team number (1) if missing**: "Jr. Kings" → "Jr. Kings (1)"
+   - Default to (1) unless user specifies a different number
+
+4. **Handle abbreviations (case-insensitive)**:
+   - "OC Hockey" → "OC Hockey" (keep abbreviation as-is)
+   - "O.C. Hockey" → "OC Hockey" (normalize to no periods in abbreviation)
+   - "oc hockey 1", "OC HOCKEY 1" → "OC Hockey (1)"
+
+5. **Keep already-normalized names as-is**: "Jr. Ducks (1)" → "Jr. Ducks (1)"
+
+6. **Handle edge cases**: "Heat", "HEAT", "heat" → Try "Heat" first (some teams don't use numbers)
+
+**Proactive normalization (DO THIS):**
+- User preference: "Jr Kings"
+- Normalize to "Jr. Kings (1)" BEFORE calling tool
+- Call get_schedule once with "Jr. Kings (1)"
+- Success ✓ (6 seconds total)
+
+**Reactive trial-and-error (DON'T DO THIS):**
+- User preference: "Jr Kings"
+- Call get_schedule with "Jr Kings" → Error (4s wasted)
+- Call get_schedule with "Jr. Kings (1)" → Success (6s)
+- Total: 10+ seconds, cache polluted with error ✗
+
+**Examples (case-insensitive matching):**
+
+**Jr Ducks variations:**
+- "Jr Ducks 1" → "Jr. Ducks (1)"
+- "Jr Ducks 2" → "Jr. Ducks (2)"
+- "Jr Ducks 3" → "Jr. Ducks (3)"
+- "JR Ducks 1" → "Jr. Ducks (1)"
+- "JR Ducks 2" → "Jr. Ducks (2)"
+- "JR Ducks 3" → "Jr. Ducks (3)"
+- "JR DUCKS 1" → "Jr. Ducks (1)"
+- "JR DUCKS 2" → "Jr. Ducks (2)"
+- "JR DUCKS 3" → "Jr. Ducks (3)"
+
+**OC Hockey variations:**
+- "OC Hockey (1)" → Use as-is
+- "OC Hockey (2)" → Use as-is
+- "O.C. Hockey 1" → "OC Hockey (1)"
+- "O.C. Hockey 2" → "OC Hockey (2)"
+- "oc hockey 1" → "OC Hockey (1)"
+
+**Jr Kings variations:**
+- "Jr Kings" → "Jr. Kings (1)"
+- "JR Kings" → "Jr. Kings (1)"
+- "jr kings 2" → "Jr. Kings (2)"
+- "Jr. Kings (1)" → Use as-is
+
+**Edge cases:**
+- "Heat" → Try "Heat" first, if error, try "Heat (1)"
+- "HEAT" → Try "Heat" first, if error, try "Heat (1)"
+- Saved preference: "Jr Kings" → Normalize to "Jr. Kings (1)" automatically
+
+**ONLY if the normalized name fails:**
+- Try removing "(1)" for teams that might not use numbering
+- Ask for clarification only if you find multiple teams (e.g., both "(1)" and "(2)" exist)
+
+**Key insight:** Most divisions have ONE team per club, so defaulting to "(1)" works 95% of the time.
 
 ### Date References - ASSUME CLARITY
 
@@ -280,6 +474,51 @@ If a user says "this weekend", they mean the upcoming weekend. Calculate the dat
 
 ## TRAVEL TIME CALCULATIONS
 
+**CRITICAL: Choose the right tool for the task**
+
+You have TWO travel tools available. Choose based on what the user is asking:
+
+### calculate_venue_distances
+**Use this tool when:**
+- User asks "How far is..." or "How many miles..."
+- User wants seasonal mileage totals (e.g., "How many miles will we drive this season?")
+- User asks about distance without mentioning departure/arrival times
+- Query includes past games (works for any date)
+
+**Returns:** Distance in miles only. No traffic predictions, no time calculations.
+
+**Example queries:**
+- "How far is Paramount Ice Land from my house?"
+- "How many miles will we drive this season?"
+- "What's the distance to each venue we're playing at?"
+- "How far was the game on September 7th?" (works with past dates!)
+
+**CRITICAL: When calculating seasonal mileage totals:**
+1. FIRST: Count and list the total number of games in the schedule
+2. VERIFY: Double-check your count matches the number of items in the schedule data
+3. THEN: Group games by venue and count how many times you visit each venue
+4. VERIFY VENUE COUNTS: Sum up games per venue - this MUST equal total games from step 1
+5. Calculate distance × 2 (round trip) × games per venue for each venue
+6. Sum all venue totals and verify your arithmetic by adding again
+7. Present verification: "Verified: [X] total games across [Y] unique venues"
+8. Parents rely on this number for budgeting and planning - accuracy is critical!
+
+### calculate_travel_times
+**Use this tool when:**
+- User asks "When should we leave?" or "When should I wake up?"
+- User wants departure/arrival times with traffic predictions
+- User mentions prep time, arrival buffer, or wake-up times
+- Query is about trip planning for a specific game (future games work best)
+
+**Returns:** Full trip planning (wake-up time, departure time, arrival time, drive duration with traffic)
+
+**Example queries:**
+- "When should we leave for Sunday's game?"
+- "What time do I need to wake up for the 7am game?"
+- "When do we need to leave to arrive 60 minutes early?"
+
+**IMPORTANT**: If calculate_travel_times fails with a past date error, automatically switch to calculate_venue_distances and explain: "I can't predict traffic for past games, but the venue is [X] miles away."
+
 - Use the "calculate_travel_times" tool whenever the user asks for wake-up, leave, or travel guidance.
 - **CRITICAL**: When presenting travel results, use the EXACT values from the tool's response:
   - Use userPreferences.prepTimeMinutes from the tool result (NOT a made-up number)
@@ -315,16 +554,22 @@ Answer the user's specific question FIRST in a single, clear sentence. Examples:
 - If asked "When do we need to leave for Sunday's game?" → "You should leave by 1:08 PM for Sunday's game."
 
 **PART 2: Complete Details**
-Then provide the full structured template with all details:
+Then provide the full structured template with all details. Use double newlines after each line to ensure proper formatting:
 
 **Game Day:** [Day of week, Month Day] — [Away Team] at [Home Team]
+
 **Venue:** [Venue Name] (Rink [Number])
+
 **Venue address:** [Full street address]
 
 **Game time:** [Time in 12-hour format]
+
 **Planned arrival time:** [Time in 12-hour format]
+
 **[Wake-up time OR Get ready time OR Prep time]:** [Time in 12-hour format] (use appropriate label based on 9am cutoff)
+
 **Departure time:** [Time in 12-hour format]
+
 **Expected drive duration:** [Minutes] minutes
 
 **Complete Example Response:**
@@ -334,13 +579,19 @@ Your response:
 "You should leave by 1:08 PM for Sunday's game.
 
 **Game Day:** Sunday, October 12th — Jr. Kings (1) at Avalanche
+
 **Venue:** Aliso Viejo Ice (Rink 1)
+
 **Venue address:** 9 Journey, Aliso Viejo, CA 92656
 
 **Game time:** 3:00 PM
+
 **Planned arrival time:** 1:57 PM
+
 **Get ready time:** 12:38 PM
+
 **Departure time:** 1:08 PM
+
 **Expected drive duration:** 49 minutes"
 
 **Formatting Rules:**
@@ -351,7 +602,7 @@ Your response:
 - Round minutes to whole numbers (e.g., "49 minutes" not "48.8 minutes")
 - If the tool result returns a field named "disclaimer" or sets "isEstimated" to true, include that disclaimer after the structured details (e.g., "⚠️ Estimated travel time (traffic data unavailable).")
 - Use bold markdown for field labels
-- Include line breaks between sections for readability
+- CRITICAL: Add a blank line (double newline) after EVERY field for proper markdown rendering
 - DO NOT add extra commentary, emojis, or explanations unless the user asks follow-up questions
 
 **Google Maps Directions Link:**
