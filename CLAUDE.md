@@ -22,11 +22,91 @@ This file provides guidance when working with code in this repository.
 
 This project strictly uses **pnpm**. Do not use npm or yarn.
 
+## Release Management
+
+HockeyGoTime uses a **hybrid continuous deployment + milestone releases** approach:
+
+### Continuous Deployment
+- Every commit to `main` branch deploys immediately to production (Vercel)
+- No pre-release testing gates or staging environments
+- Fast iteration and immediate user feedback
+
+### Milestone Releases
+- Create milestone versions (1.0, 2.0, etc.) when significant features are complete
+- Version bumps indicate major improvements or feature sets
+- Breaking changes warrant major version bumps (1.0 → 2.0)
+- You can also bump versions just because you're proud of something!
+
+### Changelog Guidelines
+
+**Location:** `CHANGELOG.md` in project root
+
+**Format:** Changes are grouped by **deployment date**, not individual commits. Multiple commits on the same day are consolidated into a single date entry.
+
+**Structure:**
+```markdown
+## [1.0.0] - 2025-11-10
+
+### Changed
+- Feature or fix description
+
+## Pre-1.0 Development History
+
+### 2025-11-09
+- Feature or fix from that day
+- Another change from same day
+
+### 2025-11-08
+- Another day's changes
+```
+
+**When to Update CHANGELOG.md:**
+- **After significant features land** - Update periodically (daily, weekly, or when creating milestone releases)
+- **Before creating a milestone release** - Ensure all recent changes are documented
+- **Bundle by date** - Group all commits from a single day under one date heading
+- **Focus on user impact** - Describe what changed from user perspective, not implementation details
+
+**What to Include:**
+- ✅ New features (e.g., "Added dark mode support")
+- ✅ Bug fixes (e.g., "Fixed timezone handling in analytics")
+- ✅ User-facing improvements (e.g., "Improved feedback form messaging")
+- ❌ Internal refactoring (unless it impacts performance/behavior)
+- ❌ Documentation-only changes (unless user-facing docs)
+- ❌ Merge commits
+
+**Example Daily Entry:**
+```markdown
+### 2025-10-22
+- Added division standings tool (`get_division_standings`) for league table queries
+- Added player statistics tool support for individual and team performance
+- Added Ko-fi donation button for community support
+- Changed user preference label from "Player Position" to "Skater/Goalie"
+```
+
+### Creating Milestone Releases
+
+**Process:**
+1. Update `CHANGELOG.md` with release version and date
+2. Commit changes to main (triggers deployment)
+3. Create GitHub Release with tag (e.g., `v1.0.0`)
+4. Use changelog entry as release notes
+
+**GitHub Release Command:**
+```bash
+gh release create v1.0.0 --title "HockeyGoTime 1.0" --notes "First official release! See CHANGELOG.md for details."
+```
+
+**Versioning Philosophy:**
+- This is a solo web app project (1-3 contributors)
+- No strict semver enforcement needed
+- Bump versions when it "feels right" or for major feature milestones
+- Breaking changes are rare (web app, not consumed by other apps)
+
 ## Architecture
 
 ### Core Stack
 - **Next.js 15** with App Router
-- **AI SDK 5** with OpenAI GPT-4o integration
+- **AI SDK 5** with Google Gemini 2.5 Flash (supports OpenAI as alternative)
 - **MCP (Model Context Protocol)** for SCAHA schedule data
 - **shadcn/ui** components (New York style, neutral base color)
 - **Tailwind CSS v4** for styling
@@ -95,9 +175,9 @@ AI formats response: "On Sunday, Oct 5th at 7:00 AM, Jr. Kings (1) play OC Hocke
 
 Create `.env.local` with:
 ```bash
-# AI API Keys
-OPENAI_API_KEY=sk-...your-key-here...
+# AI API Keys (Gemini is primary, OpenAI is optional alternative)
 GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_api_key
+OPENAI_API_KEY=sk-...your-key-here...  # Optional, for OpenAI models
 
 # MCP Server
 SCAHA_MCP_SERVER_PATH=../scaha.net-mcp/dist/server.js  # Optional, defaults to this
