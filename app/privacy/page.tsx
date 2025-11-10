@@ -5,7 +5,7 @@ export default function PrivacyPage() {
 
       <div className="prose prose-neutral max-w-none">
         <p className="text-lg text-muted-foreground mb-6">
-          Last updated: {new Date().toLocaleDateString()}
+          Last updated: 11/10/2025
         </p>
 
         <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-8">
