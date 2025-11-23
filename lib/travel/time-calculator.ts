@@ -157,7 +157,14 @@ export async function calculateTravelTimes(
     timezone,
   });
 
-  const departureTime = new Date(arrivalTime.getTime() - route.durationSeconds * 1000);
+  // Use the HIGH end of Google's estimated range (pessimistic) for leave-by calculations
+  // while still exposing the full range in the returned result.
+  const effectiveDurationSeconds =
+    route.durationRangeSeconds?.high ?? route.durationSeconds;
+
+  const departureTime = new Date(
+    arrivalTime.getTime() - effectiveDurationSeconds * 1000
+  );
   const wakeUpTime = new Date(
     departureTime.getTime() - userPreferences.prepTimeMinutes * 60 * 1000
   );
@@ -172,7 +179,9 @@ export async function calculateTravelTimes(
     game,
     userPreferences,
     venueAddress: options.venueAddress,
-    travelDurationSeconds: route.durationSeconds,
+    travelDurationSeconds: effectiveDurationSeconds,
+    travelDurationLowSeconds: route.durationRangeSeconds?.low,
+    travelDurationHighSeconds: route.durationRangeSeconds?.high,
     distanceMeters: route.distanceMeters,
     gameTime: formatISO(gameDateTime, timezone),
     arrivalTime: formatISO(arrivalTime, timezone),
