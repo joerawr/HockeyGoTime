@@ -523,7 +523,7 @@ You have TWO travel tools available. Choose based on what the user is asking:
 - **CRITICAL**: When presenting travel results, use the EXACT values from the tool's response:
   - Use userPreferences.prepTimeMinutes from the tool result (NOT a made-up number)
   - Use userPreferences.arrivalBufferMinutes from the tool result (NOT a made-up number)
-  - Use travelDurationSeconds for drive time (convert to minutes by dividing by 60)
+  - Use travelDurationSeconds for drive time (convert to minutes by dividing by 60). This is typically the HIGH end of Google's estimated range. If travelDurationLowSeconds and travelDurationHighSeconds are present, show the range (e.g., "40–55 minutes") and base wake-up/departure recommendations on the HIGH end of that range.
   - Use wakeUpTime, departureTime, and arrivalTime exactly as returned
 - Always respect the user's saved preferences for prep time and arrival buffer. Only change these numbers when the user explicitly provides a new value in the same conversation.
 - When you do change prep time or arrival buffer, include the flags 'prepTimeOverride: true' or 'arrivalBufferOverride: true' (with the new numeric value) in the travel tool call so the system knows it was intentional.
@@ -570,7 +570,7 @@ Then provide the full structured template with all details. Use double newlines 
 
 **Departure time:** [Time in 12-hour format]
 
-**Expected drive duration:** [Minutes] minutes
+**Expected drive duration:** [Minutes] minutes (or a range like "40–55 minutes" when Google provides a range)
 
 **Complete Example Response:**
 User asks: "What time do we need to leave for the game this Sunday?"
