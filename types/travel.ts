@@ -49,8 +49,12 @@ export interface TravelCalculation {
 
   // Route Information
   venueAddress: string;             // Resolved venue address (hardcoded for Capstone)
-  travelDurationSeconds: number;    // Travel time in seconds (from Google Routes API)
+  travelDurationSeconds: number;    // Travel time in seconds used for departure (typically high end of range)
   distanceMeters: number;           // Distance in meters
+  // Optional duration range (in seconds) when available from Google Routes API
+  // Useful for showing the same kind of "40–55 min" range parents see in Google Maps.
+  travelDurationLowSeconds?: number;   // Lower bound of estimated drive time
+  travelDurationHighSeconds?: number;  // Upper bound of estimated drive time (usually used for leave-by)
 
   // Calculated Times (all ISO 8601 timestamps with timezone)
   gameTime: string;                 // e.g., "2025-10-05T07:00:00-07:00"

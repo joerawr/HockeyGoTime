@@ -1,6 +1,12 @@
 /**
  * Google Routes API client
- * Handles TRAFFIC_AWARE_OPTIMAL route calculations for travel planning
+ * Handles TRAFFIC_AWARE_OPTIMAL route calculations for travel planning.
+ *
+ * For live traffic predictions we call the Routes API with different
+ * traffic models to approximate the same "range" Google Maps shows
+ * in the UI (e.g., "40–55 min"). We then:
+ *   - Use the HIGH end of that range for departure / wake-up times
+ *   - Still expose the full range so the assistant can show it
  */
 
 import { toUTC } from '@/lib/utils/timezone';
@@ -20,6 +26,9 @@ const AVERAGE_SPEED_MPH = 30; // conservative assumption for SoCal traffic
 const ESTIMATE_BUFFER_MULTIPLIER = 1.2; // add 20% buffer for uncertainty
 const MILES_TO_METERS = 1609.344;
 const FALLBACK_DISCLAIMER = 'Estimated travel time (traffic data unavailable)';
+
+type TrafficModel = NonNullable<ComputeRoutesRequest['trafficModel']>;
+const DEFAULT_TRAFFIC_MODEL: TrafficModel = 'PESSIMISTIC';
 
 interface LatLng {
   lat: number;
@@ -47,6 +56,18 @@ interface ComputeRouteResult {
   encodedPolyline?: string;
   isFallback?: boolean;
   disclaimer?: string;
+  /**
+   * Optional duration range derived from multiple Google traffic models.
+   * - low: shortest plausible drive time (optimistic/best-guess)
+   * - high: longest plausible drive time (pessimistic) → used for leave-by time
+   */
+  durationRangeSeconds?: {
+    low: number;
+    high: number;
+    optimistic?: number;
+    bestGuess?: number;
+    pessimistic?: number;
+  };
 }
 
 /**
@@ -67,14 +88,15 @@ function buildRequestPayload(
   originAddress: string,
   destinationAddress: string,
   departureTimeLocalISO?: string,
-  timezone?: string
+  timezone?: string,
+  trafficModel: TrafficModel = DEFAULT_TRAFFIC_MODEL
 ): ComputeRoutesRequest {
   const payload: ComputeRoutesRequest = {
     origin: { address: originAddress },
     destination: { address: destinationAddress },
     travelMode: 'DRIVE',
     routingPreference: 'TRAFFIC_AWARE_OPTIMAL',
-    trafficModel: 'PESSIMISTIC',
+    trafficModel,
     computeAlternativeRoutes: false,
     languageCode: 'en-US',
     units: 'IMPERIAL',
@@ -115,7 +137,7 @@ export async function computeRoute(params: ComputeRouteParams): Promise<ComputeR
       throw new Error(`Invalid arrival time: ${arrivalTimeLocalISO}`);
     }
 
-    // Iteration 1: Initial estimate
+    // Iteration 1: Initial estimate (pessimistic traffic model)
     let estimatedDurationSeconds = INITIAL_ESTIMATE_MINUTES * 60;
     let departureTime = new Date(arrivalTime.getTime() - estimatedDurationSeconds * 1000);
 
@@ -123,7 +145,8 @@ export async function computeRoute(params: ComputeRouteParams): Promise<ComputeR
       originAddress,
       destinationAddress,
       departureTime.toISOString(),
-      timezone
+      timezone,
+      'PESSIMISTIC'
     );
 
     // Iteration 2: Refine if needed
@@ -135,8 +158,56 @@ export async function computeRoute(params: ComputeRouteParams): Promise<ComputeR
         originAddress,
         destinationAddress,
         departureTime.toISOString(),
-        timezone
+        timezone,
+        'PESSIMISTIC'
       );
+    }
+
+    // After convergence, optionally compute a duration range using multiple traffic models
+    // so we can show parents the same kind of "40–55 min" window Google Maps displays.
+    const finalDepartureISO = departureTime.toISOString();
+
+    try {
+      const [bestGuess, optimistic] = await Promise.all([
+        requestRoutesApi(
+          originAddress,
+          destinationAddress,
+          finalDepartureISO,
+          timezone,
+          'BEST_GUESS'
+        ),
+        requestRoutesApi(
+          originAddress,
+          destinationAddress,
+          finalDepartureISO,
+          timezone,
+          'OPTIMISTIC'
+        ),
+      ]);
+
+      const low = Math.min(
+        bestGuess.durationSeconds,
+        optimistic.durationSeconds,
+        result.durationSeconds
+      );
+      const high = Math.max(
+        bestGuess.durationSeconds,
+        optimistic.durationSeconds,
+        result.durationSeconds
+      );
+
+      result = {
+        ...result,
+        durationRangeSeconds: {
+          low,
+          high,
+          pessimistic: result.durationSeconds,
+          bestGuess: bestGuess.durationSeconds,
+          optimistic: optimistic.durationSeconds,
+        },
+      };
+    } catch (rangeError) {
+      console.warn('[travel] Google Routes API range calculation failed:', rangeError);
     }
 
     return result;
@@ -157,7 +228,8 @@ async function requestRoutesApi(
   originAddress: string,
   destinationAddress: string,
   departureTimeISO: string,
-  timezone?: string
+  timezone?: string,
+  trafficModel: TrafficModel = DEFAULT_TRAFFIC_MODEL
 ): Promise<ComputeRouteResult> {
   const apiKey = process.env.GOOGLE_MAPS_API_KEY;
   if (!apiKey) {
@@ -168,7 +240,8 @@ async function requestRoutesApi(
     originAddress,
     destinationAddress,
     departureTimeISO,
-    timezone
+    timezone,
+    trafficModel
   );
 
   const response = await fetch(ROUTES_ENDPOINT, {
