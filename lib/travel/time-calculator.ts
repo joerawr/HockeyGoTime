@@ -157,10 +157,10 @@ export async function calculateTravelTimes(
     timezone,
   });
 
-  // Use the HIGH end of Google's estimated range (pessimistic) for leave-by calculations
+  // Use Google's BEST_GUESS travel time for leave-by calculations
   // while still exposing the full range in the returned result.
   const effectiveDurationSeconds =
-    route.durationRangeSeconds?.high ?? route.durationSeconds;
+    route.durationRangeSeconds?.bestGuess ?? route.durationSeconds;
 
   const departureTime = new Date(
     arrivalTime.getTime() - effectiveDurationSeconds * 1000
