@@ -137,45 +137,41 @@ export async function computeRoute(params: ComputeRouteParams): Promise<ComputeR
       throw new Error(`Invalid arrival time: ${arrivalTimeLocalISO}`);
     }
 
-    // Iteration 1: Initial estimate (pessimistic traffic model)
+    // Iteration 1: Initial estimate using BEST_GUESS traffic model
     let estimatedDurationSeconds = INITIAL_ESTIMATE_MINUTES * 60;
     let departureTime = new Date(arrivalTime.getTime() - estimatedDurationSeconds * 1000);
 
-    let result = await requestRoutesApi(
+    let bestGuessResult = await requestRoutesApi(
       originAddress,
       destinationAddress,
       departureTime.toISOString(),
       timezone,
-      'PESSIMISTIC'
+      'BEST_GUESS'
     );
 
     // Iteration 2: Refine if needed
-    const diff = Math.abs(result.durationSeconds - estimatedDurationSeconds);
+    const diff = Math.abs(bestGuessResult.durationSeconds - estimatedDurationSeconds);
     if (diff > CONVERGENCE_THRESHOLD_SECONDS) {
       // Recalculate departure time with actual duration
-      departureTime = new Date(arrivalTime.getTime() - result.durationSeconds * 1000);
-      result = await requestRoutesApi(
+      departureTime = new Date(
+        arrivalTime.getTime() - bestGuessResult.durationSeconds * 1000
+      );
+      bestGuessResult = await requestRoutesApi(
         originAddress,
         destinationAddress,
         departureTime.toISOString(),
         timezone,
-        'PESSIMISTIC'
+        'BEST_GUESS'
       );
     }
 
     // After convergence, optionally compute a duration range using multiple traffic models
     // so we can show parents the same kind of "40–55 min" window Google Maps displays.
     const finalDepartureISO = departureTime.toISOString();
+    let result: ComputeRouteResult = bestGuessResult;
 
     try {
-      const [bestGuess, optimistic] = await Promise.all([
-        requestRoutesApi(
-          originAddress,
-          destinationAddress,
-          finalDepartureISO,
-          timezone,
-          'BEST_GUESS'
-        ),
+      const [optimistic, pessimistic] = await Promise.all([
         requestRoutesApi(
           originAddress,
           destinationAddress,
@@ -183,17 +179,24 @@ export async function computeRoute(params: ComputeRouteParams): Promise<ComputeR
           timezone,
           'OPTIMISTIC'
         ),
+        requestRoutesApi(
+          originAddress,
+          destinationAddress,
+          finalDepartureISO,
+          timezone,
+          'PESSIMISTIC'
+        ),
       ]);
 
       const low = Math.min(
-        bestGuess.durationSeconds,
+        result.durationSeconds,
         optimistic.durationSeconds,
-        result.durationSeconds
+        pessimistic.durationSeconds
       );
       const high = Math.max(
-        bestGuess.durationSeconds,
+        result.durationSeconds,
         optimistic.durationSeconds,
-        result.durationSeconds
+        pessimistic.durationSeconds
       );
 
       result = {
@@ -201,9 +204,9 @@ export async function computeRoute(params: ComputeRouteParams): Promise<ComputeR
         durationRangeSeconds: {
           low,
           high,
-          pessimistic: result.durationSeconds,
-          bestGuess: bestGuess.durationSeconds,
+          bestGuess: result.durationSeconds,
           optimistic: optimistic.durationSeconds,
+          pessimistic: pessimistic.durationSeconds,
         },
       };
     } catch (rangeError) {
