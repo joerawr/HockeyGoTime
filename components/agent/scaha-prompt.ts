@@ -244,11 +244,18 @@ Understanding the structure helps you interpret team names and queries accuratel
 - **CAHA** – California Amateur Hockey Association; state-level organization under USA Hockey
 - **SCAHA** – Southern California Amateur Hockey Association; regional league under CAHA organizing competitive play
 - **Club** – Local youth hockey organization (e.g., Heat, Ducks, Ice Hawks, Jr. Kings) fielding teams across multiple age/skill levels
-- **Division** (also called **Tier** or **Level**) – Competition level grouping same-age and same-skill teams (e.g., 12U A, 14U B) across all clubs
+- **Division** (also called **Tier** or **Level**) – Competition level grouping same-age and same-skill teams (e.g., 12U A, 14U BB, 14U B) across all clubs
 - **Team** – Specific roster of players within a club competing in a division (e.g., Heat 14U B)
 - **Player** – Individual athlete rostered on a team and registered under USA Hockey
 
 **Terminology note**: Users may say "division", "tier", or "level" interchangeably. They all mean the same thing (e.g., "14U B tier" = "14U B division" = "14U B level").
+
+**SCAHA Division Tiers** (from highest to lowest skill):
+- **AAA** – Highest competitive level
+- **AA** – High competitive level
+- **A** – Mid-high competitive level
+- **BB** – Mid competitive level (available in 10U, 12U, 14U)
+- **B** – Recreational/developmental level
 
 ## USER PREFERENCES (AUTOMATIC USE)
 
@@ -318,18 +325,24 @@ Users may say "division", "tier", or "level" - they all mean the same thing.
 
 When users mention age groups, automatically normalize:
 - "14B" → "14U B" (add the "U" for Under)
+- "14BB" → "14U BB" (BB tier exists for 10U, 12U, 14U)
 - "14A" → "14U A"
 - "12B" → "12U B"
+- "12BB" → "12U BB"
+- "10BB" → "10U BB"
 - "16AAA" → "16U AAA"
 - "141" → "14U B" (numeric shorthand: age + tier number)
 - "142" → "14U A" (142 = 14U A, 141 = 14U B, etc.)
 - "12U-B" → "12U B" (remove hyphens)
+- "14U-BB" → "14U BB" (remove hyphens)
 - "14 B" → "14U B" (add U, normalize spacing)
+- "14 BB" → "14U BB" (add U, normalize spacing)
 
 The "U" (Under) is IMPLIED and must be added. Users never say "14U", they just say "14".
 
 **Numeric division codes:**
 - Pattern: [age][tier] where tier: 1=B, 2=A, 3=AA, 4=AAA
+- Note: BB tier does not have a numeric code (use "14BB" or "14U BB")
 - "141" = 14U B (age 14, tier 1 = B)
 - "142" = 14U A (age 14, tier 2 = A)
 - "161" = 16U B (age 16, tier 1 = B)
@@ -337,7 +350,8 @@ The "U" (Under) is IMPLIED and must be added. Users never say "14U", they just s
 
 **Examples of equivalent queries:**
 - "14B Heat" = "14U B tier Heat" = "14U B level Heat" = "14U B division Heat"
-- All normalize to: division="14U B", team="Heat"
+- "14BB Firebirds" = "14U BB tier Firebirds" = "14U BB level Firebirds"
+- All normalize to: division="14U B" or division="14U BB", team="Heat" or team="Firebirds"
 
 ### Schedule Type
 - Assume "Regular Season" unless user explicitly mentions "Playoffs" or "Tournament"
