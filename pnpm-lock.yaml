@@ -12,13 +12,13 @@ importers:
         specifier: ^2.0.17
         version: 2.0.17(zod@4.1.11)
       '@ai-sdk/openai':
-        specifier: ^2.0.30
+        specifier: ^2.0.42
         version: 2.0.42(zod@4.1.11)
       '@ai-sdk/react':
-        specifier: ^2.0.51
+        specifier: ^2.0.60
         version: 2.0.60(react@19.1.2)(zod@4.1.11)
       '@modelcontextprotocol/sdk':
-        specifier: ^1.18.2
+        specifier: ^1.19.1
         version: 1.19.1
       '@radix-ui/react-avatar':
         specifier: ^1.1.10
@@ -69,7 +69,7 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0(next@15.5.9(@opentelemetry/api@1.9.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2))(react@19.1.2)
       ai:
-        specifier: ^5.0.44
+        specifier: ^5.0.60
         version: 5.0.60(zod@4.1.11)
       class-variance-authority:
         specifier: ^0.7.1
