@@ -632,16 +632,11 @@ export async function POST(request: NextRequest) {
     });
 
     const result = streamText({
-      model: openrouter("openai/gpt-oss-120b-turbo", {
+      model: openrouter("openai/gpt-oss-120b-turbo:nitro", {
         extraBody: {
           provider: {
             order: ["deepinfra"],
-            allow_fallbacks: false,
             require_parameters: true,
-            sort: "latency",
-          },
-          reasoning: {
-            effort: "none",
           },
         },
       }),
