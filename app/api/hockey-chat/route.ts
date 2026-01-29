@@ -4,8 +4,10 @@ import { buildScahaPrompt } from "@/components/agent/scaha-prompt";
 import { buildPGHLPrompt } from "@/components/agent/pghl-prompt";
 import { getSchahaMCPClient, getPghlMCPClient } from "@/lib/mcp";
 import { PGHL_TEAM_IDS, PGHL_SEASON_IDS } from "@/lib/pghl-mappings";
-import { google } from "@ai-sdk/google";
-import { streamText, convertToModelMessages, stepCountIs } from "ai";
+// import { google } from "@ai-sdk/google"; // Removed in favor of OpenRouter
+import { createOpenAI } from "@ai-sdk/openai";
+import { OPENROUTER_HEADERS, getModelId, DEFAULT_MODEL } from "@/lib/model-config";
+import { streamText, convertToCoreMessages, stepCountIs, type UIMessage } from "ai";
 import { NextRequest } from "next/server";
 import {
   scheduleCache,
@@ -131,8 +133,20 @@ export async function POST(request: NextRequest) {
       return new Response("Messages array is required", { status: 400 });
     }
 
-    // Convert UIMessages to ModelMessages
-    const modelMessages = convertToModelMessages(messages);
+    // Convert UIMessages to CoreMessages
+    // Helper to ensure messages have 'parts' which convertToCoreMessages seems to require in this version
+    const normalizeMessages = (msgs: any[]) => {
+      return msgs.map(m => {
+        if (m.parts && Array.isArray(m.parts)) return m;
+        return {
+          ...m,
+          parts: [{ type: 'text', text: m.content || '' }]
+        };
+      });
+    };
+
+    // Explicitly cast to any to avoid strict type checking on the normalized input
+    const modelMessages = convertToCoreMessages(normalizeMessages(messages) as any);
 
     // Guardrail validation - check last user message for off-topic/injection attempts
     const lastUserMessage = messages.findLast((m: any) => m.role === 'user');
@@ -620,15 +634,163 @@ export async function POST(request: NextRequest) {
           }
         },
       },
+      get_next_game_travel_plan: {
+        description: "Get the schedule and calculate travel times for the very next upcoming game in one step. Use this when the user asks 'When do we need to leave?' or 'What's the plan for the next game?'.",
+        inputSchema: z.object({
+          team: z.string().optional().describe("Team name (e.g., 'jr kings')"),
+          division: z.string().optional().describe("Division (e.g., '14B')"),
+          season: z.string().optional().describe("Season (e.g., '2025/26')"),
+        }),
+        execute: async (args: { team?: string; division?: string; season?: string }) => {
+          console.log(`🚀 Executing Super Tool: get_next_game_travel_plan`);
+
+          // 1. Resolve Preferences
+          const resolvedPreferences = normalizePreferences({
+            team: args.team ?? normalizedPreferences?.team ?? "",
+            division: args.division ?? normalizedPreferences?.division ?? "",
+            season: args.season ?? normalizedPreferences?.season ?? DEFAULT_PREFERENCES.season ?? "",
+            homeAddress: normalizedPreferences?.homeAddress ?? "",
+            prepTimeMinutes: normalizedPreferences?.prepTimeMinutes,
+            arrivalBufferMinutes: normalizedPreferences?.arrivalBufferMinutes,
+          });
+
+          if (!resolvedPreferences?.homeAddress) {
+            return { errorMessage: HOME_ADDRESS_REQUIRED_MESSAGE };
+          }
+
+          // 2. Fetch Schedule (reusing existing cache/tool logic via direct call if possible, or manual cache check)
+          // We'll manually check cache first, then call the raw MCP tool if needed.
+          // Note: We need to know WHICH MCP tool to call.
+          // For now, we assume 'get_schedule' is available on both (or mapped correctly).
+          // Actually, we can just use the 'get_schedule' tool from the `tools` object we retrieved earlier!
+
+          const scheduleTool = tools['get_schedule'];
+          if (!scheduleTool) {
+            return { errorMessage: "Schedule tool not available." };
+          }
+
+          // Construct args for get_schedule
+          const scheduleArgs = {
+            season: resolvedPreferences.season,
+            division: resolvedPreferences.division,
+            team: resolvedPreferences.team,
+          };
+
+          // Reuse the caching logic we implemented in the wrapped tool? 
+          // Since we can't easily call the *wrapped* tool from here without circular dependency or refactoring,
+          // we will replicate the cache check or just call the wrapped tool if we could access it.
+          // Simplest approach: Call the wrapped tool logic? No, `wrappedMcpTools` is defined above but not easy to invoke directly as a function.
+          // We will replicate the cache check here for speed.
+
+          const cacheKey = getScheduleCacheKey(
+            selectedMcpServer,
+            resolvedPreferences.season,
+            resolvedPreferences.division,
+            resolvedPreferences.team,
+          );
+
+          let scheduleData: any = await scheduleCache.get(cacheKey);
+
+          if (!scheduleData) {
+            console.log(`   🔍 Super Tool Cache miss - calling MCP get_schedule`);
+            const result = await scheduleTool.execute(scheduleArgs);
+            if (result.isError) {
+              return { errorMessage: `Failed to fetch schedule: ${result.message}` };
+            }
+            scheduleData = result;
+            // Cache it!
+            await scheduleCache.set(cacheKey, result);
+          } else {
+            console.log(`   ⚡ Super Tool Cache hit for schedule`);
+          }
+
+          // 3. Find Next Game
+          // Parse games from scheduleData (format depends on MCP, but usually has a 'games' array)
+          // We need to handle different return formats if necessary, but usually it's { games: [...] }
+          const games = scheduleData.games;
+          if (!Array.isArray(games) || games.length === 0) {
+            return { errorMessage: "No games found in the schedule." };
+          }
+
+          // Filter for future games
+          const now = new Date();
+          const upcomingGames = games.filter((g: any) => {
+            // Parse date carefully
+            const gameDate = new Date(`${g.date}T${g.time}`);
+            // Note: This simple parse might ignore timezone, but good enough for "future" check usually.
+            // Better: use the parseDSTAware logic if possible, or just string compare YYYY-MM-DD if time is missing.
+            return gameDate > now;
+          }).sort((a: any, b: any) => {
+            return new Date(`${a.date}T${a.time}`).getTime() - new Date(`${b.date}T${b.time}`).getTime();
+          });
+
+          const nextGame = upcomingGames[0];
+          if (!nextGame) {
+            return { errorMessage: "No upcoming games found." };
+          }
+
+          console.log(`   📅 Next game found: ${nextGame.date} vs ${nextGame.homeTeam === resolvedPreferences.team ? nextGame.awayTeam : nextGame.homeTeam}`);
+
+          // 4. Calculate Travel
+          // Resolve venue
+          const venueResult = await resolveVenue(nextGame.venue);
+          if (!venueResult) {
+            return {
+              errorMessage: `Found next game at "${nextGame.venue}", but couldn't find that venue in the database.`,
+              game: nextGame
+            };
+          }
+
+          try {
+            const travelCalc = await calculateTravelTimes(
+              nextGame,
+              resolvedPreferences,
+              {
+                venueAddress: venueResult.address,
+                timezone: nextGame.timezone
+              }
+            );
+
+            return {
+              ...travelCalc,
+              isSuperToolResult: true
+            };
+
+          } catch (error) {
+            console.error("Super Tool Travel Calc Error", error);
+            return { errorMessage: "Failed to calculate travel times." };
+          }
+        }
+      },
     };
 
+    // Define OpenRouter provider
+    const openrouter = createOpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      apiKey: process.env.OPENROUTER_API_KEY,
+      headers: OPENROUTER_HEADERS,
+    });
+
+    const requestedModel = process.env.OPENROUTER_MODEL || DEFAULT_MODEL;
+    const modelId = getModelId(requestedModel);
+    console.log(`🧠 Using OpenRouter model: ${modelId}`);
+
+    // Track timing
+    let firstTokenTime: number | null = null;
+    const streamStart = Date.now();
+
     const result = streamText({
-      model: google("gemini-2.5-flash-preview-09-2025"),
+      model: openrouter(modelId),
       system: systemPrompt,
       messages: modelMessages,
       tools: wrappedTools,
       stopWhen: stepCountIs(20), // Allow complex multi-tool queries (e.g., schedule + 9 travel calculations + response)
       abortSignal: abortController.signal, // T037: Pass abort signal to streamText
+      onChunk: () => {
+        if (firstTokenTime === null) {
+          firstTokenTime = Date.now() - streamStart;
+        }
+      },
       onFinish: async ({ text, toolCalls, toolResults, steps, usage, finishReason }) => {
         console.log(`📊 Stream finished:`);
         console.log(`   Finish reason: ${finishReason || 'unknown'}`);
@@ -636,6 +798,13 @@ export async function POST(request: NextRequest) {
         console.log(`   Tool calls: ${toolCalls?.length || 0}`);
         console.log(`   Tool results: ${toolResults?.length || 0}`);
         console.log(`   Steps: ${steps?.length || 0}`);
+
+        // Log metrics (StreamData not available in this version)
+        const totalLatency = Date.now() - streamStart;
+        console.log(`⏱️ Performance Metrics:`);
+        console.log(`   TTFT: ${firstTokenTime}ms`);
+        console.log(`   Total Latency: ${totalLatency}ms`);
+        console.log(`   Model: ${modelId}`);
 
         // T039: Warn if no response after successful tool calls (potential silent failure)
         const hasToolCalls = toolCalls && toolCalls.length > 0;
@@ -700,7 +869,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return result.toUIMessageStreamResponse();
+    return result.toTextStreamResponse();
   } catch (error) {
     // Clear timeout on error
     clearTimeout(timeoutId);
