@@ -4,8 +4,8 @@ import { buildScahaPrompt } from "@/components/agent/scaha-prompt";
 import { buildPGHLPrompt } from "@/components/agent/pghl-prompt";
 import { getSchahaMCPClient, getPghlMCPClient } from "@/lib/mcp";
 import { PGHL_TEAM_IDS, PGHL_SEASON_IDS } from "@/lib/pghl-mappings";
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
-import { streamText, convertToCoreMessages, stepCountIs } from "ai";
+import { createOpenAI } from "@ai-sdk/openai";
+import { streamText, convertToModelMessages, stepCountIs } from "ai";
 import { NextRequest } from "next/server";
 import {
   scheduleCache,
@@ -131,8 +131,8 @@ export async function POST(request: NextRequest) {
       return new Response("Messages array is required", { status: 400 });
     }
 
-    // Convert UIMessages to CoreMessages
-    const coreMessages = convertToCoreMessages(messages);
+    // Convert UIMessages to ModelMessages
+    const modelMessages = convertToModelMessages(messages);
 
     // Guardrail validation - check last user message for off-topic/injection attempts
     const lastUserMessage = messages.findLast((m: any) => m.role === 'user');
@@ -622,9 +622,10 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    // OpenRouter setup
-    const openrouter = createOpenRouter({
-      apiKey: process.env.OPENROUTER_API_KEY!,
+    // OpenRouter setup (OpenAI compatible)
+    const openrouter = createOpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      apiKey: process.env.OPENROUTER_API_KEY,
       headers: {
         "HTTP-Referer": "https://hockeygotime.com",
         "X-Title": "Hockey Go Time",
@@ -634,7 +635,7 @@ export async function POST(request: NextRequest) {
     const result = streamText({
       model: openrouter("google/gemini-3-flash-preview:nitro"),
       system: systemPrompt,
-      messages: coreMessages,
+      messages: modelMessages,
       tools: wrappedTools,
       stopWhen: stepCountIs(20), // Allow complex multi-tool queries (e.g., schedule + 9 travel calculations + response)
       abortSignal: abortController.signal, // T037: Pass abort signal to streamText
