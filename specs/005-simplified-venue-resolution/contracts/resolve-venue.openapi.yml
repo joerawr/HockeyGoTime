@@ -1,0 +1,246 @@
+openapi: 3.1.0
+info:
+  title: HockeyGoTime Venue Resolution API
+  description: |
+    Simplified venue resolution system for mapping venue names to canonical addresses.
+
+    **Key Features**:
+    - In-memory cache with 24-hour TTL (<1ms response times)
+    - Exact and substring matching (case-insensitive)
+    - League-specific filtering (SCAHA vs PGHL)
+    - Manual cache refresh endpoint
+
+    **Privacy**: No user queries or personally identifiable information is logged.
+  version: 1.0.0
+  contact:
+    name: HockeyGoTime Support
+    url: https://hockeygotime.vercel.app
+
+servers:
+  - url: https://hockeygotime.vercel.app/api
+    description: Production
+  - url: http://localhost:3000/api
+    description: Local development
+
+paths:
+  /venue/resolve:
+    post:
+      operationId: resolveVenue
+      summary: Resolve venue name to canonical address
+      description: |
+        Resolves a venue name (canonical or alias) to the canonical venue record with full address.
+
+        **Matching Logic**:
+        1. Exact match on canonical name or alias (case-insensitive)
+        2. Fallback to first substring match if no exact match
+        3. Filtered by league to prevent cross-league matches
+
+        **Performance**:
+        - Cache hit: <1ms (95th percentile)
+        - Cache miss: <100ms (95th percentile)
+      tags:
+        - Venue Resolution
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - venue_name
+                - league
+              properties:
+                venue_name:
+                  type: string
+                  description: Venue name to resolve (canonical name or alias)
+                  example: "Toyota Sports Center"
+                  minLength: 1
+                league:
+                  type: string
+                  enum: [SCAHA, PGHL]
+                  description: League to filter results (prevents cross-league matches)
+                  example: "SCAHA"
+            examples:
+              exact_match:
+                summary: Exact match on canonical name
+                value:
+                  venue_name: "Toyota Sports Performance Center"
+                  league: "SCAHA"
+              alias_match:
+                summary: Match via alias
+                value:
+                  venue_name: "TSPC"
+                  league: "SCAHA"
+              substring_match:
+                summary: Substring match fallback
+                value:
+                  venue_name: "Toyota"
+                  league: "SCAHA"
+      responses:
+        '200':
+          description: Venue resolved successfully (or not found)
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - venue
+                properties:
+                  venue:
+                    oneOf:
+                      - $ref: '#/components/schemas/Venue'
+                      - type: 'null'
+                    description: Venue object if found, null if no match
+              examples:
+                found:
+                  summary: Venue found
+                  value:
+                    venue:
+                      id: "550e8400-e29b-41d4-a716-446655440000"
+                      canonical_name: "Toyota Sports Performance Center"
+                      address: "555 N. Monterey Pass Rd, Monterey Park, CA 91755"
+                      place_id: "ChIJexamplePlaceId123"
+                      league: "SCAHA"
+                not_found:
+                  summary: Venue not found
+                  value:
+                    venue: null
+        '400':
+          description: Invalid request (missing required fields or invalid league)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "Missing required field: venue_name"
+        '500':
+          description: Server error (database unavailable, cache refresh failed)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "Failed to load venues from database"
+
+  /venue/refresh-cache:
+    post:
+      operationId: refreshVenueCache
+      summary: Manually refresh venue cache
+      description: |
+        Forces immediate refresh of the in-memory venue cache from Supabase database.
+
+        **Use Cases**:
+        - After adding a new venue via Supabase dashboard
+        - After updating venue addresses
+        - After adding new aliases
+
+        **Note**: Cache automatically refreshes every 24 hours, so manual refresh is optional.
+      tags:
+        - Venue Resolution
+      requestBody:
+        required: false
+        description: No request body required
+      responses:
+        '200':
+          description: Cache refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - venue_count
+                  - alias_count
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  venue_count:
+                    type: integer
+                    description: Number of venues loaded
+                    example: 42
+                  alias_count:
+                    type: integer
+                    description: Number of aliases loaded
+                    example: 158
+                  refreshed_at:
+                    type: string
+                    format: date-time
+                    description: ISO 8601 timestamp of cache refresh
+                    example: "2025-10-13T12:34:56Z"
+              example:
+                success: true
+                venue_count: 42
+                alias_count: 158
+                refreshed_at: "2025-10-13T12:34:56Z"
+        '500':
+          description: Cache refresh failed (database unavailable)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "Failed to load venues from database"
+
+components:
+  schemas:
+    Venue:
+      type: object
+      required:
+        - id
+        - canonical_name
+        - address
+        - place_id
+        - league
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique venue identifier
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        canonical_name:
+          type: string
+          description: Official venue name (used for display)
+          example: "Toyota Sports Performance Center"
+        address:
+          type: string
+          description: Full street address for Google Routes API
+          example: "555 N. Monterey Pass Rd, Monterey Park, CA 91755"
+        place_id:
+          type: string
+          description: Google Place ID for map integration
+          example: "ChIJexamplePlaceId123"
+        league:
+          type: string
+          enum: [SCAHA, PGHL]
+          description: League affiliation
+          example: "SCAHA"
+        created_at:
+          type: string
+          format: date-time
+          description: Record creation timestamp (optional)
+          example: "2025-10-13T12:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: Record update timestamp (optional)
+          example: "2025-10-13T12:00:00Z"
+
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+          example: "Failed to load venues from database"
+
+  securitySchemes: {}
+
+tags:
+  - name: Venue Resolution
+    description: |
+      Endpoints for resolving venue names to canonical addresses.
+
+      **Privacy**: These endpoints do not log user queries or personally identifiable information.
