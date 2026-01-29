@@ -4,7 +4,7 @@
  * AI SDK MCP Integration: https://ai-sdk.dev/cookbook/node/mcp-tools
  */
 
-import { experimental_createMCPClient } from "ai";
+import { experimental_createMCPClient } from "@ai-sdk/mcp";
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import type { MCPClientConfig } from "./types";
 
@@ -45,8 +45,7 @@ export class FirecrawlMCPClient {
     } catch (error) {
       console.error("💥 Failed to connect to Firecrawl MCP server:", error);
       throw new Error(
-        `Failed to connect to Firecrawl MCP server: ${
-          error instanceof Error ? error.message : String(error)
+        `Failed to connect to Firecrawl MCP server: ${error instanceof Error ? error.message : String(error)
         }`
       );
     }
@@ -91,8 +90,7 @@ export class FirecrawlMCPClient {
     } catch (error) {
       console.error("💥 Failed to retrieve Firecrawl tools:", error);
       throw new Error(
-        `Failed to retrieve Firecrawl tools: ${
-          error instanceof Error ? error.message : String(error)
+        `Failed to retrieve Firecrawl tools: ${error instanceof Error ? error.message : String(error)
         }`
       );
     }

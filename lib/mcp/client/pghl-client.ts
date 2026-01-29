@@ -11,7 +11,7 @@
  * - Otherwise → HTTP (default)
  */
 
-import { experimental_createMCPClient } from "ai";
+import { experimental_createMCPClient } from "@ai-sdk/mcp";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import type { PghlMCPClientConfig } from "./pghl-types";
@@ -57,8 +57,7 @@ export class PghlMCPClient {
     } catch (error) {
       console.error("💥 Failed to connect to PGHL MCP server:", error);
       throw new Error(
-        `Failed to connect to PGHL MCP server: ${
-          error instanceof Error ? error.message : String(error)
+        `Failed to connect to PGHL MCP server: ${error instanceof Error ? error.message : String(error)
         }`,
       );
     }
@@ -149,8 +148,7 @@ export class PghlMCPClient {
     } catch (error) {
       console.error("💥 Failed to retrieve PGHL tools:", error);
       throw new Error(
-        `Failed to retrieve PGHL tools: ${
-          error instanceof Error ? error.message : String(error)
+        `Failed to retrieve PGHL tools: ${error instanceof Error ? error.message : String(error)
         }`,
       );
     }

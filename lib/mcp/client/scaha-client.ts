@@ -7,7 +7,7 @@
  * AI SDK MCP Integration: https://ai-sdk.dev/docs/ai-sdk-core/mcp-tools
  */
 
-import { experimental_createMCPClient } from "ai";
+import { experimental_createMCPClient } from "@ai-sdk/mcp";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import type { MCPClientConfig } from "./scaha-types";
 
@@ -49,8 +49,7 @@ export class SchahaMCPClient {
     } catch (error) {
       console.error("💥 Failed to connect to SCAHA MCP server:", error);
       throw new Error(
-        `Failed to connect to SCAHA MCP server: ${
-          error instanceof Error ? error.message : String(error)
+        `Failed to connect to SCAHA MCP server: ${error instanceof Error ? error.message : String(error)
         }`
       );
     }
@@ -96,8 +95,7 @@ export class SchahaMCPClient {
     } catch (error) {
       console.error("💥 Failed to retrieve SCAHA tools:", error);
       throw new Error(
-        `Failed to retrieve SCAHA tools: ${
-          error instanceof Error ? error.message : String(error)
+        `Failed to retrieve SCAHA tools: ${error instanceof Error ? error.message : String(error)
         }`
       );
     }
