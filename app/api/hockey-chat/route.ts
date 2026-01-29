@@ -632,7 +632,17 @@ export async function POST(request: NextRequest) {
     });
 
     const result = streamText({
-      model: openrouter("google/gemini-3-flash-preview:nitro"),
+      model: openrouter("google/gemini-3-flash-preview", {
+        extraBody: {
+          provider: {
+            sort: "latency",
+            require_parameters: true,
+          },
+          reasoning: {
+            effort: "none", // reduces time spent thinking
+          },
+        },
+      }),
       system: systemPrompt,
       messages: coreMessages,
       tools: wrappedTools,
