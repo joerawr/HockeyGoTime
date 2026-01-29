@@ -4,7 +4,7 @@ import { buildScahaPrompt } from "@/components/agent/scaha-prompt";
 import { buildPGHLPrompt } from "@/components/agent/pghl-prompt";
 import { getSchahaMCPClient, getPghlMCPClient } from "@/lib/mcp";
 import { PGHL_TEAM_IDS, PGHL_SEASON_IDS } from "@/lib/pghl-mappings";
-import { createOpenAI } from "@ai-sdk/openai";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { streamText, convertToModelMessages, stepCountIs } from "ai";
 import { NextRequest } from "next/server";
 import {
@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Convert UIMessages to ModelMessages
-    const modelMessages = convertToModelMessages(messages);
+    const modelMessages = await convertToModelMessages(messages);
 
     // Guardrail validation - check last user message for off-topic/injection attempts
     const lastUserMessage = messages.findLast((m: any) => m.role === 'user');
@@ -622,10 +622,9 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    // OpenRouter setup (OpenAI compatible)
-    const openrouter = createOpenAI({
-      baseURL: "https://openrouter.ai/api/v1",
-      apiKey: process.env.OPENROUTER_API_KEY,
+    // OpenRouter setup (Dedicated Provider)
+    const openrouter = createOpenRouter({
+      apiKey: process.env.OPENROUTER_API_KEY!,
       headers: {
         "HTTP-Referer": "https://hockeygotime.com",
         "X-Title": "Hockey Go Time",

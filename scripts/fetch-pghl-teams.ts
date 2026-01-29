@@ -5,7 +5,7 @@
  * using the list_schedule_options tool. Outputs a mapping file for use in HGT.
  */
 
-import { experimental_createMCPClient } from "ai";
+import { experimental_createMCPClient } from "@ai-sdk/mcp";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { writeFileSync } from "fs";
 import { join } from "path";

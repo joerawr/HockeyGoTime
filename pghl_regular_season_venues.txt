@@ -1,0 +1,21 @@
+PGHL Regular Season Venues Tier1 and AA
+  Venues
+
+  - America First Center
+  - Anaheim Ice
+  - City National Arena
+  - Dublin Iceland
+  - Kirkland Sno-King Ice Arena
+  - Kroc Center Ice Arena
+  - LA Kings Iceland
+  - Lake Forest Ice Palace
+  - Lakewood Ice
+  - Las Vegas Ice Center
+  - Oak Park Ice Rink
+  - Sharks Ice San Jose
+  - Sherwood Ice Arena
+  - Snoqualmie Sno-King Ice Arena
+  - The Cube Santa Clarita
+  - Toyota Sports Performance Center
+  - Vacaville Ice Sports
+  - Winterhawks Skating Center
