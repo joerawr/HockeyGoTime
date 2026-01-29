@@ -4,7 +4,7 @@ import { buildScahaPrompt } from "@/components/agent/scaha-prompt";
 import { buildPGHLPrompt } from "@/components/agent/pghl-prompt";
 import { getSchahaMCPClient, getPghlMCPClient } from "@/lib/mcp";
 import { PGHL_TEAM_IDS, PGHL_SEASON_IDS } from "@/lib/pghl-mappings";
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
+import { createOpenAI } from "@ai-sdk/openai";
 import { streamText, convertToModelMessages, stepCountIs } from "ai";
 import { NextRequest } from "next/server";
 import {
@@ -195,6 +195,25 @@ export async function POST(request: NextRequest) {
           execute: async (args: any) => {
             console.log(`\n🏒 Tool called: ${toolName}`);
 
+            // Helper to enforce hard timeout (15s) for MCP tools to prevent Vercel 504s
+            const executeWithTimeout = async () => {
+              const timeoutPromise = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error("MCP_TIMEOUT")), 15000)
+              );
+              try {
+                return await Promise.race([toolDef.execute(args), timeoutPromise]);
+              } catch (error) {
+                if (error instanceof Error && error.message === "MCP_TIMEOUT") {
+                  console.error(`🛑 Tool ${toolName} timed out after 15s`);
+                  return {
+                    isError: true,
+                    errorMessage: `The ${selectedMcpLabel} server is taking too long to respond. This usually happens when the source website is slow or down. Please try again in a few moments.`
+                  };
+                }
+                throw error;
+              }
+            };
+
             // Cache logic for get_schedule tool
             if (toolName === 'get_schedule') {
               const {
@@ -260,7 +279,7 @@ export async function POST(request: NextRequest) {
               // Cache miss - call MCP tool
               console.log(`   🔍 Cache miss - calling MCP`);
               const startTime = Date.now();
-              const result = await toolDef.execute(args);
+              const result = await executeWithTimeout() as any;
               const elapsed = Date.now() - startTime;
               console.log(`   ⏱️ MCP call took ${elapsed}ms`);
 
@@ -299,7 +318,7 @@ export async function POST(request: NextRequest) {
               // Cache miss - call MCP tool
               console.log(`   🔍 Cache miss - calling MCP`);
               const startTime = Date.now();
-              const result = await toolDef.execute(args);
+              const result = await executeWithTimeout() as any;
               const elapsed = Date.now() - startTime;
               console.log(`   ⏱️ MCP call took ${elapsed}ms`);
 
@@ -338,7 +357,7 @@ export async function POST(request: NextRequest) {
               // Cache miss - call MCP tool
               console.log(`   🔍 Cache miss - calling MCP`);
               const startTime = Date.now();
-              const result = await toolDef.execute(args);
+              const result = await executeWithTimeout() as any;
               const elapsed = Date.now() - startTime;
               console.log(`   ⏱️ MCP call took ${elapsed}ms`);
 
@@ -373,7 +392,7 @@ export async function POST(request: NextRequest) {
               // Cache miss - call MCP tool
               console.log(`   🔍 Cache miss - calling MCP`);
               const startTime = Date.now();
-              const result = await toolDef.execute(args);
+              const result = await executeWithTimeout() as any;
               const elapsed = Date.now() - startTime;
               console.log(`   ⏱️ MCP call took ${elapsed}ms`);
 
@@ -414,7 +433,7 @@ export async function POST(request: NextRequest) {
               // Cache miss - call MCP tool
               console.log(`   🔍 Cache miss - calling MCP`);
               const startTime = Date.now();
-              const result = await toolDef.execute(args);
+              const result = await executeWithTimeout() as any;
               const elapsed = Date.now() - startTime;
               console.log(`   ⏱️ MCP call took ${elapsed}ms`);
 
@@ -431,7 +450,7 @@ export async function POST(request: NextRequest) {
 
             // Default: no caching for other tools
             const startTime = Date.now();
-            const result = await toolDef.execute(args);
+            const result = await executeWithTimeout() as any;
             const elapsed = Date.now() - startTime;
             console.log(`   ⏱️ Tool execution took ${elapsed}ms`);
             return result;
@@ -622,9 +641,10 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    // OpenRouter setup (Dedicated Provider)
-    const openrouter = createOpenRouter({
-      apiKey: process.env.OPENROUTER_API_KEY!,
+    // OpenRouter setup (OpenAI compatible)
+    const openrouter = createOpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      apiKey: process.env.OPENROUTER_API_KEY,
       headers: {
         "HTTP-Referer": "https://hockeygotime.com",
         "X-Title": "Hockey Go Time",
