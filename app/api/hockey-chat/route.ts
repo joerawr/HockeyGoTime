@@ -632,7 +632,19 @@ export async function POST(request: NextRequest) {
     });
 
     const result = streamText({
-      model: openrouter("google/gemini-3-flash-preview:nitro"),
+      model: openrouter("openai/gpt-oss-120b-turbo", {
+        extraBody: {
+          provider: {
+            order: ["deepinfra"],
+            allow_fallbacks: false,
+            require_parameters: true,
+            sort: "latency",
+          },
+          reasoning: {
+            effort: "none",
+          },
+        },
+      }),
       system: systemPrompt,
       messages: coreMessages,
       tools: wrappedTools,
