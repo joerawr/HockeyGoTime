@@ -4,7 +4,7 @@ import { buildScahaPrompt } from "@/components/agent/scaha-prompt";
 import { buildPGHLPrompt } from "@/components/agent/pghl-prompt";
 import { getSchahaMCPClient, getPghlMCPClient } from "@/lib/mcp";
 import { PGHL_TEAM_IDS, PGHL_SEASON_IDS } from "@/lib/pghl-mappings";
-import { google } from "@ai-sdk/google";
+import { createOpenAI } from "@ai-sdk/openai";
 import { streamText, convertToModelMessages, stepCountIs } from "ai";
 import { NextRequest } from "next/server";
 import {
@@ -622,8 +622,18 @@ export async function POST(request: NextRequest) {
       },
     };
 
+    // OpenRouter setup
+    const openrouter = createOpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      apiKey: process.env.OPENROUTER_API_KEY,
+      headers: {
+        "HTTP-Referer": "https://hockeygotime.com",
+        "X-Title": "HockeyGoTime",
+      },
+    });
+
     const result = streamText({
-      model: google("gemini-2.5-flash-preview-09-2025"),
+      model: openrouter("google/gemini-3-flash-preview:nitro"),
       system: systemPrompt,
       messages: modelMessages,
       tools: wrappedTools,
