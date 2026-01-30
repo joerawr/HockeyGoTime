@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const startDate = searchParams.get("start_date");
     const endDate = searchParams.get("end_date");
-    const model = (searchParams.get("model") || "gemini-2.5-flash") as SupportedModel;
+    const model = (searchParams.get("model") || "gemini-3-flash-preview") as SupportedModel;
 
     // Validate required parameters
     if (!startDate || !endDate) {

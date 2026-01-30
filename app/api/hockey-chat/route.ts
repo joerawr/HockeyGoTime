@@ -623,7 +623,7 @@ export async function POST(request: NextRequest) {
     };
 
     const result = streamText({
-      model: google("gemini-2.5-flash-preview-09-2025"),
+      model: google("gemini-3-flash-preview"),
       system: systemPrompt,
       messages: modelMessages,
       tools: wrappedTools,
@@ -663,7 +663,7 @@ export async function POST(request: NextRequest) {
         if (usage && usage.inputTokens && usage.outputTokens) {
           const inputTokens = usage.inputTokens;
           const outputTokens = usage.outputTokens;
-          const modelName = "gemini-2.5-flash";
+          const modelName = "gemini-3-flash-preview";
 
           trackTokens(modelName, inputTokens, outputTokens).catch(
             (error) => console.error("❌ Token tracking failed:", error)
