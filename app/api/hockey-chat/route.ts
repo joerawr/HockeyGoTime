@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Convert UIMessages to ModelMessages
-    const modelMessages = convertToModelMessages(messages);
+    const modelMessages = await convertToModelMessages(messages);
 
     // Guardrail validation - check last user message for off-topic/injection attempts
     const lastUserMessage = messages.findLast((m: any) => m.role === 'user');
@@ -177,6 +177,7 @@ export async function POST(request: NextRequest) {
       selectedMcpServer === "pghl"
         ? getPghlMCPClient()
         : getSchahaMCPClient();
+
     await activeMcpClient.connect();
 
     // Retrieve MCP tools (get_schedule, etc.)
@@ -188,7 +189,7 @@ export async function POST(request: NextRequest) {
 
     // Wrap tools to add caching and logging
     const wrappedMcpTools = Object.fromEntries(
-      Object.entries(tools).map(([toolName, toolDef]) => [
+      Object.entries(tools).map(([toolName, toolDef]: [string, any]) => [
         toolName,
         {
           ...toolDef,
@@ -633,7 +634,7 @@ export async function POST(request: NextRequest) {
     });
 
     const result = streamText({
-      model: openrouter("google/gemini-3-flash-preview:nitro"),
+      model: openrouter("google/gemini-3-flash-preview:nitro") as any,
       system: systemPrompt,
       messages: modelMessages,
       tools: wrappedTools,
@@ -699,11 +700,6 @@ export async function POST(request: NextRequest) {
             );
           }
         }
-
-        // Close the MCP client after streaming completes
-        // This is critical to avoid "closed client" errors
-        console.log(`🔌 Disconnecting ${selectedMcpLabel} MCP client...`);
-        await activeMcpClient.disconnect();
 
         // Clear timeout after successful completion
         clearTimeout(timeoutId);

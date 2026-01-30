@@ -11,7 +11,7 @@
  * - Otherwise → HTTP (default)
  */
 
-import { experimental_createMCPClient } from "ai";
+import { experimental_createMCPClient } from "@ai-sdk/mcp";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import type { PghlMCPClientConfig } from "./pghl-types";
@@ -21,6 +21,7 @@ export class PghlMCPClient {
     ReturnType<typeof experimental_createMCPClient>
   > | null = null;
   private isConnected = false;
+  private connectionPromise: Promise<void> | null = null;
   private serverUrl: string;
   private serverPath?: string;
   private useStdio: boolean;
@@ -46,22 +47,30 @@ export class PghlMCPClient {
       return;
     }
 
-    try {
-      if (this.useStdio) {
-        await this.connectViaStdio();
-      } else {
-        await this.connectViaHttp();
-      }
-
-      this.isConnected = true;
-    } catch (error) {
-      console.error("💥 Failed to connect to PGHL MCP server:", error);
-      throw new Error(
-        `Failed to connect to PGHL MCP server: ${
-          error instanceof Error ? error.message : String(error)
-        }`,
-      );
+    if (this.connectionPromise) {
+      console.log("⏳ PGHL MCP connection already in progress, waiting...");
+      return this.connectionPromise;
     }
+
+    this.connectionPromise = (async () => {
+      try {
+        if (this.useStdio) {
+          await this.connectViaStdio();
+        } else {
+          await this.connectViaHttp();
+        }
+
+        this.isConnected = true;
+      } catch (error) {
+        console.error("💥 Failed to connect to PGHL MCP server:", error);
+        this.isConnected = false;
+        throw error;
+      } finally {
+        this.connectionPromise = null;
+      }
+    })();
+
+    return this.connectionPromise;
   }
 
   /**
@@ -149,8 +158,7 @@ export class PghlMCPClient {
     } catch (error) {
       console.error("💥 Failed to retrieve PGHL tools:", error);
       throw new Error(
-        `Failed to retrieve PGHL tools: ${
-          error instanceof Error ? error.message : String(error)
+        `Failed to retrieve PGHL tools: ${error instanceof Error ? error.message : String(error)
         }`,
       );
     }

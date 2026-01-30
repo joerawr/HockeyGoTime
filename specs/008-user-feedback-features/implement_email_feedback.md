@@ -1,65 +1,75 @@
 # Email-Based Feedback Implementation Plan
 
-## Overview
-Add a simple "Report Issue" button next to the Ko-fi button that sends feedback directly to your Gmail inbox using Resend email service. This is a lightweight alternative to the GitHub Issues approach—much faster to implement with no screenshot support.
+## Objective
+Implement a simple "Report Issue" button that sends user feedback directly to email using Resend. This is a privacy-first, lightweight alternative to GitHub Issues with no screenshot support.
 
-## Why Email Instead of GitHub Issues?
+## Before You Start
 
-### Pros:
-- ✅ **10-minute setup** (vs 1-2 hours for GitHub)
-- ✅ **Feedback in your inbox** (no need to check GitHub)
-- ✅ **Only 1 dependency** (Resend package)
-- ✅ **Simple, proven tech** (email always works)
-- ✅ **100 free emails/day** (plenty for feedback)
+**YOU NEED TO CREATE A RESEND ACCOUNT FIRST!**
 
-### Cons:
-- ❌ **No screenshot support** (text-only feedback)
-- ❌ **No tracking/labels** (manual organization in Gmail)
-- ❌ **No public transparency** (all private)
+1. Go to https://resend.com
+2. Click **"Sign up with GitHub"** (recommended - fastest, no password needed)
+   - **Alternative**: Use Google or email if you prefer
+3. Free tier: 3,000 emails/month (100/day) - no credit card required
+4. After signup, go to **API Keys** in the left sidebar
+5. Click **"Create API Key"**
+6. Name: "HockeyGoTime Feedback"
+7. Permission: "Sending access" (default)
+8. Domain: "All domains" (default)
+9. Click **"Add"**
+10. **Copy the key** (starts with `re_...`) - you can only see this once!
+11. Save it somewhere safe - you'll paste it into `.env.local` in step 3
 
-## Implementation Steps
+**⚠️ Do this BEFORE running any code!**
 
-### 1. Install Resend Package
+## Privacy Principles
+- ✅ NO automatic browser/device fingerprinting
+- ✅ NO tracking or analytics
+- ✅ Only collect what users explicitly provide
+- ✅ Be transparent about what data is sent
+- ✅ Align with existing privacy policy
+
+## Implementation Tasks
+
+**Recommended Order**: Follow steps 1-10 in sequence for smoothest implementation.
+
+### 1. Install Dependencies
 
 ```bash
 pnpm add resend
+pnpm dlx shadcn@latest add dialog
+pnpm dlx shadcn@latest add sonner
 ```
 
-### 2. Get Free Resend API Key
+### 2. Setup Resend Account (SKIP IF ALREADY DONE ABOVE)
 
-1. Sign up at [resend.com](https://resend.com)
-2. Free tier: **3,000 emails/month** (100/day limit)
-3. Go to **API Keys** in dashboard
-4. Create new API key
-5. Copy the key (starts with `re_...`)
+If you didn't create your Resend account yet, do it now:
 
-**Note**: For testing, you can use `onboarding@resend.dev` as the sender. For production, you'll need to verify your domain (optional).
+1. Sign up at https://resend.com
+2. Free tier: 3,000 emails/month (100/day limit)
+3. Go to API Keys → Create API Key
+4. Name it "HockeyGoTime Feedback"
+5. Copy key (starts with `re_...`)
+6. **Keep this key safe** - you'll paste it in `.env.local` in the next step
 
 ### 3. Add Environment Variables
 
-**File**: `.env.local` (add to existing)
+**File**: `.env.local` (add these)
 ```bash
-RESEND_API_KEY=re_...your-key-here...
+RESEND_API_KEY=re_xxx
 FEEDBACK_EMAIL=your-email@gmail.com
 ```
 
 **File**: `.env.example` (document for others)
 ```bash
-# Resend API for feedback emails
+# Resend API for feedback emails (https://resend.com)
 RESEND_API_KEY=re_xxx
 FEEDBACK_EMAIL=your-email@example.com
 ```
 
-### 4. Install shadcn/ui Components
+### 4. Create Type Definitions
 
-```bash
-pnpm dlx shadcn@latest add dialog
-pnpm dlx shadcn@latest add toast
-```
-
-### 5. Create Type Definitions
-
-**File**: `types/feedback.ts`
+**File**: `types/feedback.ts` (create new)
 ```typescript
 export interface FeedbackSubmission {
   message: string;
@@ -67,6 +77,7 @@ export interface FeedbackSubmission {
   userPrefs?: {
     team?: string;
     division?: string;
+    season?: string;
     mcpServer?: string;
   };
 }
@@ -77,9 +88,9 @@ export interface FeedbackResponse {
 }
 ```
 
-### 6. Create API Endpoint
+### 5. Create API Endpoint
 
-**File**: `app/api/feedback/route.ts`
+**File**: `app/api/feedback/route.ts` (create new)
 ```typescript
 import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
@@ -100,7 +111,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Build email content with auto-captured context
+    // Build email content (NO browser/device fingerprinting)
     const emailText = `
 📝 New Feedback from HockeyGoTime
 
@@ -108,20 +119,23 @@ Message:
 ${message}
 
 ---
-User Details:
+Contact Info:
 ${email ? `Email: ${email}` : 'Email: Not provided'}
-${userPrefs?.team ? `Team: ${userPrefs.team}` : ''}
-${userPrefs?.division ? `Division: ${userPrefs.division}` : ''}
-${userPrefs?.mcpServer ? `League: ${userPrefs.mcpServer.toUpperCase()}` : ''}
+
+User Context (from saved preferences):
+${userPrefs?.team ? `Team: ${userPrefs.team}` : 'Team: Not saved'}
+${userPrefs?.division ? `Division: ${userPrefs.division}` : 'Division: Not saved'}
+${userPrefs?.season ? `Season: ${userPrefs.season}` : 'Season: Not saved'}
+${userPrefs?.mcpServer ? `League: ${userPrefs.mcpServer.toUpperCase()}` : 'League: Not saved'}
 
 Submitted: ${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}
     `.trim();
 
     // Send email via Resend
     const { data, error } = await resend.emails.send({
-      from: 'HockeyGoTime Feedback <onboarding@resend.dev>', // Use your verified domain in production
+      from: 'HockeyGoTime Feedback <onboarding@resend.dev>',
       to: process.env.FEEDBACK_EMAIL!,
-      subject: '🐛 HockeyGoTime User Feedback',
+      subject: '🏒 HockeyGoTime User Feedback',
       text: emailText,
     });
 
@@ -146,9 +160,9 @@ Submitted: ${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles
 }
 ```
 
-### 7. Create Feedback Components
+### 6. Create Feedback Components
 
-**File**: `components/ui/feedback/FeedbackButton.tsx`
+**File**: `components/ui/feedback/FeedbackButton.tsx` (create new)
 ```typescript
 'use client';
 
@@ -165,11 +179,12 @@ export function FeedbackButton() {
       <Button
         onClick={() => setOpen(true)}
         variant="outline"
-        size="sm"
-        className="gap-2"
+        size="default"
+        className="gap-2 transition-transform hover:scale-105"
+        aria-label="Report an issue or provide feedback"
       >
         <MessageSquare className="h-4 w-4" />
-        Report Issue
+        <span className="hidden sm:inline">Report Issue</span>
       </Button>
       <FeedbackModal open={open} onOpenChange={setOpen} />
     </>
@@ -177,7 +192,7 @@ export function FeedbackButton() {
 }
 ```
 
-**File**: `components/ui/feedback/FeedbackModal.tsx`
+**File**: `components/ui/feedback/FeedbackModal.tsx` (create new)
 ```typescript
 'use client';
 
@@ -218,7 +233,7 @@ export function FeedbackModal({ open, onOpenChange }: FeedbackModalProps) {
     setIsSubmitting(true);
 
     try {
-      // Auto-capture user preferences
+      // Auto-capture user preferences (privacy-respecting)
       const userPrefs = PreferencesStore.get();
 
       const feedbackData: FeedbackSubmission = {
@@ -228,6 +243,7 @@ export function FeedbackModal({ open, onOpenChange }: FeedbackModalProps) {
           ? {
               team: userPrefs.team,
               division: userPrefs.division,
+              season: userPrefs.season,
               mcpServer: userPrefs.mcpServer,
             }
           : undefined,
@@ -263,7 +279,7 @@ export function FeedbackModal({ open, onOpenChange }: FeedbackModalProps) {
         <DialogHeader>
           <DialogTitle>Report an Issue</DialogTitle>
           <DialogDescription>
-            Let us know what went wrong. We'll get back to you as soon as possible.
+            Describe the problem you encountered. We&apos;ll include your team preferences to help us reproduce the issue.
           </DialogDescription>
         </DialogHeader>
 
@@ -295,8 +311,13 @@ export function FeedbackModal({ open, onOpenChange }: FeedbackModalProps) {
               disabled={isSubmitting}
             />
             <p className="mt-1 text-xs text-muted-foreground">
-              We'll only use this to follow up about your issue
+              We&apos;ll only use this to follow up about your issue
             </p>
+          </div>
+
+          {/* Privacy transparency note */}
+          <div className="rounded-md bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+            📋 What we&apos;ll send: your message, email (if provided), and saved team preferences. No browser or device tracking.
           </div>
 
           <div className="flex justify-end gap-2">
@@ -319,16 +340,27 @@ export function FeedbackModal({ open, onOpenChange }: FeedbackModalProps) {
 }
 ```
 
-### 8. Add Toaster to Layout
+**File**: `components/ui/feedback/index.tsx` (create new)
+```typescript
+export { FeedbackButton } from './FeedbackButton';
+export { FeedbackModal } from './FeedbackModal';
+```
+
+### 7. Add Toaster to Layout
 
 **File**: `app/layout.tsx` (modify)
+
+Add import at top:
 ```typescript
 import { Toaster } from 'sonner';
+```
 
+Add `<Toaster />` before closing `</body>` tag:
+```typescript
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={/* existing classes */}>
         {children}
         <Toaster position="top-center" />
       </body>
@@ -337,54 +369,118 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
-**Note**: If `sonner` is not installed:
-```bash
-pnpm dlx shadcn@latest add sonner
+### 8. Update Main Page
+
+**File**: `app/page.tsx` (modify)
+
+Add import at top:
+```typescript
+import { FeedbackButton } from '@/components/ui/feedback';
 ```
 
-### 9. Update Main Page
-
-**File**: `app/page.tsx` (modify the Ko-fi section around line 52)
+Find the Ko-fi button section (around line 460-470) and modify:
 
 **Before:**
 ```tsx
 {/* Ko-fi donation button */}
 <div className="mt-4 flex justify-center">
   <a href="https://ko-fi.com/joerawr" ...>
-    <img src="..." alt="Buy Me a Coffee" />
+    <img ... />
   </a>
 </div>
 ```
 
 **After:**
 ```tsx
-import { FeedbackButton } from '@/components/ui/feedback/FeedbackButton';
-
-{/* Ko-fi donation button + Feedback */}
+{/* Feedback button + Ko-fi donation */}
 <div className="mt-4 flex justify-center items-center gap-3">
   <FeedbackButton />
   <a href="https://ko-fi.com/joerawr" ...>
-    <img src="..." alt="Buy Me a Coffee" />
+    <img ... />
   </a>
 </div>
 ```
 
-### 10. Add to Vercel Environment Variables
+### 9. Update Privacy Policy
+
+**File**: `app/privacy/page.tsx` (modify)
+
+Add new section before "Questions?" section (around line 98):
+
+```tsx
+<section className="mb-8">
+  <h2 className="text-2xl font-semibold mb-4">Feedback Submissions</h2>
+  <p className="mb-4">
+    If you submit feedback via the &quot;Report Issue&quot; button, we collect:
+  </p>
+  <ul className="list-disc pl-6 mb-4 space-y-2">
+    <li>Your feedback message (required)</li>
+    <li>Your email address (optional, only if you provide it)</li>
+    <li>Your saved team preferences (team, division, season, league)</li>
+  </ul>
+  <p className="text-muted-foreground mb-4">
+    We do <strong>not</strong> automatically collect browser type, device information,
+    IP addresses, or any tracking identifiers. This feedback is sent directly to
+    the developer&apos;s email and is not stored in any database.
+  </p>
+  <p className="text-muted-foreground">
+    Your email address (if provided) is only used to follow up about your specific
+    issue and is never shared with third parties.
+  </p>
+</section>
+```
+
+### 10. Add Vercel Environment Variables
 
 In Vercel Dashboard:
 1. Go to your project → Settings → Environment Variables
 2. Add `RESEND_API_KEY` with your API key
-3. Add `FEEDBACK_EMAIL` with your Gmail address
-4. Redeploy (Vercel auto-deploys on env var changes)
+3. Add `FEEDBACK_EMAIL` with your email address
+4. Apply to: Production, Preview, Development
+5. Redeploy (Vercel auto-deploys on env var changes)
 
----
+## Testing Checklist
+
+### Local Testing
+- [ ] Run `pnpm add resend` to install dependency
+- [ ] Install shadcn components: `pnpm dlx shadcn@latest add dialog sonner`
+- [ ] Add `RESEND_API_KEY` and `FEEDBACK_EMAIL` to `.env.local`
+- [ ] Run `pnpm dev`
+- [ ] Click "Report Issue" button → Modal opens
+- [ ] Submit empty form → Error toast appears
+- [ ] Submit with message only → Success toast, modal closes
+- [ ] Submit with message + email → Success toast, modal closes
+- [ ] Check your Gmail inbox → Feedback email received
+- [ ] Verify email contains: message, email (or "Not provided"), team preferences
+- [ ] Verify NO browser/device info in email
+
+### Edge Cases
+- [ ] Submit without saved preferences → Email shows "Not saved" for team/division
+- [ ] Submit with all preferences saved → Email includes team/division/season/league
+- [ ] Close modal without submitting → No email sent
+- [ ] Rapid click submit button → Only one request sent (disabled state works)
+- [ ] Network error (disconnect wifi) → Error toast shows
+
+### Mobile Testing
+- [ ] Test on iOS Safari → Modal opens, form submits
+- [ ] Test on Android Chrome → Modal opens, form submits
+- [ ] Verify button shows icon only on mobile (text hidden)
+- [ ] Verify buttons stack properly on small screens
+
+### Production Testing
+- [ ] Deploy to Vercel
+- [ ] Verify env vars set in Vercel dashboard
+- [ ] Test feedback form on live site
+- [ ] Verify email arrives (check spam folder)
+- [ ] Run TypeScript check: `pnpm tsc --noEmit`
 
 ## File Structure
 
 ```
 components/ui/feedback/
   ├── FeedbackButton.tsx      (new)
-  └── FeedbackModal.tsx       (new)
+  ├── FeedbackModal.tsx       (new)
+  └── index.tsx               (new)
 
 app/api/feedback/
   └── route.ts                (new)
@@ -394,59 +490,20 @@ types/
 
 app/
   ├── page.tsx                (modify - add button)
-  └── layout.tsx              (modify - add Toaster)
+  ├── layout.tsx              (modify - add Toaster)
+  └── privacy/
+      └── page.tsx            (modify - add feedback section)
 
 .env.local                    (add RESEND_API_KEY, FEEDBACK_EMAIL)
 .env.example                  (document env vars)
 ```
 
----
-
-## Testing Checklist
-
-### Local Testing
-- [ ] Install dependencies (`pnpm add resend`)
-- [ ] Add API key to `.env.local`
-- [ ] Run `pnpm dev` and visit `localhost:3000`
-- [ ] Click "Report Issue" button
-- [ ] Fill out form (message required, email optional)
-- [ ] Submit and verify toast notification appears
-- [ ] Check your Gmail inbox for feedback email
-- [ ] Verify email contains message and user context
-
-### Edge Cases
-- [ ] Submit without message (should show error toast)
-- [ ] Submit without email (should work, email shown as "Not provided")
-- [ ] Submit with no preferences saved (should work, context shown as "N/A")
-- [ ] Submit with preferences saved (should include team/division/league)
-- [ ] Close modal without submitting (should not send email)
-- [ ] Network error handling (disconnect wifi, verify error toast)
-- [ ] Rapid clicking submit button (should disable during submission)
-
-### Mobile Testing
-- [ ] Form works on mobile Safari (iOS)
-- [ ] Form works on mobile Chrome (Android)
-- [ ] Dialog doesn't overflow screen
-- [ ] Textarea is easy to type in
-- [ ] Toast notifications visible
-
-### Production Testing
-- [ ] Env vars set in Vercel dashboard
-- [ ] Deploy to production
-- [ ] Test form on live site
-- [ ] Verify email arrives in inbox
-- [ ] Check spam folder if not received
-
----
-
-## Email Sample
-
-What you'll receive in Gmail:
+## Expected Email Format
 
 ```
 From: HockeyGoTime Feedback <onboarding@resend.dev>
 To: your-email@gmail.com
-Subject: 🐛 HockeyGoTime User Feedback
+Subject: 🏒 HockeyGoTime User Feedback
 
 📝 New Feedback from HockeyGoTime
 
@@ -454,142 +511,116 @@ Message:
 The schedule isn't showing my team's next game. It skipped from Oct 18 to Nov 5.
 
 ---
-User Details:
+Contact Info:
 Email: parent@example.com
+
+User Context (from saved preferences):
 Team: Jr. Kings (1)
 Division: 14U B
+Season: 2025/2026
 League: SCAHA
 
 Submitted: 10/25/2025, 2:30:15 PM
 ```
 
----
+## Privacy Compliance Checklist
 
-## Upgrading to Production (Optional)
-
-### Verify Your Domain (for branded emails)
-
-If you want emails from `feedback@yourdomain.com` instead of `onboarding@resend.dev`:
-
-1. Go to Resend → Domains
-2. Add your domain (e.g., `hockeygotime.net`)
-3. Add DNS records (SPF, DKIM, DMARC)
-4. Wait for verification (usually 5-15 minutes)
-5. Update API route:
-   ```typescript
-   from: 'HockeyGoTime Feedback <feedback@hockeygotime.net>'
-   ```
-
-**Note**: This is optional. The free `onboarding@resend.dev` works fine for testing and low-volume production use.
-
----
-
-## Comparison to GitHub Issues Implementation
-
-| Aspect | Email (Resend) | GitHub Issues |
-|--------|----------------|---------------|
-| **Setup Time** | 10-15 minutes | 1-2 hours |
-| **Code Complexity** | Low (~100 lines) | Medium (~300 lines) |
-| **Dependencies** | 1 (`resend`) | 1 (`@octokit/rest`) |
-| **Screenshots** | ❌ Not supported | ✅ Full support |
-| **Free Tier** | 3,000/month | Unlimited |
-| **Notification** | ✅ Email inbox | ❌ Must check GitHub |
-| **Organization** | Gmail labels/filters | GitHub labels/milestones |
-| **Public Access** | ❌ Private only | ✅ Can be public |
-| **Mobile UX** | ✅ Text-only form | ✅ Native photo picker |
-
----
-
-## Migration Path
-
-If you start with email and later want screenshots:
-
-1. Keep the email implementation as-is
-2. Build the GitHub Issues version separately
-3. Add a toggle in the modal: "Include screenshot?"
-   - If YES → route to GitHub API
-   - If NO → route to email API
-4. Or simply replace the email API with GitHub API
-
-The UI components are nearly identical, so migration is easy.
-
----
+- [ ] NO automatic collection of navigator.userAgent
+- [ ] NO automatic collection of screen size/resolution
+- [ ] NO automatic collection of IP addresses
+- [ ] NO tracking cookies or analytics
+- [ ] Only collect data user explicitly provides (message, email)
+- [ ] Only collect data user already saved (team preferences)
+- [ ] Privacy policy updated to reflect feedback collection
+- [ ] Transparency note in modal about what data is sent
 
 ## Troubleshooting
 
-### Email not arriving?
+**Email not arriving?**
+1. Check spam folder
+2. Verify `RESEND_API_KEY` is correct in env vars
+3. Check Resend dashboard → Logs for delivery status
+4. Verify `FEEDBACK_EMAIL` is correct
 
-1. **Check spam folder** - Resend emails may be filtered
-2. **Verify API key** - Make sure `RESEND_API_KEY` is set correctly
-3. **Check Resend logs** - Go to Resend dashboard → Logs to see delivery status
-4. **Check rate limits** - Free tier: 100 emails/day, 3,000/month
-5. **Verify email address** - Make sure `FEEDBACK_EMAIL` is correct in env vars
+**API returning 500 error?**
+1. Check server logs in terminal
+2. Verify Resend package installed: `pnpm list resend`
+3. Check API key is valid in Resend dashboard
 
-### API returning 500 error?
+**Toast not showing?**
+1. Verify `Toaster` component added to `layout.tsx`
+2. Check sonner installed: `pnpm dlx shadcn@latest add sonner`
 
-1. Check server logs: `pnpm dev` (look for console errors)
-2. Verify `RESEND_API_KEY` is in `.env.local`
-3. Make sure Resend package is installed: `pnpm list resend`
-4. Check API key is valid (not revoked) in Resend dashboard
-
-### Toast not showing?
-
-1. Verify `Toaster` is added to `layout.tsx`
-2. Check `sonner` is installed: `pnpm dlx shadcn@latest add sonner`
-3. Open browser console for errors
-
----
-
-## Post-Implementation
+## Post-Implementation Tasks
 
 ### Organize Feedback in Gmail
+1. Create Gmail filter for emails from `onboarding@resend.dev`
+2. Apply label: "HGT Feedback"
+3. Star important feedback
+4. Archive once resolved
 
-Create filters to auto-label feedback:
-1. Gmail → Settings → Filters and Blocked Addresses
-2. Create filter for emails from `onboarding@resend.dev` with subject "HockeyGoTime"
-3. Apply label: "HGT Feedback"
-4. Star important feedback
-5. Archive once resolved
+### Monitor Resend Usage
+- Check Resend dashboard for delivery stats
+- Free tier: 3,000 emails/month (plenty for feedback)
+- Monitor bounce rate
 
-### Monitor Usage
+## Success Criteria
 
-Check Resend dashboard:
-- Total emails sent
-- Delivery rate
-- Bounce rate
-- Rate limit usage
+- [ ] Users can submit feedback in 30 seconds
+- [ ] Email arrives in developer inbox within 1 minute
+- [ ] No browser/device fingerprinting data collected
+- [ ] Privacy policy accurately reflects data collection
+- [ ] TypeScript compiles with no errors
+- [ ] Works on desktop and mobile browsers
+- [ ] Aligned with privacy-first philosophy
 
-Free tier is 3,000 emails/month—plenty for feedback.
+## Implementation Order Summary
 
----
+**Do these steps in order:**
 
-## Implementation Order
+1. ✅ **Create Resend account** (see "Before You Start" section)
+2. ✅ **Copy API key** from Resend dashboard
+3. ✅ **Install dependencies** (step 1)
+4. ✅ **Add env vars to `.env.local`** (step 3) - paste your Resend API key here
+5. ✅ **Create files** (steps 4-6): types → API route → components
+6. ✅ **Modify files** (steps 7-9): layout → main page → privacy page
+7. ✅ **Test locally** (use testing checklist)
+8. ✅ **Deploy to Vercel** (add env vars to Vercel dashboard)
+9. ✅ **Test production** (submit real feedback)
 
-1. ✅ **Install Resend**: `pnpm add resend`
-2. ✅ **Get API key** from Resend dashboard
-3. ✅ **Add env vars** to `.env.local`
-4. ✅ **Install shadcn components**: dialog, toast, sonner
-5. ✅ **Create types** (`types/feedback.ts`)
-6. ✅ **Create API route** (`app/api/feedback/route.ts`)
-7. ✅ **Create components** (FeedbackButton, FeedbackModal)
-8. ✅ **Update layout** (add Toaster)
-9. ✅ **Update main page** (add FeedbackButton next to Ko-fi)
-10. ✅ **Test locally** (full checklist above)
-11. ✅ **Deploy to Vercel** (add env vars in dashboard)
-12. ✅ **Test production** (submit real feedback)
+## Estimated Implementation Time
 
----
+**Total: 15-20 minutes** (after Resend account is created)
+- Dependencies & setup: 5 min
+- Create components: 5 min
+- Update pages: 3 min
+- Update privacy policy: 2 min
+- Testing: 5 min
 
-## Summary
+## Quick Start Commands
 
-This email-based approach gives you:
-- ✅ **Fast implementation** (10 minutes vs 2 hours)
-- ✅ **Simple code** (1 API route, 2 components)
-- ✅ **Reliable delivery** (Resend handles email infrastructure)
-- ✅ **Auto-captured context** (team, division, league)
-- ✅ **Mobile-friendly** (text-only form works everywhere)
-- ✅ **Free tier** (3,000 emails/month)
+```bash
+# 1. Install dependencies
+pnpm add resend
+pnpm dlx shadcn@latest add dialog
+pnpm dlx shadcn@latest add sonner
 
-Trade-off: No screenshot support (users must describe issues in text).
+# 2. Create .env.local (paste your Resend API key)
+echo "RESEND_API_KEY=re_your_key_here" >> .env.local
+echo "FEEDBACK_EMAIL=your-email@gmail.com" >> .env.local
 
-For most use cases, this is **sufficient**. Add GitHub Issues later if you need screenshots and better tracking.
+# 3. Run dev server to test
+pnpm dev
+
+# 4. After implementation, check for TypeScript errors
+pnpm tsc --noEmit
+```
+
+## Notes
+
+- This is a **privacy-first** implementation
+- No screenshots = simpler UX, faster implementation
+- Can upgrade to GitHub Issues later if needed
+- Email approach gets feedback flowing immediately
+- Maintains trust with users through transparency
+- **You must create a Resend account BEFORE coding** (see "Before You Start")

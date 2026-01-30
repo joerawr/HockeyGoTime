@@ -4,7 +4,7 @@
  * AI SDK MCP Integration: https://ai-sdk.dev/cookbook/node/mcp-tools
  */
 
-import { experimental_createMCPClient } from "ai";
+import { experimental_createMCPClient } from "@ai-sdk/mcp";
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import type { MCPClientConfig } from "./types";
 
@@ -15,6 +15,7 @@ export class FirecrawlMCPClient {
   private apiKey: string;
   private serverUrl: string;
   private isConnected: boolean = false;
+  private connectionPromise: Promise<void> | null = null;
 
   constructor(config: MCPClientConfig) {
     this.apiKey = config.apiKey;
@@ -31,25 +32,33 @@ export class FirecrawlMCPClient {
       return;
     }
 
-    try {
-      console.log("🚀 Connecting to Firecrawl MCP server via SSE...");
-
-      const transport = new SSEClientTransport(new URL(this.serverUrl));
-
-      this.client = await experimental_createMCPClient({
-        transport,
-      });
-
-      this.isConnected = true;
-      console.log("✅ Firecrawl MCP client connected successfully");
-    } catch (error) {
-      console.error("💥 Failed to connect to Firecrawl MCP server:", error);
-      throw new Error(
-        `Failed to connect to Firecrawl MCP server: ${
-          error instanceof Error ? error.message : String(error)
-        }`
-      );
+    if (this.connectionPromise) {
+      console.log("⏳ Firecrawl MCP connection already in progress, waiting...");
+      return this.connectionPromise;
     }
+
+    this.connectionPromise = (async () => {
+      try {
+        console.log("🚀 Connecting to Firecrawl MCP server via SSE...");
+
+        const transport = new SSEClientTransport(new URL(this.serverUrl));
+
+        this.client = await experimental_createMCPClient({
+          transport,
+        });
+
+        this.isConnected = true;
+        console.log("✅ Firecrawl MCP client connected successfully");
+      } catch (error) {
+        console.error("💥 Failed to connect to Firecrawl MCP server:", error);
+        this.isConnected = false;
+        throw error;
+      } finally {
+        this.connectionPromise = null;
+      }
+    })();
+
+    return this.connectionPromise;
   }
 
   /**
@@ -91,8 +100,7 @@ export class FirecrawlMCPClient {
     } catch (error) {
       console.error("💥 Failed to retrieve Firecrawl tools:", error);
       throw new Error(
-        `Failed to retrieve Firecrawl tools: ${
-          error instanceof Error ? error.message : String(error)
+        `Failed to retrieve Firecrawl tools: ${error instanceof Error ? error.message : String(error)
         }`
       );
     }

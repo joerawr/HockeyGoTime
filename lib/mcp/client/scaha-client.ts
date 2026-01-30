@@ -7,7 +7,7 @@
  * AI SDK MCP Integration: https://ai-sdk.dev/docs/ai-sdk-core/mcp-tools
  */
 
-import { experimental_createMCPClient } from "ai";
+import { experimental_createMCPClient } from "@ai-sdk/mcp";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import type { MCPClientConfig } from "./scaha-types";
 
@@ -16,6 +16,7 @@ export class SchahaMCPClient {
     ReturnType<typeof experimental_createMCPClient>
   > | null = null;
   private isConnected: boolean = false;
+  private connectionPromise: Promise<void> | null = null;
   private serverUrl: string;
 
   constructor(private config: MCPClientConfig) {
@@ -35,25 +36,33 @@ export class SchahaMCPClient {
       return;
     }
 
-    try {
-      console.log(`🚀 Connecting to SCAHA MCP server via StreamableHTTP: ${this.serverUrl}`);
-
-      const transport = new StreamableHTTPClientTransport(new URL(this.serverUrl));
-
-      this.client = await experimental_createMCPClient({
-        transport,
-      });
-
-      this.isConnected = true;
-      console.log("✅ SCAHA MCP client connected via StreamableHTTP");
-    } catch (error) {
-      console.error("💥 Failed to connect to SCAHA MCP server:", error);
-      throw new Error(
-        `Failed to connect to SCAHA MCP server: ${
-          error instanceof Error ? error.message : String(error)
-        }`
-      );
+    if (this.connectionPromise) {
+      console.log("⏳ SCAHA MCP connection already in progress, waiting...");
+      return this.connectionPromise;
     }
+
+    this.connectionPromise = (async () => {
+      try {
+        console.log(`🚀 Connecting to SCAHA MCP server via StreamableHTTP: ${this.serverUrl}`);
+
+        const transport = new StreamableHTTPClientTransport(new URL(this.serverUrl));
+
+        this.client = await experimental_createMCPClient({
+          transport,
+        });
+
+        this.isConnected = true;
+        console.log("✅ SCAHA MCP client connected via StreamableHTTP");
+      } catch (error) {
+        console.error("💥 Failed to connect to SCAHA MCP server:", error);
+        this.isConnected = false;
+        throw error;
+      } finally {
+        this.connectionPromise = null;
+      }
+    })();
+
+    return this.connectionPromise;
   }
 
   /**
@@ -96,8 +105,7 @@ export class SchahaMCPClient {
     } catch (error) {
       console.error("💥 Failed to retrieve SCAHA tools:", error);
       throw new Error(
-        `Failed to retrieve SCAHA tools: ${
-          error instanceof Error ? error.message : String(error)
+        `Failed to retrieve SCAHA tools: ${error instanceof Error ? error.message : String(error)
         }`
       );
     }

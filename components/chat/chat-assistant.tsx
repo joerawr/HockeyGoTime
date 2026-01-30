@@ -49,10 +49,10 @@ type ChatMessage = {
   toolCalls?: Array<{
     type: `tool-${string}`;
     state:
-      | "input-streaming"
-      | "input-available"
-      | "output-available"
-      | "output-error";
+    | "input-streaming"
+    | "input-available"
+    | "output-available"
+    | "output-error";
     input?: any;
     output?: any;
     errorText?: string;
@@ -198,6 +198,19 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
   const lastRawMessagesRef = useRef(rawMessages);
 
   useEffect(() => {
+    // Debug logging for multi-turn history
+    if (rawMessages.length > 0) {
+      const lastMessage = rawMessages[rawMessages.length - 1];
+      console.log(`💬 Messages count: ${rawMessages.length}`);
+      console.log(`📡 Last message role: ${lastMessage.role}`);
+
+      // Log tool results if present
+      const toolParts = (lastMessage as any).parts?.filter((p: any) => p.type?.startsWith('tool-')) || [];
+      if (toolParts.length > 0) {
+        console.log(`🛠️ Tool results in history: ${toolParts.map((p: any) => p.toolCallId || p.id).join(', ')}`);
+      }
+    }
+
     console.log("📝 Raw messages update", rawMessages);
     console.log("📡 Status", status);
     // Clear existing timer
@@ -363,12 +376,12 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
                 const parts = (message as any).parts || [];
 
                 parts.forEach((part: any, partIndex: number) => {
-                 if (part.type?.startsWith('tool-')) {
+                  if (part.type?.startsWith('tool-')) {
                     console.log('🛠️ Tool part', part);
                     // Handle tool calls
                     const uniqueId = part.toolCallId ||
-                                    part.id ||
-                                    `${message.id}-${part.type}-${partIndex}`;
+                      part.id ||
+                      `${message.id}-${part.type}-${partIndex}`;
 
                     flowItems.push({
                       type: 'tool-call',
@@ -458,51 +471,51 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
 
                   // Generate sources component
                   const sourcesComponent = message.role === 'assistant' && (() => {
-                        // Strict check for actual text content - don't show sources without real text
-                        const hasRealTextContent = (
-                          message.parts?.some((p: any) => p.type === 'text' && p.text?.trim()) ||
-                          (message.content?.trim())
-                        );
+                    // Strict check for actual text content - don't show sources without real text
+                    const hasRealTextContent = (
+                      message.parts?.some((p: any) => p.type === 'text' && p.text?.trim()) ||
+                      (message.content?.trim())
+                    );
 
-                        if (!hasRealTextContent) {
-                          // No real text content = never show sources (prevents showing below tool calls)
-                          return null;
+                    if (!hasRealTextContent) {
+                      // No real text content = never show sources (prevents showing below tool calls)
+                      return null;
+                    }
+
+                    // Look backward through flow items for recent tool results
+                    let toolSources: any[] = [];
+
+                    for (let i = itemIndex - 1; i >= 0; i--) {
+                      const prevItem = deduplicatedFlowItems[i];
+                      if (prevItem.type === 'tool-call') {
+                        const toolData = prevItem.data as RAGToolUIPart;
+                        if (toolData.type === 'tool-retrieveKnowledgeBase' && toolData.output?.sources) {
+                          toolSources = toolData.output.sources;
+                          break;
                         }
+                      }
+                    }
 
-                        // Look backward through flow items for recent tool results
-                        let toolSources: any[] = [];
-
-                        for (let i = itemIndex - 1; i >= 0; i--) {
-                          const prevItem = deduplicatedFlowItems[i];
-                          if (prevItem.type === 'tool-call') {
-                            const toolData = prevItem.data as RAGToolUIPart;
-                            if (toolData.type === 'tool-retrieveKnowledgeBase' && toolData.output?.sources) {
-                              toolSources = toolData.output.sources;
-                              break;
-                            }
-                          }
-                        }
-
-                        if (toolSources.length > 0) {
-                          return (
-                            <div className="mt-4">
-                              <Sources>
-                                <SourcesTrigger count={toolSources.length} />
-                                <SourcesContent>
-                                  {toolSources.map((source: any, i: number) => (
-                                    <Source
-                                      key={`source-${item.id}-${i}`}
-                                      href={source.url}
-                                      title={source.title}
-                                    />
-                                  ))}
-                                </SourcesContent>
-                              </Sources>
-                            </div>
-                          );
-                        }
-                        return null;
-                      })();
+                    if (toolSources.length > 0) {
+                      return (
+                        <div className="mt-4">
+                          <Sources>
+                            <SourcesTrigger count={toolSources.length} />
+                            <SourcesContent>
+                              {toolSources.map((source: any, i: number) => (
+                                <Source
+                                  key={`source-${item.id}-${i}`}
+                                  href={source.url}
+                                  title={source.title}
+                                />
+                              ))}
+                            </SourcesContent>
+                          </Sources>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })();
 
                   return (
                     <div key={item.id} className="w-full">
