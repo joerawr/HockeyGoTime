@@ -33,6 +33,12 @@ import {
 import { MODEL_PRICING } from "@/lib/analytics/constants";
 import { validateUserInput } from "@/lib/guardrails";
 
+// Helper for consistent timing logs
+function logTiming(label: string, start: number) {
+  const duration = (performance.now() - start).toFixed(2);
+  console.log(`⏱️ [Timing] ${label}: ${duration}ms`);
+}
+
 const TRAVEL_API_ERROR_MESSAGE =
   "Sorry the google maps api isn't responding, please use maps.google.com. We'll look into the issue.";
 const HOME_ADDRESS_REQUIRED_MESSAGE =
@@ -107,7 +113,8 @@ type TravelToolResult = TravelCalculation | { errorMessage: string };
 
 export async function POST(request: NextRequest) {
   // Track request start time for performance metrics
-  const requestStartTime = Date.now();
+  const requestStartTime = performance.now();
+  console.log(`\n--- New Request Started ---`);
 
   // T037: Create AbortController with 60s timeout for backend processing
   // Allows complex multi-tool queries (e.g., 9 games × map API calls)
@@ -118,7 +125,10 @@ export async function POST(request: NextRequest) {
   }, 60000); // 60 second timeout
 
   try {
+    const parseStart = performance.now();
     const { messages, preferences } = await request.json();
+    logTiming("Request Parsing", parseStart);
+
     const normalizedPreferences = normalizePreferences(preferences);
     const fallbackMcp =
       (DEFAULT_PREFERENCES.mcpServer as MCPServerId) || "scaha";
@@ -132,9 +142,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Convert UIMessages to ModelMessages
-    const modelMessages = convertToModelMessages(messages);
+    console.log(`📩 Messages received: ${messages.length}`);
+    let modelMessages;
+    try {
+      modelMessages = convertToModelMessages(messages);
+    } catch (e) {
+      console.warn("⚠️ convertToModelMessages failed, using raw messages");
+      modelMessages = messages;
+    }
 
     // Guardrail validation - check last user message for off-topic/injection attempts
+    const guardrailStart = performance.now();
     const lastUserMessage = messages.findLast((m: any) => m.role === 'user');
     if (lastUserMessage) {
       const guardrailResult = validateUserInput(lastUserMessage.content, {
@@ -147,6 +165,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (!guardrailResult.allowed) {
+        logTiming("Guardrail Validation (Blocked)", guardrailStart);
         return new Response(
           JSON.stringify({
             error: guardrailResult.reason,
@@ -156,8 +175,10 @@ export async function POST(request: NextRequest) {
         );
       }
     }
+    logTiming("Guardrail Validation (Allowed)", guardrailStart);
 
     // Build system prompt with user preferences context using builder functions
+    const promptBuildStart = performance.now();
     let systemPrompt: string;
     if (selectedMcpServer === "pghl") {
       const teamMappingsJson = JSON.stringify(PGHL_TEAM_IDS, null, 2);
@@ -170,17 +191,22 @@ export async function POST(request: NextRequest) {
     } else {
       systemPrompt = buildScahaPrompt(normalizedPreferences);
     }
+    logTiming("System Prompt Construction", promptBuildStart);
 
     // Initialize MCP client
     console.log(`🚀 Initializing ${selectedMcpLabel} MCP client...`);
+    const mcpConnectStart = performance.now();
     const activeMcpClient =
       selectedMcpServer === "pghl"
         ? getPghlMCPClient()
         : getSchahaMCPClient();
     await activeMcpClient.connect();
+    logTiming(`MCP Connection (${selectedMcpLabel})`, mcpConnectStart);
 
     // Retrieve MCP tools (get_schedule, etc.)
+    const mcpToolsStart = performance.now();
     const tools = await activeMcpClient.getTools();
+    logTiming(`MCP Tools Retrieval`, mcpToolsStart);
 
     console.log(
       `🔧 HockeyGoTime has access to ${Object.keys(tools).length} ${selectedMcpLabel} MCP tools`
@@ -194,6 +220,7 @@ export async function POST(request: NextRequest) {
           ...toolDef,
           execute: async (args: any) => {
             console.log(`\n🏒 Tool called: ${toolName}`);
+            const toolExecStart = performance.now();
 
             // Cache logic for get_schedule tool
             if (toolName === 'get_schedule') {
@@ -254,15 +281,16 @@ export async function POST(request: NextRequest) {
               const cachedData = await scheduleCache.get(cacheKey);
               if (cachedData) {
                 console.log(`   ⚡ Cache hit`);
+                logTiming(`Tool: ${toolName} (Cache Hit)`, toolExecStart);
                 return cachedData;
               }
 
               // Cache miss - call MCP tool
               console.log(`   🔍 Cache miss - calling MCP`);
-              const startTime = Date.now();
+              const startTime = performance.now();
               const result = await toolDef.execute(args);
-              const elapsed = Date.now() - startTime;
-              console.log(`   ⏱️ MCP call took ${elapsed}ms`);
+              const elapsed = performance.now() - startTime;
+              console.log(`   ⏱️ MCP call took ${elapsed.toFixed(2)}ms`);
 
               // Only cache successful responses (don't cache errors)
               if (!result.isError) {
@@ -272,6 +300,7 @@ export async function POST(request: NextRequest) {
                 console.log(`   ⚠️ Not caching error response`);
               }
 
+              logTiming(`Tool: ${toolName} (Cache Miss + Exec)`, toolExecStart);
               return result;
             }
 
@@ -293,15 +322,16 @@ export async function POST(request: NextRequest) {
               const cachedData = await scheduleCache.get(cacheKey);
               if (cachedData) {
                 console.log(`   ⚡ Cache hit`);
+                logTiming(`Tool: ${toolName} (Cache Hit)`, toolExecStart);
                 return cachedData;
               }
 
               // Cache miss - call MCP tool
               console.log(`   🔍 Cache miss - calling MCP`);
-              const startTime = Date.now();
+              const startTime = performance.now();
               const result = await toolDef.execute(args);
-              const elapsed = Date.now() - startTime;
-              console.log(`   ⏱️ MCP call took ${elapsed}ms`);
+              const elapsed = performance.now() - startTime;
+              console.log(`   ⏱️ MCP call took ${elapsed.toFixed(2)}ms`);
 
               // Only cache successful responses (don't cache errors)
               if (!result.isError) {
@@ -311,6 +341,7 @@ export async function POST(request: NextRequest) {
                 console.log(`   ⚠️ Not caching error response`);
               }
 
+              logTiming(`Tool: ${toolName} (Cache Miss + Exec)`, toolExecStart);
               return result;
             }
 
@@ -332,15 +363,16 @@ export async function POST(request: NextRequest) {
               const cachedData = await scheduleCache.get(cacheKey);
               if (cachedData) {
                 console.log(`   ⚡ Cache hit`);
+                logTiming(`Tool: ${toolName} (Cache Hit)`, toolExecStart);
                 return cachedData;
               }
 
               // Cache miss - call MCP tool
               console.log(`   🔍 Cache miss - calling MCP`);
-              const startTime = Date.now();
+              const startTime = performance.now();
               const result = await toolDef.execute(args);
-              const elapsed = Date.now() - startTime;
-              console.log(`   ⏱️ MCP call took ${elapsed}ms`);
+              const elapsed = performance.now() - startTime;
+              console.log(`   ⏱️ MCP call took ${elapsed.toFixed(2)}ms`);
 
               // Only cache successful responses (don't cache errors)
               if (!result.isError) {
@@ -350,6 +382,7 @@ export async function POST(request: NextRequest) {
                 console.log(`   ⚠️ Not caching error response`);
               }
 
+              logTiming(`Tool: ${toolName} (Cache Miss + Exec)`, toolExecStart);
               return result;
             }
 
@@ -367,15 +400,16 @@ export async function POST(request: NextRequest) {
               const cachedData = await scheduleCache.get(cacheKey);
               if (cachedData) {
                 console.log(`   ⚡ Cache hit`);
+                logTiming(`Tool: ${toolName} (Cache Hit)`, toolExecStart);
                 return cachedData;
               }
 
               // Cache miss - call MCP tool
               console.log(`   🔍 Cache miss - calling MCP`);
-              const startTime = Date.now();
+              const startTime = performance.now();
               const result = await toolDef.execute(args);
-              const elapsed = Date.now() - startTime;
-              console.log(`   ⏱️ MCP call took ${elapsed}ms`);
+              const elapsed = performance.now() - startTime;
+              console.log(`   ⏱️ MCP call took ${elapsed.toFixed(2)}ms`);
 
               // Only cache successful responses (don't cache errors)
               if (!result.isError) {
@@ -385,6 +419,7 @@ export async function POST(request: NextRequest) {
                 console.log(`   ⚠️ Not caching error response`);
               }
 
+              logTiming(`Tool: ${toolName} (Cache Miss + Exec)`, toolExecStart);
               return result;
             }
 
@@ -408,15 +443,16 @@ export async function POST(request: NextRequest) {
               const cachedData = await scheduleCache.get(cacheKey);
               if (cachedData) {
                 console.log(`   ⚡ Cache hit`);
+                logTiming(`Tool: ${toolName} (Cache Hit)`, toolExecStart);
                 return cachedData;
               }
 
               // Cache miss - call MCP tool
               console.log(`   🔍 Cache miss - calling MCP`);
-              const startTime = Date.now();
+              const startTime = performance.now();
               const result = await toolDef.execute(args);
-              const elapsed = Date.now() - startTime;
-              console.log(`   ⏱️ MCP call took ${elapsed}ms`);
+              const elapsed = performance.now() - startTime;
+              console.log(`   ⏱️ MCP call took ${elapsed.toFixed(2)}ms`);
 
               // Only cache successful responses (don't cache errors)
               if (!result.isError) {
@@ -426,14 +462,16 @@ export async function POST(request: NextRequest) {
                 console.log(`   ⚠️ Not caching error response`);
               }
 
+              logTiming(`Tool: ${toolName} (Cache Miss + Exec)`, toolExecStart);
               return result;
             }
 
             // Default: no caching for other tools
-            const startTime = Date.now();
+            const startTime = performance.now();
             const result = await toolDef.execute(args);
-            const elapsed = Date.now() - startTime;
-            console.log(`   ⏱️ Tool execution took ${elapsed}ms`);
+            const elapsed = performance.now() - startTime;
+            console.log(`   ⏱️ Tool execution took ${elapsed.toFixed(2)}ms`);
+            logTiming(`Tool: ${toolName} (Exec)`, toolExecStart);
             return result;
           },
         },
@@ -447,6 +485,7 @@ export async function POST(request: NextRequest) {
           "Calculate travel duration, departure time, and wake-up time using Google Routes API and the user's preferences. The venue address will be resolved automatically from the database.",
         inputSchema: travelToolInputSchema,
         execute: async (args: TravelToolArgs): Promise<TravelToolResult> => {
+          const toolStart = performance.now();
           const { game, timezone, userPreferences: overrides } = args;
 
           if (!game) {
@@ -458,7 +497,9 @@ export async function POST(request: NextRequest) {
 
           // Resolve venue address from database
           console.log(`🗺️ Resolving venue`);
+          const resolveStart = performance.now();
           const venueResult = await resolveVenue(game.venue);
+          logTiming("Venue Resolution", resolveStart);
 
           if (!venueResult) {
             console.error(`❌ Venue not found in database`);
@@ -523,6 +564,7 @@ export async function POST(request: NextRequest) {
           }
 
           try {
+            const calcStart = performance.now();
             const calculation = await calculateTravelTimes(
               game,
               resolvedPreferences,
@@ -531,12 +573,14 @@ export async function POST(request: NextRequest) {
                 timezone,
               }
             );
+            logTiming("Google Routes API Calc", calcStart);
 
             // Track successful Google Routes API call
             trackExternalApiCall("google-routes", true).catch((err) =>
               console.error("❌ Failed to track Maps API call:", err)
             );
 
+            logTiming("Tool: calculate_travel_times (Total)", toolStart);
             return calculation;
           } catch (error) {
             console.error("🗺️ Travel calculation error:", error);
@@ -558,11 +602,14 @@ export async function POST(request: NextRequest) {
           homeAddress: z.string().optional().describe("Starting address (defaults to user's saved home address)"),
         }),
         execute: async (args: { venue: string; homeAddress?: string }) => {
+          const toolStart = performance.now();
           const { venue, homeAddress } = args;
 
           // Resolve venue address from database
           console.log(`🗺️ [distance] Resolving venue`);
+          const resolveStart = performance.now();
           const venueResult = await resolveVenue(venue);
+          logTiming("Venue Resolution", resolveStart);
 
           if (!venueResult) {
             console.error(`❌ [distance] Venue not found in database`);
@@ -584,10 +631,12 @@ export async function POST(request: NextRequest) {
           }
 
           try {
+            const calcStart = performance.now();
             const result = await calculateDistance({
               originAddress,
               destinationAddress,
             });
+            logTiming("Google Distance Matrix Calc", calcStart);
 
             // Track successful Google Distance Matrix API call
             const today = new Date().toISOString().split("T")[0];
@@ -596,6 +645,7 @@ export async function POST(request: NextRequest) {
             );
 
             console.log(`✅ [distance] Distance calculated successfully`);
+            logTiming("Tool: calculate_venue_distances (Total)", toolStart);
 
             return {
               distanceMiles: Math.round(result.distanceMiles * 10) / 10, // Round to 1 decimal
@@ -622,6 +672,7 @@ export async function POST(request: NextRequest) {
       },
     };
 
+    const streamStart = performance.now();
     const result = streamText({
       model: google("gemini-3-flash-preview"),
       system: systemPrompt,
@@ -630,6 +681,7 @@ export async function POST(request: NextRequest) {
       stopWhen: stepCountIs(20), // Allow complex multi-tool queries (e.g., schedule + 9 travel calculations + response)
       abortSignal: abortController.signal, // T037: Pass abort signal to streamText
       onFinish: async ({ text, toolCalls, toolResults, steps, usage, finishReason }) => {
+        logTiming("LLM Streaming + Tool Execution Phase", streamStart);
         console.log(`📊 Stream finished:`);
         console.log(`   Finish reason: ${finishReason || 'unknown'}`);
         console.log(`   Text length: ${text?.length || 0}`);
@@ -648,8 +700,8 @@ export async function POST(request: NextRequest) {
 
         // Track analytics (non-blocking)
         // Track response time
-        const totalDuration = Date.now() - requestStartTime;
-        console.log(`⏱️ Total request duration: ${totalDuration}ms`);
+        const totalDuration = performance.now() - requestStartTime;
+        console.log(`⏱️ Total request duration: ${totalDuration.toFixed(2)}ms`);
         trackResponseTime("/api/hockey-chat", totalDuration).catch(
           (error) => console.error("❌ Response time tracking failed:", error)
         );
@@ -693,7 +745,9 @@ export async function POST(request: NextRequest) {
         // Close the MCP client after streaming completes
         // This is critical to avoid "closed client" errors
         console.log(`🔌 Disconnecting ${selectedMcpLabel} MCP client...`);
+        const disconnectStart = performance.now();
         await activeMcpClient.disconnect();
+        logTiming(`MCP Disconnect`, disconnectStart);
 
         // Clear timeout after successful completion
         clearTimeout(timeoutId);
