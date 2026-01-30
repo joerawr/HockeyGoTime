@@ -37,7 +37,7 @@ export function generateDateRange(
  *
  * Fetches token usage from Redis and applies pricing to calculate costs.
  *
- * @param modelName - AI model identifier (e.g., "gemini-2.5-flash")
+ * @param modelName - AI model identifier (e.g., "gemini-3-flash")
  * @param startDate - Start date in YYYY-MM-DD format
  * @param endDate - End date in YYYY-MM-DD format
  * @returns Cost breakdown with token usage and pricing
