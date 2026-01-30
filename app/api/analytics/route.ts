@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
       metrics: {
         conversations: metrics.conversations,
         tokens: {
-          "gemini-3-flash-preview": metrics.tokens,
+          "gemini-3-flash": metrics.tokens,
         },
         tools: metrics.tools,
       },

@@ -281,13 +281,13 @@ export async function getResponseTimes(
  *
  * @param startDate - Start date in YYYY-MM-DD format
  * @param endDate - End date in YYYY-MM-DD format
- * @param modelName - AI model identifier (defaults to gemini-2.5-flash)
+ * @param modelName - AI model identifier (defaults to gemini-3-flash)
  * @returns Object with conversations, tokens, and tools metrics
  */
 export async function getAllMetrics(
   startDate: string,
   endDate: string,
-  modelName: SupportedModel = "gemini-2.5-flash"
+  modelName: SupportedModel = "gemini-3-flash"
 ): Promise<{
   conversations: Array<{ date: string; count: number }>;
   tokens: Array<{ date: string; input: number; output: number }>;

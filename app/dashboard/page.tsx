@@ -23,7 +23,7 @@ interface AnalyticsData {
   metrics: {
     conversations: Array<{ date: string; count: number }>;
     tokens: {
-      "gemini-2.5-flash": Array<{ date: string; input: number; output: number }>;
+      "gemini-3-flash": Array<{ date: string; input: number; output: number }>;
     };
     tools: Record<string, Array<{ date: string; count: number }>>;
   };
@@ -182,7 +182,7 @@ export default function DashboardPage() {
     );
   }
 
-  const tokenData = analyticsData.metrics.tokens["gemini-2.5-flash"] || [];
+  const tokenData = analyticsData.metrics.tokens["gemini-3-flash"] || [];
   const totalConversations = analyticsData.metrics.conversations.reduce(
     (sum, day) => sum + day.count,
     0

@@ -59,7 +59,7 @@ export async function trackConversation(date?: string): Promise<void> {
  * Increments input and output token counters for a specific model.
  * Uses Promise.all for parallel atomic operations.
  *
- * @param modelName - AI model identifier (e.g., "gemini-2.5-flash")
+ * @param modelName - AI model identifier (e.g., "gemini-3-flash")
  * @param inputTokens - Number of input tokens consumed
  * @param outputTokens - Number of output tokens generated
  * @param date - Date in YYYY-MM-DD format (defaults to today)
