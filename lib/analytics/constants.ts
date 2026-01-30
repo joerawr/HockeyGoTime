@@ -129,6 +129,10 @@ export const MODEL_PRICING = {
     inputPricePerMillion: 0.3, // $0.30 per 1M input tokens
     outputPricePerMillion: 2.5, // $2.50 per 1M output tokens
   },
+  "gemini-3-flash-preview": {
+    inputPricePerMillion: 0.3, // $0.30 per 1M input tokens
+    outputPricePerMillion: 2.5, // $2.50 per 1M output tokens
+  },
   // Add more models as needed
 } as const;
 
