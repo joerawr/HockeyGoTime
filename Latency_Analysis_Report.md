@@ -1,32 +1,31 @@
-# Latency Analysis Report (Gemini 3.0 Flash Preview)
+# Latency Analysis Report
 
-## Baseline Metrics (Localhost)
+## Comparative Summary: Google Direct vs OpenRouter
 
-### Detailed Breakdown (Run 1)
-| Scenario | Total RTT | MCP Connect | Data Retrieval | LLM Overhead |
-| :--- | :--- | :--- | :--- | :--- |
-| **Cold Start** (Schedule) | 26.3s | 3.05s | 10.3s (Miss) | ~11s |
-| **Warm Cache** (Schedule) | 12.5s | 0.48s | <1ms (Hit) | ~11.5s |
-| **Context Retention** | 11.7s | 0.41s | <1ms (Hit) | ~10.8s |
-| **Stats Query** | 8.2s | 0.34s | 2.7s (Exec) | ~5s |
-| **Long Context Recall** | 22.4s | 0.37s | 1.8s (Exec) | ~19s |
+| Scenario | Google Direct (Avg) | OpenRouter (Avg) | Improvement |
+| :--- | :--- | :--- | :--- |
+| **Cold Start** | 24.70s | **17.13s** | 🟢 31% Faster |
+| **Warm Cache** | 14.87s | **7.42s** | 🟢 50% Faster |
+| **Context Retention** | 13.88s | **4.13s** | 🟢 70% Faster |
+| **Reasoning (Stats)** | 8.71s | **6.23s** | 🟢 28% Faster |
+| **Long Context Recall** | 9.81s | **2.10s** | 🟢 79% Faster |
 
-### Multi-Run Comparison (Total Duration)
+**Model Used**: `google/gemini-3-flash-preview:nitro` (OpenRouter) vs `gemini-3-flash-preview` (Google Direct).
+
+## OpenRouter Benchmark Data (Run 1-3)
 
 | Scenario | Run 1 (s) | Run 2 (s) | Run 3 (s) | Avg (s) | StdDev (s) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Cold Start** | 26.33 | 22.02 | 25.75 | **24.70** | 2.34 |
-| **Warm Cache** | 12.49 | 14.25 | 17.88 | **14.87** | 2.75 |
-| **Context Retention** | 11.68 | 23.22 | 6.73 | **13.88** | 8.48 |
-| **Reasoning (Stats)** | 8.22 | 9.79 | 8.11 | **8.71** | 0.94 |
-| **Long Context Recall** | 22.43 | 3.68 | 3.32 | **9.81** | 10.93 |
+| **Cold Start** | 16.54 | 18.10 | 16.77 | **17.13** | 0.84 |
+| **Warm Cache** | 7.46 | 6.85 | 7.94 | **7.42** | 0.55 |
+| **Context Retention** | 4.30 | 3.94 | 4.16 | **4.13** | 0.18 |
+| **Reasoning (Stats)** | 6.24 | 6.31 | 6.15 | **6.23** | 0.08 |
+| **Long Context Recall** | 2.12 | 2.07 | 2.12 | **2.10** | 0.03 |
 
 ## Key Findings
-1.  **High Variance in Context Tasks**: The "Context Retention" and "Long Context Recall" scenarios show massive variance (StdDev ~8-10s).
-    -   *Cause*: The model occasionally hallucinates a need to re-fetch data (via tools) even when it has the answer in context. In Run 2, "Context Retention" took 23s (likely tool calls), while in Run 3 it took 6.7s (pure context). Similarly for "Long Context Recall" in Run 1 (22s vs ~3.5s).
-2.  **Consistent Overhead**: Cold starts consistently take ~24-26s, and even warm cache hits hover around 15s. This indicates a consistent ~10-15s "floor" for requests that involve any tool usage or complex orchestration, regardless of data fetching speed.
-3.  **MCP Latency**: The first connection to the StreamableHTTP MCP server takes ~3s. Subsequent connections are faster (~400ms).
-4.  **Data Latency**: The `get_schedule` tool is the slowest external dependency, taking ~10s on a cache miss.
+1.  **Massive Speedup**: The OpenRouter endpoint provides a consistently faster response, cutting the "thinking" time by nearly half in warm cache scenarios (7.4s vs 14.9s).
+2.  **Stability**: The variance (Standard Deviation) is extremely low with OpenRouter. The model reliably uses context instead of re-triggering tools for "Retention" and "Recall" tasks, which was a major issue with the direct implementation.
+3.  **Efficiency**: The "Long Context Recall" dropped from an unpredictable 3-22s to a rock-solid 2.1s, indicating the model is correctly utilizing the cached context without unnecessary processing.
 
 ## Conclusion
-Switching to OpenRouter will allow us to compare if this ~10s model overhead is specific to the Google AI SDK/API or if it's a characteristic of the Flash models when using multiple tools. The high variance in context tasks suggests prompt engineering might also be needed to discourage redundant tool use.
+Migrating to OpenRouter is a clear performance upgrade. The `:nitro` routing or the specific model instance on OpenRouter handles tool outputs and context retrieval much more efficiently than the previous direct integration.
