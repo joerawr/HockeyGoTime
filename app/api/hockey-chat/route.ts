@@ -4,7 +4,7 @@ import { buildScahaPrompt } from "@/components/agent/scaha-prompt";
 import { buildPGHLPrompt } from "@/components/agent/pghl-prompt";
 import { getSchahaMCPClient, getPghlMCPClient } from "@/lib/mcp";
 import { PGHL_TEAM_IDS, PGHL_SEASON_IDS } from "@/lib/pghl-mappings";
-import { google } from "@ai-sdk/google";
+import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { streamText, convertToModelMessages, stepCountIs } from "ai";
 import { NextRequest } from "next/server";
 import {
@@ -32,6 +32,11 @@ import {
 } from "@/lib/analytics/metrics";
 import { MODEL_PRICING } from "@/lib/analytics/constants";
 import { validateUserInput } from "@/lib/guardrails";
+
+// Initialize OpenRouter provider
+const openrouter = createOpenRouter({
+  apiKey: process.env.OPENROUTER_API_KEY,
+});
 
 // Helper for consistent timing logs
 function logTiming(label: string, start: number) {
@@ -114,7 +119,7 @@ type TravelToolResult = TravelCalculation | { errorMessage: string };
 export async function POST(request: NextRequest) {
   // Track request start time for performance metrics
   const requestStartTime = performance.now();
-  console.log(`\n--- New Request Started ---`);
+  console.log(`\n--- New Request Started (OpenRouter) ---`);
 
   // T037: Create AbortController with 60s timeout for backend processing
   // Allows complex multi-tool queries (e.g., 9 games × map API calls)
@@ -462,7 +467,6 @@ export async function POST(request: NextRequest) {
                 console.log(`   ⚠️ Not caching error response`);
               }
 
-              logTiming(`Tool: ${toolName} (Cache Miss + Exec)`, toolExecStart);
               return result;
             }
 
@@ -504,7 +508,7 @@ export async function POST(request: NextRequest) {
           if (!venueResult) {
             console.error(`❌ Venue not found in database`);
             return {
-              errorMessage: `I couldn't find the venue "${game.venue}" in our database. Please check the venue name and try again, or contact support if this venue should be available.`,
+              errorMessage: `I couldn't find the venue "${game.venue}" in our database. Please check the venue name and try again, or contact support if this venue should be available.`, 
             };
           }
 
@@ -614,7 +618,7 @@ export async function POST(request: NextRequest) {
           if (!venueResult) {
             console.error(`❌ [distance] Venue not found in database`);
             return {
-              errorMessage: `I couldn't find the venue "${venue}" in our database. Please check the venue name and try again.`,
+              errorMessage: `I couldn't find the venue "${venue}" in our database. Please check the venue name and try again.`, 
             };
           }
 
@@ -625,9 +629,7 @@ export async function POST(request: NextRequest) {
           const originAddress = homeAddress ?? normalizedPreferences?.homeAddress;
 
           if (!originAddress) {
-            return {
-              errorMessage: HOME_ADDRESS_REQUIRED_MESSAGE,
-            };
+            return { errorMessage: HOME_ADDRESS_REQUIRED_MESSAGE };
           }
 
           try {
@@ -673,8 +675,11 @@ export async function POST(request: NextRequest) {
     };
 
     const streamStart = performance.now();
+    const modelName = process.env.OPENROUTER_MODEL || "google/gemini-3-flash-preview:nitro";
+    console.log(`🤖 Using model: ${modelName}`);
+    
     const result = streamText({
-      model: google("gemini-3-flash-preview"),
+      model: openrouter(modelName),
       system: systemPrompt,
       messages: modelMessages,
       tools: wrappedTools,
@@ -682,7 +687,7 @@ export async function POST(request: NextRequest) {
       abortSignal: abortController.signal, // T037: Pass abort signal to streamText
       onFinish: async ({ text, toolCalls, toolResults, steps, usage, finishReason }) => {
         logTiming("LLM Streaming + Tool Execution Phase", streamStart);
-        console.log(`📊 Stream finished:`);
+        console.log(`📊 Stream finished:`)
         console.log(`   Finish reason: ${finishReason || 'unknown'}`);
         console.log(`   Text length: ${text?.length || 0}`);
         console.log(`   Tool calls: ${toolCalls?.length || 0}`);
