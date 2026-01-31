@@ -70,3 +70,17 @@ ehthumbs.db
 
 # Codex
 .codex
+
+# Local Testing & Benchmarks
+14AJrKingsSCAHA.csv
+Latency_Analysis_Report.md
+Metrics_cli_testing_plan.md
+Model_Benchmark_Report.md
+Openrouter_plan.md
+README_BENCHMARK.md
+test-refactor-vercel.ts
+test-routes-api.js
+scripts/benchmark-chat.ts
+scripts/run-model-benchmarks.ts
+scaha.net-mcp/
+
