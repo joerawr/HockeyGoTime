@@ -130,16 +130,26 @@ export async function POST(request: NextRequest) {
   }, 60000); // 60 second timeout
 
   try {
-    const parseStart = performance.now();
+    // Start MCP connection early in parallel with parsing/validation
     const { messages, preferences } = await request.json();
-    logTiming("Request Parsing", parseStart);
-
     const normalizedPreferences = normalizePreferences(preferences);
     const fallbackMcp =
       (DEFAULT_PREFERENCES.mcpServer as MCPServerId) || "scaha";
     const selectedMcpServer: MCPServerId =
       normalizedPreferences?.mcpServer ??
       (preferences?.mcpServer === "pghl" ? "pghl" : fallbackMcp);
+
+    const activeMcpClient =
+      selectedMcpServer === "pghl"
+        ? getPghlMCPClient()
+        : getSchahaMCPClient();
+
+    // Trigger connection immediately without awaiting yet
+    const mcpConnectPromise = activeMcpClient.connect();
+
+    const parseStart = performance.now();
+    logTiming("Request Parsing", parseStart);
+
     const selectedMcpLabel = selectedMcpServer === "pghl" ? "PGHL" : "SCAHA";
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
@@ -198,14 +208,10 @@ export async function POST(request: NextRequest) {
     }
     logTiming("System Prompt Construction", promptBuildStart);
 
-    // Initialize MCP client
-    console.log(`🚀 Initializing ${selectedMcpLabel} MCP client...`);
+    // Await the MCP connection that was started in parallel
+    console.log(`🚀 Finalizing ${selectedMcpLabel} MCP connection...`);
     const mcpConnectStart = performance.now();
-    const activeMcpClient =
-      selectedMcpServer === "pghl"
-        ? getPghlMCPClient()
-        : getSchahaMCPClient();
-    await activeMcpClient.connect();
+    await mcpConnectPromise;
     logTiming(`MCP Connection (${selectedMcpLabel})`, mcpConnectStart);
 
     // Retrieve MCP tools (get_schedule, etc.)
@@ -303,6 +309,7 @@ export async function POST(request: NextRequest) {
                 console.log(`   💾 Cached: ${cacheKey}`);
               } else {
                 console.log(`   ⚠️ Not caching error response`);
+                console.log(`   ❌ Tool Error details:`, JSON.stringify(result, null, 2));
               }
 
               logTiming(`Tool: ${toolName} (Cache Miss + Exec)`, toolExecStart);

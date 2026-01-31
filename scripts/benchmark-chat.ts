@@ -26,7 +26,7 @@ const FACTS = {
     optional: [/(Ontario|Plum)/i, /10:30/]
   },
   travel: {
-    required: [/(8:30|08:30|8:00|08:00)/], // Leave or Wake up time
+    required: [/(7|8):\d{2}/], // Leave or Wake up time (accepts 7:xx or 8:xx to allow variance)
     optional: [/59 min|1 hour/i]
   },
   opponent: {

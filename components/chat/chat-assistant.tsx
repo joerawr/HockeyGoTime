@@ -49,10 +49,10 @@ type ChatMessage = {
   toolCalls?: Array<{
     type: `tool-${string}`;
     state:
-      | "input-streaming"
-      | "input-available"
-      | "output-available"
-      | "output-error";
+    | "input-streaming"
+    | "input-available"
+    | "output-available"
+    | "output-error";
     input?: any;
     output?: any;
     errorText?: string;
@@ -95,7 +95,7 @@ const MemoizedToolCall = memo(({
   displayName,
   shouldBeExpanded
 }: {
-  toolPart: RAGToolUIPart;
+  toolPart: any; // RAGToolUIPart;
   displayName: string;
   shouldBeExpanded: boolean;
 }) => (
@@ -157,6 +157,7 @@ const MemoizedMessage = memo(({
 MemoizedMessage.displayName = 'MemoizedMessage';
 
 export default function ChatAssistant({ api }: ChatAssistantProps) {
+
   const [input, setInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -172,6 +173,7 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
       fetch: async (url, options) => {
         // Load current preferences from localStorage
         const preferences = PreferencesStore.get();
+        // const preferences = null;
 
         // Parse the body to add preferences
         const body = JSON.parse(options?.body as string || '{}');
@@ -187,6 +189,7 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
       },
     });
   }, [api]);
+
 
   const { messages: rawMessages, status, sendMessage } = useChat(
     transport ? { transport } : undefined
@@ -327,7 +330,6 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
   };
 
   const isLoading = isSubmitting || status === "streaming";
-
   return (
     <div className="flex h-full flex-col overflow-hidden">
       <Conversation className="flex-1 overflow-hidden">
@@ -363,12 +365,12 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
                 const parts = (message as any).parts || [];
 
                 parts.forEach((part: any, partIndex: number) => {
-                 if (part.type?.startsWith('tool-')) {
+                  if (part.type?.startsWith('tool-')) {
                     console.log('🛠️ Tool part', part);
                     // Handle tool calls
                     const uniqueId = part.toolCallId ||
-                                    part.id ||
-                                    `${message.id}-${part.type}-${partIndex}`;
+                      part.id ||
+                      `${message.id}-${part.type}-${partIndex}`;
 
                     flowItems.push({
                       type: 'tool-call',
@@ -458,51 +460,51 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
 
                   // Generate sources component
                   const sourcesComponent = message.role === 'assistant' && (() => {
-                        // Strict check for actual text content - don't show sources without real text
-                        const hasRealTextContent = (
-                          message.parts?.some((p: any) => p.type === 'text' && p.text?.trim()) ||
-                          (message.content?.trim())
-                        );
+                    // Strict check for actual text content - don't show sources without real text
+                    const hasRealTextContent = (
+                      message.parts?.some((p: any) => p.type === 'text' && p.text?.trim()) ||
+                      (message.content?.trim())
+                    );
 
-                        if (!hasRealTextContent) {
-                          // No real text content = never show sources (prevents showing below tool calls)
-                          return null;
+                    if (!hasRealTextContent) {
+                      // No real text content = never show sources (prevents showing below tool calls)
+                      return null;
+                    }
+
+                    // Look backward through flow items for recent tool results
+                    let toolSources: any[] = [];
+
+                    for (let i = itemIndex - 1; i >= 0; i--) {
+                      const prevItem = deduplicatedFlowItems[i];
+                      if (prevItem.type === 'tool-call') {
+                        const toolData = prevItem.data as RAGToolUIPart;
+                        if (toolData.type === 'tool-retrieveKnowledgeBase' && toolData.output?.sources) {
+                          toolSources = toolData.output.sources;
+                          break;
                         }
+                      }
+                    }
 
-                        // Look backward through flow items for recent tool results
-                        let toolSources: any[] = [];
-
-                        for (let i = itemIndex - 1; i >= 0; i--) {
-                          const prevItem = deduplicatedFlowItems[i];
-                          if (prevItem.type === 'tool-call') {
-                            const toolData = prevItem.data as RAGToolUIPart;
-                            if (toolData.type === 'tool-retrieveKnowledgeBase' && toolData.output?.sources) {
-                              toolSources = toolData.output.sources;
-                              break;
-                            }
-                          }
-                        }
-
-                        if (toolSources.length > 0) {
-                          return (
-                            <div className="mt-4">
-                              <Sources>
-                                <SourcesTrigger count={toolSources.length} />
-                                <SourcesContent>
-                                  {toolSources.map((source: any, i: number) => (
-                                    <Source
-                                      key={`source-${item.id}-${i}`}
-                                      href={source.url}
-                                      title={source.title}
-                                    />
-                                  ))}
-                                </SourcesContent>
-                              </Sources>
-                            </div>
-                          );
-                        }
-                        return null;
-                      })();
+                    if (toolSources.length > 0) {
+                      return (
+                        <div className="mt-4">
+                          <Sources>
+                            <SourcesTrigger count={toolSources.length} />
+                            <SourcesContent>
+                              {toolSources.map((source: any, i: number) => (
+                                <Source
+                                  key={`source-${item.id}-${i}`}
+                                  href={source.url}
+                                  title={source.title}
+                                />
+                              ))}
+                            </SourcesContent>
+                          </Sources>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })();
 
                   return (
                     <div key={item.id} className="w-full">
@@ -567,5 +569,6 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
         </p>
       </div>
     </div>
+
   );
 }
