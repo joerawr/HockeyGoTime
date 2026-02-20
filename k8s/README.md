@@ -142,3 +142,52 @@ This will also stop all future scheduled jobs.
 - **Network**: Single HTTP POST request
 
 Very minimal impact on your cluster resources.
+
+---
+
+## Upstash Keepalive CronJob
+
+Prevents Upstash free-tier Redis from inactivity suspension by sending a lightweight `PING` every 6 hours.
+
+### What it does
+
+- Calls `${UPSTASH_REDIS_REST_URL}/ping` with bearer auth token
+- Runs at: 00:00, 06:00, 12:00, 18:00 UTC daily
+- Keeps Upstash Redis active
+- Minimal resources: ~16MB RAM, completes in seconds
+
+### Deployment
+
+1. Create/update secret from local env values:
+
+```bash
+set -a
+source ~/.openclaw/.env
+set +a
+
+kubectl create secret generic upstash-credentials \
+  -n hockeygotime \
+  --from-literal=UPSTASH_REDIS_REST_URL="$UPSTASH_REDIS_REST_URL" \
+  --from-literal=UPSTASH_REDIS_REST_TOKEN="$UPSTASH_REDIS_REST_TOKEN" \
+  --dry-run=client -o yaml | kubectl apply -f -
+```
+
+2. Apply CronJob:
+
+```bash
+kubectl apply -f k8s/upstash-keepalive-cronjob.yaml
+```
+
+3. Verify:
+
+```bash
+kubectl get cronjob -n hockeygotime | grep upstash
+```
+
+### Testing
+
+```bash
+kubectl create job --from=cronjob/upstash-keepalive upstash-keepalive-test -n hockeygotime
+kubectl logs -n hockeygotime job/upstash-keepalive-test
+kubectl delete job upstash-keepalive-test -n hockeygotime
+```

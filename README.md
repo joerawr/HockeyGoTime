@@ -306,6 +306,29 @@ Contributions welcome! Please:
 
 MIT
 
+## Keepalive CronJobs (Kubernetes)
+
+To prevent free-tier inactivity pauses:
+
+- **Supabase keepalive**: `k8s/supabase-keepalive-cronjob.yaml`
+- **Upstash keepalive**: `k8s/upstash-keepalive-cronjob.yaml`
+
+Both run every 6 hours in namespace `hockeygotime`.
+
+Quick deploy:
+
+```bash
+kubectl apply -f k8s/supabase-keepalive-cronjob.yaml
+kubectl create secret generic upstash-credentials \
+  -n hockeygotime \
+  --from-literal=UPSTASH_REDIS_REST_URL="..." \
+  --from-literal=UPSTASH_REDIS_REST_TOKEN="..." \
+  --dry-run=client -o yaml | kubectl apply -f -
+kubectl apply -f k8s/upstash-keepalive-cronjob.yaml
+```
+
+See `k8s/README.md` for testing/monitoring commands.
+
 ## Related Projects
 
 - [scaha.net-mcp](https://github.com/joerawr/scaha.net-mcp) - SCAHA MCP server

@@ -1,0 +1,58 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: upstash-keepalive
+  namespace: hockeygotime
+spec:
+  # Run every 6 hours (at 00:00, 06:00, 12:00, 18:00 UTC)
+  schedule: "0 */6 * * *"
+
+  successfulJobsHistoryLimit: 8
+  failedJobsHistoryLimit: 8
+
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app: upstash-keepalive
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: curl
+            image: curlimages/curl:latest
+            env:
+            - name: UPSTASH_REDIS_REST_URL
+              valueFrom:
+                secretKeyRef:
+                  name: upstash-credentials
+                  key: UPSTASH_REDIS_REST_URL
+            - name: UPSTASH_REDIS_REST_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: upstash-credentials
+                  key: UPSTASH_REDIS_REST_TOKEN
+
+            command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+              echo "Hitting Upstash keepalive endpoint..."
+              curl --max-time 30 \
+                --fail \
+                --silent \
+                --show-error \
+                -H "Authorization: Bearer ${UPSTASH_REDIS_REST_TOKEN}" \
+                "${UPSTASH_REDIS_REST_URL}/ping"
+              echo ""
+              echo "Success! Upstash keepalive completed at $(date)"
+
+            resources:
+              requests:
+                memory: "16Mi"
+                cpu: "10m"
+              limits:
+                memory: "32Mi"
+                cpu: "50m"

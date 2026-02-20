@@ -120,6 +120,19 @@ FEEDBACK_EMAIL=your-email@example.com  # Must match email registered with Resend
 
 See `.env.example` for complete list with descriptions.
 
+### Kubernetes Keepalive Jobs
+
+To avoid free-tier inactivity pauses in production:
+
+- `k8s/supabase-keepalive-cronjob.yaml` keeps Supabase active via venue cache refresh endpoint.
+- `k8s/upstash-keepalive-cronjob.yaml` keeps Upstash active via Redis REST `PING`.
+
+Upstash job requires Kubernetes secret `upstash-credentials` with:
+- `UPSTASH_REDIS_REST_URL`
+- `UPSTASH_REDIS_REST_TOKEN`
+
+Operational docs and test commands are in `k8s/README.md`.
+
 ### User Preferences (Optional Feature)
 
 **Important**: User preferences are **OPTIONAL** and not enforced. Users can:
